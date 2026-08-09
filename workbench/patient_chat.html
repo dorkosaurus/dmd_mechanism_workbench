@@ -202,6 +202,132 @@
     line-height: 1; }
   .gen-artifact-h .close:hover { border-color: var(--line-2); color: var(--ink); }
 
+  /* World-model provenance + trace layer --------------------------- */
+  .gen-provenance { display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; background: var(--accent-soft);
+    border: 1px solid var(--accent); border-radius: 6px;
+    margin-bottom: 10px; font-size: 11px; color: var(--ink-2); }
+  .gen-provenance-badge { background: var(--accent); color: white;
+    padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em; }
+  .gen-provenance b { color: var(--ink); font-weight: 600; }
+  .gen-provenance .gen-provenance-sep { color: var(--ink-3); margin: 0 4px; }
+  .gen-regenerate { margin-left: auto; background: white;
+    border: 1px solid var(--accent); color: var(--accent);
+    padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; }
+  .gen-regenerate:hover { background: var(--accent); color: white; }
+
+  .premises-drawer { margin: 10px 0; border: 1px solid var(--line);
+    border-radius: 8px; background: var(--bg); }
+  .premises-drawer-h { padding: 8px 12px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 6px; }
+  .premises-drawer-h b { color: var(--ink); }
+  .premise-row { display: grid; grid-template-columns: 130px 42px 1fr;
+    gap: 8px; align-items: baseline; padding: 6px 12px; font-size: 11px;
+    border-bottom: 1px solid var(--line); }
+  .premise-row:last-child { border-bottom: none; }
+  .premise-source { font-family: "SF Mono", Menlo, monospace; font-size: 10px;
+    color: var(--ink-2); background: var(--panel); padding: 2px 6px;
+    border-radius: 3px; text-align: center; border: 1px solid var(--line-2); }
+  .premise-weight { font-variant-numeric: tabular-nums; font-weight: 700;
+    text-align: right; font-size: 10px; }
+  .premise-weight.pos { color: var(--good); }
+  .premise-weight.neg { color: var(--bad); }
+  .premise-rationale { color: var(--ink-2); line-height: 1.4; }
+
+  .therapies-panel { margin: 10px 0; padding: 10px 12px;
+    background: var(--good-soft); border: 1px solid var(--good);
+    border-radius: 8px; }
+  .therapies-panel-h { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--good); font-weight: 700;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .therapies-panel-h b { color: var(--ink); }
+  .therapy-card { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; }
+  .therapy-card:last-child { margin-bottom: 0; }
+  .therapy-card-head { display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px; }
+  .therapy-modality { background: var(--good); color: white;
+    padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em; }
+  .therapy-modality.ASO           { background: var(--sky); }
+  .therapy-modality.small_molecule{ background: var(--violet); }
+  .therapy-modality.readthrough   { background: var(--warn); }
+  .therapy-design { font-family: "SF Mono", Menlo, monospace; font-size: 10px;
+    color: var(--ink-3); flex: 1; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .therapy-eligibility { font-size: 9px; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+  .therapy-eligibility.eligible            { background: var(--good-soft); color: var(--good); }
+  .therapy-eligibility.excluded            { background: var(--bad-soft);  color: var(--bad); }
+  .therapy-eligibility.screening_required  { background: var(--warn-soft); color: var(--warn); }
+  .therapy-eligibility.unknown             { background: var(--line);      color: var(--ink-3); }
+  .therapy-rationale { color: var(--ink-2); font-size: 11px; line-height: 1.4; }
+
+  .pss-provenance { font-size: 9px; color: var(--ink-3);
+    margin-left: 4px; font-family: "SF Mono", Menlo, monospace; }
+
+  /* Score vector strip — shows the multi-dimensional ranking */
+  .score-vector { display: flex; gap: 10px; align-items: center;
+    padding: 8px 12px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 6px; margin-bottom: 10px; font-size: 11px; }
+  .sv-metric { display: flex; flex-direction: column; gap: 2px; align-items: center;
+    min-width: 60px; }
+  .sv-metric-label { font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700; }
+  .sv-metric-value { font-size: 14px; font-weight: 700; color: var(--ink);
+    font-variant-numeric: tabular-nums; }
+  .sv-metric-bar { height: 4px; width: 60px; background: var(--line);
+    border-radius: 2px; overflow: hidden; margin-top: 2px; }
+  .sv-metric-fill { height: 100%; background: var(--good); }
+  .sv-hint { color: var(--ink-3); font-size: 10px; font-style: italic;
+    margin-left: auto; }
+
+  /* Evidence badge on each layered-chain box */
+  .lc-evidence-badge { display: inline-block; margin-left: 6px;
+    padding: 1px 6px; font-size: 9px; font-family: "SF Mono", Menlo, monospace;
+    color: var(--good); background: var(--good-soft); border-radius: 3px;
+    font-weight: 700; vertical-align: middle; }
+  .lc-evidence-badge.empty { color: var(--ink-3); background: var(--line); }
+
+  /* Edge label showing premise count / weight */
+  .lc-edge-label { font-size: 9px; color: var(--good); font-weight: 700;
+    font-family: "SF Mono", Menlo, monospace; margin-left: 4px;
+    padding: 1px 5px; background: var(--good-soft); border-radius: 3px; }
+
+  /* ESM3 3D structure artifact ------------------------------------- */
+  .esm3-wrap { padding: 6px 0; }
+  .esm3-lede { font-size: 12px; color: var(--ink-2); line-height: 1.5;
+    padding: 8px 12px; background: var(--bg); border-radius: 6px;
+    border-left: 3px solid var(--accent); margin-bottom: 10px; }
+  .esm3-meta { display: flex; gap: 14px; flex-wrap: wrap;
+    font-size: 11px; color: var(--ink-3); margin: 6px 0 10px; }
+  .esm3-meta b { color: var(--ink-2); }
+  .esm3-viewer { position: relative; width: 100%; height: 360px;
+    background: #1a2233; border-radius: 8px; overflow: hidden; }
+  .esm3-viewer canvas { display: block; }
+  .esm3-grid { display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin: 8px 0; }
+  .esm3-panel { display: flex; flex-direction: column; gap: 6px;
+    background: var(--panel); border: 1px solid var(--line-2);
+    border-radius: 8px; padding: 8px; }
+  .esm3-panel-h { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--ink-2); font-weight: 700; }
+  .esm3-panel-h-sub { text-transform: none; letter-spacing: 0;
+    color: var(--ink-3); font-weight: 500; margin-left: 6px; font-size: 10px; }
+  .esm3-panel-meta { font-size: 10px; color: var(--ink-3); text-align: center; }
+  .esm3-panel-meta b { color: var(--ink-2); }
+  .esm3-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px;
+    font-size: 11px; color: var(--ink-2); }
+  .esm3-legend-sw { display: inline-block; width: 12px; height: 12px;
+    border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+  .esm3-hint { color: var(--ink-3); font-size: 10px; margin-top: 6px;
+    font-style: italic; }
+  .esm3-unavailable { color: var(--ink-3); font-size: 12px; padding: 16px;
+    background: var(--bg); border-radius: 6px; text-align: center; }
+
   /* NMD × ACMG Marimekko artifact ---------------------------------- */
   .mek-wrap { padding: 6px 0; }
   .mek-lede { font-size: 12px; color: var(--ink-2); line-height: 1.5;
@@ -411,6 +537,7 @@
 <div class="pc-app" id="app"><!-- rendered by renderPage() --></div>
 
 <script src="widget_palette.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.0/3Dmol-min.js"></script>
 <script>
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -772,18 +899,23 @@ function renderHypRankArtifact(p) {
         </span>
       </div>
       <div class="pss-rows">
-        ${ranking.map(r => `
+        ${ranking.map(r => {
+          const nPrem = (r.premises || []).length;
+          const nTh   = (r.therapeutics || []).length;
+          const genVer = r.generator?.version || '';
+          return `
           <div class="pss-row ${r.id === selectedId ? 'sel' : ''}" data-hid="${esc(r.id)}">
             <span class="pss-rank">#${r.rank}</span>
             <span class="pss-hid">H${esc(r.id)}</span>
             <span class="pss-score">${r.score.toFixed(1)}</span>
             <span class="pss-fit">${esc(r.fit)}</span>
             <span class="pss-pe">
-              ${(r.patientEvidence || []).length
-                ? `<b>${(r.patientEvidence || []).length}</b> lab bullets`
-                : '<span style="color:var(--ink-3)">no lab bullets</span>'}
+              ${nPrem ? `<b>${nPrem}</b> premises` : ''}
+              ${nTh ? ` · <b>${nTh}</b> therap${nTh === 1 ? 'y' : 'ies'}` : ''}
+              ${genVer ? `<span class="pss-provenance">${esc(genVer)}</span>` : ''}
             </span>
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
 
@@ -800,20 +932,60 @@ function renderHypRankArtifact(p) {
   </div>`;
 }
 
-function renderLayeredChain(hypId) {
+function renderLayeredChain(hypId, storedHyp) {
   const L = HYPOTHESIS_LAYERS[hypId];
   if (!L) return `<div style="color:var(--ink-3);font-size:11px;padding:8px">
     No layered mapping curated for H${esc(hypId)}.</div>`;
+
+  // Pull per-layer + per-edge premise counts + weights from stored chain links
+  const layerCounts = storedHyp?.scoreVector?.layerScores || {};
+  const edgeCounts  = storedHyp?.scoreVector?.edgeScores || {};
+  const nodeChain   = storedHyp?.chainLinks?.nodes || {};
+  const edgeChain   = storedHyp?.chainLinks?.edges || {};
+
+  // Colour by evidence weight — 0 = neutral, higher = greener.
+  const bgFromWeight = (w) => {
+    if (!w || w <= 0)     return null;   // no evidence — use default layer bg
+    if (w < 0.5)          return '#f4f7ec';
+    if (w < 1.0)          return '#e6f0d8';
+    if (w < 1.5)          return '#d4e6bf';
+    return '#c1dda5';
+  };
+
   const rows = LAYERS.map(([k, lbl], i) => {
     const n = L[k] || {title:'(unclassified)', meta:''};
-    const arrow = (i < LAYERS.length - 1)
-      ? `<div class="lc-arrow"><svg width="14" height="12" viewBox="0 0 14 12">
-           <path d="M 7 0 L 7 9 M 3 5 L 7 9 L 11 5" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/>
-         </svg></div>` : '';
+    const w = layerCounts[k] || 0;
+    const nodeEntries = nodeChain[k] || [];
+    const bg = bgFromWeight(w);
+    const bgStyle = bg ? `style="background:${bg}"` : '';
+    const evidenceBadge = nodeEntries.length
+      ? `<span class="lc-evidence-badge" title="Premises: ${nodeEntries.map(e => e.sourceId).join(', ')}">${nodeEntries.length}·${w.toFixed(1)}</span>`
+      : `<span class="lc-evidence-badge empty" title="No premises inform this layer">—</span>`;
+
+    // Edge to next layer
+    let arrow = '';
+    if (i < LAYERS.length - 1) {
+      const nextK = LAYERS[i + 1][0];
+      const edgeKey = `${k}->${nextK}`;
+      const ew = edgeCounts[edgeKey] || 0;
+      const eEntries = edgeChain[edgeKey] || [];
+      const eColor = ew > 0 ? 'var(--good)' : 'var(--ink-3)';
+      const eStroke = ew > 0 ? 2 : 1;
+      const eLabel = eEntries.length
+        ? `<span class="lc-edge-label" title="Premises: ${eEntries.map(e => e.sourceId).join(', ')}">${eEntries.length}·${ew.toFixed(1)}</span>`
+        : '';
+      arrow = `<div class="lc-arrow">
+        <svg width="14" height="12" viewBox="0 0 14 12">
+          <path d="M 7 0 L 7 9 M 3 5 L 7 9 L 11 5" fill="none" stroke="${eColor}" stroke-width="${eStroke}"/>
+        </svg>
+        ${eLabel}
+      </div>`;
+    }
+
     return `<div class="lc-row ${k}">
       <div class="lc-tag">${esc(lbl)}</div>
-      <div class="lc-box">
-        <div class="lc-title">${esc(n.title)}</div>
+      <div class="lc-box" ${bgStyle}>
+        <div class="lc-title">${esc(n.title)} ${evidenceBadge}</div>
         <div class="lc-meta">${esc(n.meta || '')}</div>
       </div>
     </div>${arrow}`;
@@ -849,8 +1021,10 @@ function renderChainArtifact(p, hypId, artifactIdx) {
   const edgeSel = (hypId === currentHypId) ? currentEdgeId : null;
 
   // Layered biological-organization chain is the sole view now — the
-  // Cause → Effect flow diagram was retired.
-  const chainHtml = renderLayeredChain(hypId);
+  // Cause → Effect flow diagram was retired. Pass the stored hypothesis
+  // so the layered view can colour each layer by evidence weight.
+  const storedHyp = (p.hypothesisRanking || []).find(r => r.id === hypId);
+  const chainHtml = renderLayeredChain(hypId, storedHyp);
 
   const ranking = p.hypothesisRanking || [];
   const r = ranking.find(x => x.id === hypId);
@@ -863,15 +1037,102 @@ function renderChainArtifact(p, hypId, artifactIdx) {
   const lede = hyp.detail?.lede
     ? `<div class="chain-lede">${esc(hyp.detail.lede)}</div>` : '';
 
+  // World-model provenance + trace layer — reuses `storedHyp` from above
+  // (declared before renderLayeredChain call, contains scoreVector + chainLinks
+  // + generator info + premises + therapeutics).
+  const provenance = storedHyp?.generator
+    ? `<div class="gen-provenance">
+        <span class="gen-provenance-badge">GENERATED</span>
+        <span>by <b>${esc(storedHyp.generator.id)}</b>
+          <span class="gen-provenance-sep">·</span>
+          ${esc(storedHyp.generator.version)}
+          <span class="gen-provenance-sep">·</span>
+          ${esc(storedHyp.generator.at ? storedHyp.generator.at.slice(0, 10) : '')}
+        </span>
+        <button class="gen-regenerate" data-regenerate="${esc(hypId)}"
+                title="Stub — would re-invoke the hypothesis world model">
+          ↻ regenerate
+        </button>
+      </div>` : '';
+
+  const premises = (storedHyp?.premises || []).slice(0, 8);
+  const premisesDrawer = premises.length ? `
+    <div class="premises-drawer">
+      <div class="premises-drawer-h">
+        Premises consulted <b>·</b> ${premises.length} of ${storedHyp.premises.length} shown
+      </div>
+      ${premises.map(pr => {
+        const w = pr.weight;
+        const cls = w >= 0 ? 'pos' : 'neg';
+        const sign = w >= 0 ? '+' : '';
+        return `<div class="premise-row">
+          <span class="premise-source">${esc(pr.sourceId)}</span>
+          <span class="premise-weight ${cls}">${sign}${w.toFixed(2)}</span>
+          <span class="premise-rationale">${esc(pr.rationale || '(no rationale)')}</span>
+        </div>`;
+      }).join('')}
+    </div>` : '';
+
+  const therapies = storedHyp?.therapeutics || [];
+  const therapiesPanel = therapies.length ? `
+    <div class="therapies-panel">
+      <div class="therapies-panel-h">
+        Candidate therapeutics <b>·</b> generated for this hypothesis
+      </div>
+      ${therapies.map(t => `
+        <div class="therapy-card">
+          <div class="therapy-card-head">
+            <span class="therapy-modality ${esc(t.modality)}">${esc(t.modality)}</span>
+            <span class="therapy-design">${esc(JSON.stringify(t.design))}</span>
+            <span class="therapy-eligibility ${esc(t.eligibilityStatus || 'unknown')}">
+              ${esc((t.eligibilityStatus || 'unknown').replace(/_/g, ' '))}
+            </span>
+          </div>
+          <div class="therapy-rationale">${esc(t.rationale)}</div>
+        </div>
+      `).join('')}
+    </div>` : '';
+
+  // Score vector strip — the multi-dimensional ranking
+  const sv = storedHyp?.scoreVector;
+  const scoreVectorStrip = sv ? `
+    <div class="score-vector">
+      <div class="sv-metric">
+        <span class="sv-metric-label">Aggregate</span>
+        <span class="sv-metric-value">${sv.aggregate.toFixed(1)}</span>
+        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${Math.min(100, sv.aggregate * 10)}%"></div></div>
+      </div>
+      <div class="sv-metric" title="Fraction of biological layers with any supporting evidence — chains with gaps score lower">
+        <span class="sv-metric-label">Coverage</span>
+        <span class="sv-metric-value">${(sv.coverage * 100).toFixed(0)}%</span>
+        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.coverage * 100}%"></div></div>
+      </div>
+      <div class="sv-metric" title="No contradicting premises (placeholder — always 1.0 in v0)">
+        <span class="sv-metric-label">Consistency</span>
+        <span class="sv-metric-value">${(sv.consistency * 100).toFixed(0)}%</span>
+        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.consistency * 100}%"></div></div>
+      </div>
+      <div class="sv-metric" title="1 / (1 + empty layers) — chains with fewer gaps score higher">
+        <span class="sv-metric-label">Parsimony</span>
+        <span class="sv-metric-value">${(sv.parsimony * 100).toFixed(0)}%</span>
+        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.parsimony * 100}%"></div></div>
+      </div>
+      <span class="sv-hint">${sv.chainLinks} chain links · ranking is vector, not scalar</span>
+    </div>` : '';
+
   return `<div class="gen-artifact" data-artifact-idx="${artifactIdx}">
     <div class="gen-artifact-h">
       <span class="gen-artifact-badge">CHAIN</span>
       Reasoning chain · H${esc(hypId)}: ${esc(hyp.name)}
       <button class="close" data-artifact-remove="${artifactIdx}">×</button>
     </div>
+    ${provenance}
+    ${scoreVectorStrip}
     ${peHtml}
     ${lede}
     <div style="overflow-x:auto">${chainHtml}</div>
+    ${premisesDrawer}
+    ${therapiesPanel}
   </div>`;
 }
 
@@ -883,6 +1144,212 @@ function renderChatArtifact(a, idx) {
       ${a.streaming ? '<span class="chat-cursor"></span>' : ''}
     </div>
   </div>`;
+}
+
+// ESM3 fold metadata — which patients have a baked structure, and where
+// their variant residue lands in the chunk. Add entries as new folds
+// are baked (e.g., Dp140 for exon-45 patients).
+//
+// Chunk offsets: for Dp71 we folded aa 3059-3685 of DMD (627 aa) with
+// cache_key "P11532_Dp71". A DMD aa position N maps to chunk residue
+// (N - 3059 + 1).
+const DP71_CHUNK_START = 3059;
+const ESM3_FOLDS = {
+  // Key: `${cohort}#${cohortPatientId}` matches patient identity.
+  //   wt        — WT structure (variant residue highlighted red)
+  //   truncated — predicted truncated protein IF the transcript escapes NMD
+  //               (produced via a separate Forge fold of the WT sequence
+  //                truncated at the PTC codon)
+  'S2_reported#258': {
+    isoform: 'Dp71', length: 627, meanPlddt: 0.69,
+    variantResi: 3083 - DP71_CHUNK_START + 1,   // = 25
+    variantLabel: 'Trp3083*',
+    consequence: 'Nonsense', ptcNote: 'PTC in central chunk — NMD-triggering (no protein)',
+    wt:        { pdb: 'esm3_pdbs/P11532_Dp71.pdb' },
+    truncated: null,  // 24-aa truncation too small to fold usefully
+  },
+  'S1_novel#5': {
+    isoform: 'Dp71', length: 627, meanPlddt: 0.69,
+    variantResi: 3552 - DP71_CHUNK_START + 1,   // = 494
+    variantLabel: 'Ser3552Lysfs*6',
+    consequence: 'Frameshift',
+    ptcNote: 'PTC near last exon-exon junction — NMD-escape candidate',
+    wt:        { pdb: 'esm3_pdbs/P11532_Dp71.pdb' },
+    truncated: { pdb: 'esm3_pdbs/P11532_Dp71_truncP5.pdb', length: 493, meanPlddt: 0.72 },
+  },
+};
+
+// Initialize a 3Dmol.js viewer inside `divId`. `mode` is 'wt' or 'truncated'.
+//   wt        — colour by pLDDT + highlight variant residue red + label
+//   truncated — colour by pLDDT + last residue red (the truncation cut)
+function initEsm3Viewer(divId, pdbPath, resi, variantLabel, mode) {
+  if (typeof $3Dmol === 'undefined') {
+    document.getElementById(divId).innerHTML =
+      '<div class="esm3-unavailable">3Dmol.js failed to load from CDN.</div>';
+    return;
+  }
+  const el = document.getElementById(divId);
+  if (!el) return;
+  el.innerHTML = '';
+  const viewer = $3Dmol.createViewer(el, { backgroundColor: '#1a2233' });
+  fetch(pdbPath).then(r => r.text()).then(pdb => {
+    viewer.addModel(pdb, 'pdb');
+    viewer.setStyle({}, { cartoon: {
+      colorscheme: { prop: 'b', gradient: 'rwb', min: 0.5, max: 0.95 }
+    }});
+    if (mode === 'truncated') {
+      // The last residue of the model IS the last aa before the PTC —
+      // mark it red to signal the truncation point.
+      const atoms = viewer.getModel().selectedAtoms({ atom: 'CA' });
+      const lastResi = atoms.length ? atoms[atoms.length - 1].resi : null;
+      if (lastResi != null) {
+        viewer.setStyle({ resi: lastResi }, {
+          cartoon: { color: '#c94a4a' },
+          stick:   { color: '#c94a4a', radius: 0.4 },
+        });
+        viewer.addSurface($3Dmol.SurfaceType.VDW,
+          { opacity: 0.4, color: '#c94a4a' }, { resi: lastResi });
+        viewer.addLabel('Truncation · ' + variantLabel, {
+          position: { resi: lastResi, atom: 'CA' },
+          backgroundColor: '#c94a4a', backgroundOpacity: 0.85,
+          fontColor: 'white', fontSize: 11, borderThickness: 0,
+          showBackground: true, inFront: true,
+        });
+      }
+    } else {
+      viewer.setStyle({ resi: resi }, {
+        cartoon: { color: '#c94a4a' },
+        stick:   { color: '#c94a4a', radius: 0.3 },
+      });
+      viewer.addSurface($3Dmol.SurfaceType.VDW,
+        { opacity: 0.35, color: '#c94a4a' }, { resi: resi });
+      viewer.addLabel(variantLabel, {
+        position: { resi: resi, atom: 'CA' },
+        backgroundColor: '#c94a4a', backgroundOpacity: 0.85,
+        fontColor: 'white', fontSize: 12, borderThickness: 0,
+        showBackground: true, inFront: true,
+      });
+    }
+    viewer.zoomTo();
+    viewer.render();
+  });
+}
+
+// Render the ESM3 3D structure artifact — WT and (if baked) the
+// predicted truncated protein product side-by-side.
+function renderEsm3Structure(p, idx) {
+  const key = `${p.cohort}#${p.cohortPatientId}`;
+  const fold = ESM3_FOLDS[key];
+
+  if (!fold) {
+    return `<div class="gen-artifact" data-artifact-idx="${idx}">
+      <div class="gen-artifact-h">
+        <span class="gen-artifact-badge">ESM3</span>
+        3D structure · ${esc(patientLabel(p))}
+        <button class="close" data-artifact-remove="${idx}">×</button>
+      </div>
+      <div class="esm3-unavailable">
+        No ESM3 fold baked for ${esc(patientLabel(p))} yet.<br>
+        Currently baked: Patient 3 (Trp3083*, WT only — truncated 24 aa too small to fold)
+        and Patient 5 (Ser3552Lysfs*6, WT + truncated), both on Dp71.<br>
+        <span style="font-style:italic">Additional isoforms and truncations will be folded on a bigger box.</span>
+      </div>
+    </div>`;
+  }
+
+  const wtDivId = `esm3-viewer-${idx}-wt`;
+  const trDivId = `esm3-viewer-${idx}-tr`;
+  const hasTr = !!fold.truncated;
+
+  const lede = `${fold.isoform} isoform (aa ${DP71_CHUNK_START}–${DP71_CHUNK_START + fold.length - 1} of full-length DMD, ${fold.length} aa). ` +
+               `${esc(patientLabel(p))}'s variant lands at Dp71 residue <b>${fold.variantResi}</b>. ` +
+               `${esc(fold.ptcNote)}.` +
+               (hasTr
+                 ? ` The <b>truncated protein</b> (${fold.truncated.length} aa) shown on the right is the predicted product IF the mutant transcript escapes NMD.`
+                 : ` No truncated structure baked (${fold.variantResi} aa is too short to fold usefully).`);
+
+  const wtPanel = `
+    <div class="esm3-panel">
+      <div class="esm3-panel-h">Wild-type <span class="esm3-panel-h-sub">variant residue marked red</span></div>
+      <div class="esm3-viewer" id="${wtDivId}"></div>
+      <div class="esm3-panel-meta">
+        <b>${fold.length}</b> aa · pLDDT <b>${(fold.meanPlddt * 100).toFixed(0)}</b>/100
+      </div>
+    </div>`;
+
+  const trPanel = hasTr ? `
+    <div class="esm3-panel">
+      <div class="esm3-panel-h">Predicted truncated
+        <span class="esm3-panel-h-sub">if NMD is escaped · red = cut point</span></div>
+      <div class="esm3-viewer" id="${trDivId}"></div>
+      <div class="esm3-panel-meta">
+        <b>${fold.truncated.length}</b> aa · pLDDT <b>${(fold.truncated.meanPlddt * 100).toFixed(0)}</b>/100
+      </div>
+    </div>` : `
+    <div class="esm3-panel">
+      <div class="esm3-panel-h">Predicted truncated <span class="esm3-panel-h-sub">not baked</span></div>
+      <div class="esm3-unavailable">
+        Truncation at aa ${fold.variantResi} produces only ${fold.variantResi - 1} aa of protein —
+        below the useful ESM3 fold threshold. Skipped for this patient.
+      </div>
+    </div>`;
+
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">ESM3</span>
+      3D structure · ${esc(fold.isoform)} · ${esc(fold.variantLabel)} · WT + truncated
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    <div class="esm3-wrap">
+      <div class="esm3-lede">${lede}</div>
+      <div class="esm3-meta">
+        <span><b>Isoform</b> ${esc(fold.isoform)}</span>
+        <span><b>Variant residue</b> ${fold.variantResi} (full-DMD ${esc(fold.variantLabel)})</span>
+        <span><b>Consequence</b> ${esc(fold.consequence)}</span>
+      </div>
+      <div class="esm3-grid">
+        ${wtPanel}
+        ${trPanel}
+      </div>
+      <div class="esm3-legend">
+        <span><span class="esm3-legend-sw" style="background:#3860a0"></span>High pLDDT (confident fold)</span>
+        <span><span class="esm3-legend-sw" style="background:#e8e8e8"></span>Medium pLDDT</span>
+        <span><span class="esm3-legend-sw" style="background:#c94a4a"></span>Low pLDDT · variant or cut residue</span>
+      </div>
+      <div class="esm3-hint">
+        Drag to rotate · scroll to zoom · shift-drag to pan. Structure by ESM3 Forge (esm3-open-2024-03).
+      </div>
+    </div>
+  </div>`;
+}
+
+// After render, initialize any 3Dmol viewers that just entered the DOM.
+// Two viewers per artifact when both WT and truncated folds are baked.
+function initPendingEsm3Viewers() {
+  rightStream.forEach((a, i) => {
+    if (a.type !== 'esm3_structure') return;
+    const p = DATA.patients.find(x => x.id === currentPatientId);
+    if (!p) return;
+    const key = `${p.cohort}#${p.cohortPatientId}`;
+    const fold = ESM3_FOLDS[key];
+    if (!fold) return;
+
+    // WT viewer
+    const wtDivId = `esm3-viewer-${i}-wt`;
+    const wtEl = document.getElementById(wtDivId);
+    if (wtEl && !wtEl.querySelector('canvas') && fold.wt) {
+      initEsm3Viewer(wtDivId, fold.wt.pdb, fold.variantResi, fold.variantLabel, 'wt');
+    }
+
+    // Truncated viewer (only if baked)
+    if (fold.truncated) {
+      const trDivId = `esm3-viewer-${i}-tr`;
+      const trEl = document.getElementById(trDivId);
+      if (trEl && !trEl.querySelector('canvas')) {
+        initEsm3Viewer(trDivId, fold.truncated.pdb, null, fold.variantLabel, 'truncated');
+      }
+    }
+  });
 }
 
 // Marimekko: NMD category × ACMG classification cross-tab from ClinVar.
@@ -1026,7 +1493,8 @@ function renderStream(p) {
       case 'chain':         return renderChainArtifact(p, a.hypId, i);
       case 'chat':          return renderChatArtifact(a, i);
       case 'widget':        return renderWidgetArtifact(a, i);
-      case 'nmd_marimekko': return renderNmdMarimekko(i);
+      case 'nmd_marimekko':   return renderNmdMarimekko(i);
+      case 'esm3_structure':  return renderEsm3Structure(p, i);
       default:              return '';
     }
   }).join('');
@@ -1071,6 +1539,7 @@ function buildExamples(p) {
     ]},
     { category: 'Protein (isoform)', items: isoItems.concat([
       { tag: 'widget · heatmap', question: 'How does isoform expression vary across cell types?' },
+      { tag: 'ESM3 · 3D structure', question: 'Show the 3D structure with this patient\'s variant' },
     ]) },
     { category: 'Cell type', items: [
       { tag: 'chat',              question: 'Which cell types are affected?' },
@@ -1343,6 +1812,19 @@ function planChat(query, p) {
         },
       };
     }
+  }
+  if (/3d|structure|esm3|fold|protein.?structure|show.*(protein|structure).*(patient|variant)|where.*variant.*(sit|land|in.*protein|structure)/.test(q)) {
+    const key = `${p.cohort}#${p.cohortPatientId}`;
+    const fold = ESM3_FOLDS?.[key];
+    if (fold) {
+      return {
+        text: `Loading the ESM3-predicted 3D structure of ${fold.isoform} (${fold.length} aa) with ${patientLabel(p)}'s variant residue (${fold.variantLabel}) highlighted. Drag to rotate; the red-highlighted residue is where the PTC lands.`,
+        artifactToOpen: { type: 'esm3_structure' },
+      };
+    }
+    return {
+      text: `No ESM3 fold is baked for ${patientLabel(p)} yet. Currently baked: Patient 3 (Trp3083*) and Patient 5 (Ser3552Lysfs*6) on Dp71 (627 aa). Additional isoforms (Dp116, Dp140) will be folded on a bigger box — full-length Dp427m exceeds ESM3's 2046-aa limit.`,
+    };
   }
   if (/nmd|nonsense.?mediated decay|marimekko|acmg.*(nmd|categor)|nmd.*(acmg|categor)|ptc.*(distribution|breakdown)|escaping.*(vs|versus).*triggering/.test(q)) {
     return {
@@ -1665,6 +2147,9 @@ function renderPage() {
     });
   }
 
+  // Initialize any 3Dmol viewers whose <div> just entered the DOM.
+  requestAnimationFrame(initPendingEsm3Viewers);
+
   // ---- wire patient selector (dropdown only — chips row removed) ----
   const picker = document.getElementById('pat-picker');
   if (picker) picker.addEventListener('change', () => {
@@ -1713,6 +2198,17 @@ function renderPage() {
       e.stopPropagation();
       chainView = btn.dataset.chainView; currentEdgeId = null;
       renderPage();
+    });
+  });
+
+  // ---- regenerate button (stub — would invoke world model) ----
+  document.querySelectorAll('[data-regenerate]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const hid = btn.dataset.regenerate;
+      alert(`Regenerate H${hid} — stub.\n\nIn production, this would re-invoke HYP-MODEL with the current premise set + patient context, ` +
+            `producing a new patient_hypothesis row (with new generator_version and generated_at) alongside the current one. ` +
+            `You'd then see the two versions diff in the UI.`);
     });
   });
 

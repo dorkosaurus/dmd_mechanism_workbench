@@ -57,6 +57,17 @@ TABLES = [
      "source": "curated from UniProt + Ensembl"},
     {"name": "settings",                  "powers": "header · mechanismConfidence",
      "source": "curated placeholder (score_mechanism_confidence.py pending)"},
+    # ── World-model registry (Phase 1a) ──────────────────────────────────
+    {"name": "premise_source",            "powers": "world-model premise registry · source metadata",
+     "source": "curated (Zhang, ClinVar-NMD, HPA, Reactome, isoform arch, synthetic labs, ESM3)"},
+    {"name": "premise",                   "powers": "world-model input premises (cohort + patient + variant scope)",
+     "source": "populated by bake_hypotheses_and_premises.py from existing baked substrate"},
+    {"name": "patient_hypothesis",        "powers": "per-patient stored hypotheses (≥3 per variant) with generator provenance",
+     "source": "HYP-MODEL v0-scored — will be replaced by real world-model generator in later phases"},
+    {"name": "hypothesis_premise",        "powers": "audit trail: which premises supported which hypothesis (weighted)",
+     "source": "computed by the same bake step; joins premise ↔ patient_hypothesis"},
+    {"name": "patient_therapeutic",       "powers": "per-hypothesis AAV design candidates with modality + eligibility",
+     "source": "AAV-MODEL v0-curated — placeholder for the AAV design world model"},
 ]
 
 

@@ -120,6 +120,101 @@ CREATE TABLE patient_labs (
 CREATE INDEX ix_pl_pat   ON patient_labs(cohort, patient_id);
 CREATE INDEX ix_pl_layer ON patient_labs(layer);
 
+-- ======================================================================
+-- Premise registry + patient-scoped hypotheses/therapeutics.
+-- ----------------------------------------------------------------------
+-- Every data source or model that informs the hypothesis world model
+-- registers as a `premise_source`. Each patient-specific (or cohort /
+-- variant-scoped) piece of evidence lives as a `premise` row. The
+-- hypothesis world model consumes premises and emits ranked
+-- `patient_hypothesis` rows with an audit trail of which premises fired
+-- (via `hypothesis_premise`). Each top-ranked hypothesis emits ≥1
+-- `patient_therapeutic` from the AAV design world model, referencing
+-- the hypothesis it addresses.
+-- ======================================================================
+
+CREATE TABLE premise_source (
+  source_id     TEXT PRIMARY KEY,          -- 'aenmd_v1', 'esm3_v1', 'hpa_v1', 'zhang_2024', ...
+  source_type   TEXT NOT NULL,             -- 'data' | 'model'
+  version       TEXT,
+  description   TEXT,
+  reference_url TEXT
+);
+
+CREATE TABLE premise (
+  premise_id    TEXT PRIMARY KEY,          -- unique across all premises
+  source_id     TEXT NOT NULL,             -- FK premise_source
+  scope         TEXT NOT NULL,             -- 'cohort' | 'patient' | 'variant'
+  scope_key     TEXT NOT NULL,             -- 'DMD' or patient_id or variant_key
+  evidence      TEXT NOT NULL,             -- JSON blob (typed per source)
+  confidence    REAL,                      -- 0..1
+  provenance    TEXT NOT NULL              -- JSON: {version, timestamps, cache_paths}
+);
+CREATE INDEX ix_premise_scope  ON premise(scope, scope_key);
+CREATE INDEX ix_premise_source ON premise(source_id);
+
+CREATE TABLE patient_hypothesis (
+  hypothesis_id      TEXT PRIMARY KEY,     -- e.g. 'P3:h03:v1'
+  patient_id         TEXT NOT NULL,        -- 'P3' etc.
+  variant_key        TEXT NOT NULL,        -- 'S2_reported#258:c.9248G>A'
+  mechanism_template TEXT,                 -- 'H01'|'H02'|'H03'|'H04'|novel
+  rank               INTEGER NOT NULL,     -- 1 = top
+  score              REAL NOT NULL,        -- 0..10 (aggregate — legacy scalar)
+  confidence         REAL NOT NULL,        -- world-model confidence, distinct from score
+  claim              TEXT NOT NULL,        -- patient-specific one-liner
+  rationale          TEXT NOT NULL,        -- generated prose explaining the score
+  score_vector       TEXT,                 -- JSON: {aggregate, coverage, consistency, parsimony}
+  generator_id       TEXT NOT NULL,        -- 'HYP-MODEL v0-scored'
+  generator_version  TEXT NOT NULL,
+  generated_at       TEXT NOT NULL,        -- ISO timestamp
+  input_context_hash TEXT NOT NULL         -- signature of the premises consulted
+);
+CREATE INDEX ix_ph_patient ON patient_hypothesis(patient_id, rank);
+CREATE INDEX ix_ph_variant ON patient_hypothesis(variant_key);
+
+-- Chain-decomposed evidence: attributes each premise to its position in
+-- the biological hierarchy (variant → protein → pathway → subcellular →
+-- cellType → tissue → phenotype). One row per (hypothesis, chain link,
+-- premise). Nodes have layer_from == layer_to; edges have adjacent layers.
+CREATE TABLE hypothesis_chain_link (
+  hypothesis_id  TEXT NOT NULL,           -- FK patient_hypothesis
+  link_type      TEXT NOT NULL,           -- 'node' | 'edge'
+  layer_from     TEXT NOT NULL,           -- variant|protein|pathway|subcellular|cellType|tissue|phenotype
+  layer_to       TEXT NOT NULL,           -- same as layer_from for nodes
+  premise_id     TEXT NOT NULL,           -- FK premise
+  weight         REAL NOT NULL,
+  rationale      TEXT,
+  PRIMARY KEY (hypothesis_id, link_type, layer_from, layer_to, premise_id)
+);
+CREATE INDEX ix_hcl_hyp   ON hypothesis_chain_link(hypothesis_id);
+CREATE INDEX ix_hcl_layer ON hypothesis_chain_link(layer_from, layer_to);
+
+CREATE TABLE hypothesis_premise (
+  hypothesis_id TEXT NOT NULL,             -- FK patient_hypothesis
+  premise_id    TEXT NOT NULL,             -- FK premise
+  weight        REAL NOT NULL,             -- signed contribution to the score
+  rationale     TEXT,                      -- one-line "why this premise moved this hyp"
+  PRIMARY KEY (hypothesis_id, premise_id)
+);
+
+CREATE TABLE patient_therapeutic (
+  therapeutic_id     TEXT PRIMARY KEY,     -- e.g. 'P3:h03:aav_readthrough'
+  patient_id         TEXT NOT NULL,
+  hypothesis_id      TEXT NOT NULL,        -- FK patient_hypothesis
+  rank               INTEGER NOT NULL,     -- 1 = top per hypothesis
+  score              REAL NOT NULL,
+  confidence         REAL NOT NULL,
+  modality           TEXT NOT NULL,        -- 'AAV'|'ASO'|'small_molecule'|'readthrough'
+  design             TEXT NOT NULL,        -- JSON: capsid, promoter, transgene, dose
+  rationale          TEXT NOT NULL,
+  eligibility_status TEXT,                 -- 'eligible'|'excluded'|'screening_required'|'unknown'
+  generator_id       TEXT NOT NULL,        -- 'AAV-MODEL v0-curated'
+  generator_version  TEXT NOT NULL,
+  generated_at       TEXT NOT NULL
+);
+CREATE INDEX ix_pt_patient ON patient_therapeutic(patient_id, rank);
+CREATE INDEX ix_pt_hyp     ON patient_therapeutic(hypothesis_id);
+
 -- Cohort-level aggregates. Zhang 2024's abstract publishes total-cohort
 -- counts (2,097 patients) that include large-del/dup patients whose
 -- per-row data aren't in the supp — those go here.

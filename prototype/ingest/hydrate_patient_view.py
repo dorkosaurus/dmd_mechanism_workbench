@@ -344,6 +344,104 @@ def load_celltypes(conn) -> list[dict]:
     } for r in rows]
 
 
+def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
+                           ) -> list[dict] | None:
+    """Read patient_hypothesis + hypothesis_premise + hypothesis_chain_link
+    + patient_therapeutic for this patient. Returns None if no stored rows
+    (caller can fall back to computing). Returns [] if the table exists
+    but has no rows."""
+    try:
+        rows = conn.execute("""
+            SELECT hypothesis_id, mechanism_template, rank, score, confidence,
+                   claim, rationale, generator_id, generator_version, generated_at,
+                   score_vector
+            FROM patient_hypothesis
+            WHERE patient_id = ?
+            ORDER BY rank
+        """, (pid_raw,)).fetchall()
+    except sqlite3.OperationalError:
+        return None  # table doesn't exist yet — caller should fall back
+    if not rows:
+        return None
+
+    hyps = []
+    for r in rows:
+        (hid, tmpl, rank, score, conf, claim, rationale, gen_id, gen_ver, gen_at, sv_json) = r
+        # Load premises supporting this hypothesis
+        premises = [{
+            "premiseId": p[0], "sourceId": p[1], "weight": p[2],
+            "rationale": p[3], "evidence": json.loads(p[4]),
+            "confidence": p[5], "scope": p[6], "scopeKey": p[7],
+        } for p in conn.execute("""
+            SELECT hp.premise_id, p.source_id, hp.weight, hp.rationale,
+                   p.evidence, p.confidence, p.scope, p.scope_key
+            FROM hypothesis_premise hp
+            JOIN premise p ON hp.premise_id = p.premise_id
+            WHERE hp.hypothesis_id = ?
+            ORDER BY ABS(hp.weight) DESC
+        """, (hid,))]
+        # Load chain-decomposed evidence links (per-layer / per-edge premises)
+        chain_rows = conn.execute("""
+            SELECT hcl.link_type, hcl.layer_from, hcl.layer_to,
+                   hcl.premise_id, hcl.weight, hcl.rationale, p.source_id
+            FROM hypothesis_chain_link hcl
+            JOIN premise p ON hcl.premise_id = p.premise_id
+            WHERE hcl.hypothesis_id = ?
+            ORDER BY hcl.link_type, hcl.layer_from, hcl.layer_to
+        """, (hid,)).fetchall()
+        chain_nodes: dict[str, list[dict]] = {}
+        chain_edges: dict[str, list[dict]] = {}
+        for (lt, lf, ltc, pid_, w, rat, src) in chain_rows:
+            entry = {"premiseId": pid_, "sourceId": src, "weight": w, "rationale": rat}
+            if lt == "node":
+                chain_nodes.setdefault(lf, []).append(entry)
+            else:
+                chain_edges.setdefault(f"{lf}->{ltc}", []).append(entry)
+
+        # Score vector (JSON blob written by the bake step)
+        try: score_vector = json.loads(sv_json) if sv_json else None
+        except Exception: score_vector = None
+
+        # Load therapeutics attached to this hypothesis
+        therapies = [{
+            "therapeuticId": t[0], "rank": t[1], "score": t[2], "confidence": t[3],
+            "modality": t[4], "design": json.loads(t[5]), "rationale": t[6],
+            "eligibilityStatus": t[7],
+            "generatorId": t[8], "generatorVersion": t[9],
+        } for t in conn.execute("""
+            SELECT therapeutic_id, rank, score, confidence, modality, design,
+                   rationale, eligibility_status, generator_id, generator_version
+            FROM patient_therapeutic
+            WHERE hypothesis_id = ?
+            ORDER BY rank
+        """, (hid,))]
+
+        hyps.append({
+            "id": tmpl,                    # legacy: keep template id as 'id' for GUI compat
+            "hypothesisId": hid,           # new: full stored-hypothesis id
+            "rank": rank,
+            "score": score,
+            "confidence": conf,
+            "fit": rationale,              # legacy: the GUI expects 'fit' as one-liner
+            "claim": claim,
+            "rationale": rationale,
+            "generator": {"id": gen_id, "version": gen_ver, "at": gen_at},
+            "premises": premises,
+            "therapeutics": therapies,
+            "chainLinks": {"nodes": chain_nodes, "edges": chain_edges},
+            "scoreVector": score_vector,
+            # patientEvidence retained for backward compat (was per-hypothesis
+            # lab bullet list). Rebuilt from lab-scoped premises.
+            "patientEvidence": [
+                {"labKey": p["evidence"].get("assay", ""),
+                 "tone": "supports" if p["weight"] > 0 else "against",
+                 "text": p["rationale"] or f"{p['evidence'].get('label', '')}: {p['evidence'].get('value', '')} {p['evidence'].get('unit', '')} [{p['evidence'].get('flag', '')}]"}
+                for p in premises if p["sourceId"] == "synthetic_labs"
+            ],
+        })
+    return hyps
+
+
 def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
                    conn: sqlite3.Connection) -> dict:
     (cohort, pid_raw, phen, age, amb, exon_str, nuc, aa, cons, acmg) = row
@@ -407,7 +505,13 @@ def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
                 hit_tissues.add(t)
     spared_tissues = sorted(all_tissues - hit_tissues)
 
-    hyp_ranking = score_hypotheses(cons, phen, exon_n)
+    # Prefer stored hypotheses from patient_hypothesis (world-model output);
+    # fall back to inline scoring if the table is empty or missing (dev safety).
+    stored = load_stored_hypotheses(conn, cohort, pid_raw)
+    if stored:
+        hyp_ranking = stored
+    else:
+        hyp_ranking = score_hypotheses(cons, phen, exon_n)
 
     p = {
         "id":       uid,
@@ -438,10 +542,11 @@ def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
     p["labs"] = labs
 
     # Attach per-hypothesis patient-specific evidence to the ranking.
-    # Kept as `patientEvidence` on each rank entry — the UI renders this
-    # above the generic literature evidence.
+    # Stored hypotheses already include patientEvidence (built from lab
+    # premises); only the fallback path needs to compute it here.
     for r in hyp_ranking:
-        r["patientEvidence"] = patient_evidence_for_hypothesis(r["id"], p, labs)
+        if "patientEvidence" not in r or not r["patientEvidence"]:
+            r["patientEvidence"] = patient_evidence_for_hypothesis(r["id"], p, labs)
     p["hypothesisRanking"] = hyp_ranking
 
     return p
