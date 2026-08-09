@@ -1,0 +1,4397 @@
+{
+  "gene": {
+    "symbol": "DMD",
+    "fullName": "Duchenne Muscular Dystrophy",
+    "uniprot": "P11532",
+    "locus": "Xp21.2",
+    "nExons": 79,
+    "locusSizeMb": 2.4,
+    "isoformNames": [
+      "Dp427m",
+      "Dp427c",
+      "Dp427p",
+      "Dp260",
+      "Dp140",
+      "Dp116",
+      "Dp71"
+    ]
+  },
+  "isoforms": [
+    {
+      "id": "Dp427m",
+      "refseq": "NM_004006",
+      "uniprot": "P11532",
+      "firstSharedExon": 1,
+      "promoterTissue": "muscle",
+      "tissues": [
+        "skeletal_muscle",
+        "cardiac_muscle"
+      ],
+      "label": "1M",
+      "rank": 0
+    },
+    {
+      "id": "Dp427c",
+      "refseq": "NM_000109",
+      "uniprot": "P11532",
+      "firstSharedExon": 1,
+      "promoterTissue": "cortical",
+      "tissues": [
+        "cortical_neurons",
+        "hippocampus"
+      ],
+      "label": "1C",
+      "rank": 1
+    },
+    {
+      "id": "Dp427p",
+      "refseq": "NM_004009",
+      "uniprot": "P11532",
+      "firstSharedExon": 1,
+      "promoterTissue": "Purkinje",
+      "tissues": [
+        "cerebellar_Purkinje_cells"
+      ],
+      "label": "1P",
+      "rank": 2
+    },
+    {
+      "id": "Dp260",
+      "refseq": "NM_004010",
+      "uniprot": "P11532",
+      "firstSharedExon": 30,
+      "promoterTissue": "retinal",
+      "tissues": [
+        "retinal_photoreceptors"
+      ],
+      "label": "1R",
+      "rank": 3
+    },
+    {
+      "id": "Dp140",
+      "refseq": "NM_004012",
+      "uniprot": "P11532",
+      "firstSharedExon": 45,
+      "promoterTissue": "brain_kidney",
+      "tissues": [
+        "brain_glia",
+        "kidney"
+      ],
+      "label": "1B3",
+      "rank": 4
+    },
+    {
+      "id": "Dp116",
+      "refseq": "NM_004014",
+      "uniprot": "P11532",
+      "firstSharedExon": 56,
+      "promoterTissue": "Schwann",
+      "tissues": [
+        "peripheral_nerve_Schwann_cells"
+      ],
+      "label": "1S",
+      "rank": 5
+    },
+    {
+      "id": "Dp71",
+      "refseq": "NM_004015",
+      "uniprot": "P11532",
+      "firstSharedExon": 63,
+      "promoterTissue": "ubiquitous",
+      "tissues": [
+        "retina",
+        "brain",
+        "kidney",
+        "liver",
+        "blood"
+      ],
+      "label": "1G",
+      "rank": 6
+    }
+  ],
+  "cellTypes": [
+    {
+      "name": "Myonuclei",
+      "tissue": "skeletal_muscle",
+      "score": 10.0,
+      "colorHint": "accent",
+      "requiresIsoforms": [
+        "Dp427m"
+      ]
+    },
+    {
+      "name": "Thymic myoid cells",
+      "tissue": "thymus",
+      "score": 9.24,
+      "colorHint": "teal",
+      "requiresIsoforms": [
+        "Dp427m"
+      ]
+    },
+    {
+      "name": "Cardiomyocytes",
+      "tissue": "skeletal_muscle",
+      "score": 9.12,
+      "colorHint": "accent",
+      "requiresIsoforms": [
+        "Dp427m"
+      ]
+    },
+    {
+      "name": "Rod photoreceptor cells",
+      "tissue": "retina",
+      "score": 8.59,
+      "colorHint": "pink",
+      "requiresIsoforms": [
+        "Dp260",
+        "Dp71"
+      ]
+    },
+    {
+      "name": "Cone photoreceptor cells",
+      "tissue": "retina",
+      "score": 8.19,
+      "colorHint": "pink",
+      "requiresIsoforms": [
+        "Dp260",
+        "Dp71"
+      ]
+    },
+    {
+      "name": "Salivary myoepithelial cells",
+      "tissue": "salivary_gland",
+      "score": 8.19,
+      "colorHint": "teal",
+      "requiresIsoforms": [
+        "Dp427m"
+      ]
+    },
+    {
+      "name": "Adipocytes",
+      "tissue": "adipose",
+      "score": 7.88,
+      "colorHint": "slate",
+      "requiresIsoforms": [
+        "Dp71"
+      ]
+    }
+  ],
+  "patients": [
+    {
+      "id": "P1",
+      "seqNum": 1,
+      "cohort": "S1_novel",
+      "cohortPatientId": "2",
+      "phenotype": "DMD",
+      "age": 13.1,
+      "ambulatory": "No",
+      "variant": {
+        "exon": "45",
+        "exonNum": 45,
+        "nucleotide": "c.6540del",
+        "aaChange": "p.(Leu2181Tyrfs*8)",
+        "consequence": "Frameshift",
+        "acmg": "LP"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 45)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 45)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 14348.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 560.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 43.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 3.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "low"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 30.0,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "high"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 0.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 87.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 1.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "high"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 59.0,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 94.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 10.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 70.4,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "low"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 359.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 174.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 52.0,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "01",
+          "score": 9.5,
+          "fit": "frameshift → out-of-frame → truncated dystrophin (Monaco rule)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 14,348 U/L — 72× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 70.4 % predicted — respiratory muscle involvement matches H01's tissue-wide dystrophy."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 52.0 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "03",
+          "score": 8.5,
+          "fit": "frameshift creates downstream PTC → NMD-eligible",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 14,348 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 52.0 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 3.0,
+          "fit": "exon 45 — hits Dp140 (brain/kidney)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 87.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 174.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 59.0 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "seqNum": 2,
+      "cohort": "S1_novel",
+      "cohortPatientId": "30",
+      "phenotype": "DMD",
+      "age": 10.6,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "10",
+        "exonNum": 10,
+        "nucleotide": "c.982A>T",
+        "aaChange": "p.(Lys328*)",
+        "consequence": "Nonsense",
+        "acmg": "LP"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 10)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 10)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 10)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": false,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (> variant exon 10)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": false,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (> variant exon 10)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 10)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 10)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 15153.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 601.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 47.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 26.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "low"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 4.3,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 378.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 96.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 61.1,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 90.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 9.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 90.7,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 462.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 250.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 35.6,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.5,
+          "fit": "PTC → NMD-mediated transcript loss (direct fit)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 15,153 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 35.6 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            },
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 96.0 FSIQ — cognitive function preserved despite advanced muscle disease; consistent with tissue-graded NMD escape in brain isoforms."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 6.0,
+          "fit": "premature stop → truncated protein (before NMD)",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 15,153 U/L — 76× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 35.6 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 61.1 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 90.7 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 26.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 1.5,
+          "fit": "exon 10 — proximal, doesn't selectively affect distal isoforms",
+          "rank": 4,
+          "patientEvidence": []
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "seqNum": 3,
+      "cohort": "S2_reported",
+      "cohortPatientId": "258",
+      "phenotype": "DMD",
+      "age": 9.4,
+      "ambulatory": "No",
+      "variant": {
+        "exon": "63",
+        "exonNum": 63,
+        "nucleotide": "c.9248G>A",
+        "aaChange": "p.(Trp3083*)",
+        "consequence": "Nonsense",
+        "acmg": "P"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": true,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (≤ variant exon 63)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": true,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (≤ variant exon 63)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "hit",
+          "reason": "depends on Dp71 — all hit"
+        }
+      ],
+      "tissuesHit": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 14104.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 594.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 39.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 3.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "low"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 30.0,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "high"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 0.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 78.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "low"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 63.8,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 65.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 52.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "high"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 87.5,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 425.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 142.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "low"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 39.7,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.5,
+          "fit": "PTC → NMD-mediated transcript loss (direct fit)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 14,104 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 39.7 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 6.0,
+          "fit": "premature stop → truncated protein (before NMD)",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 14,104 U/L — 71× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 39.7 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 5.0,
+          "fit": "exon 63 — hits Dp71 (last ubiquitous isoform)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 78.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 142.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "UACR",
+              "tone": "supports",
+              "text": "Urine albumin/creatinine ratio 52.0 mg/g — elevated urine albumin suggests Dp71 loss in podocytes."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 63.8 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 87.5 % predicted — preserved respiratory function typical of BMD trajectory."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "seqNum": 4,
+      "cohort": "S1_novel",
+      "cohortPatientId": "57",
+      "phenotype": "DMD",
+      "age": 5.4,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "8",
+        "exonNum": 8,
+        "nucleotide": "c.717dup",
+        "aaChange": "p.(Pro240Alafs*7)",
+        "consequence": "Frameshift",
+        "acmg": "LP"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 8)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 8)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 8)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": false,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (> variant exon 8)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": false,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (> variant exon 8)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 8)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 8)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 10605.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 518.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 35.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 34.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "normal"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 2.5,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 474.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "normal"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 100.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 68.8,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 70.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 6.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 102.3,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 646.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 253.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 23.0,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "01",
+          "score": 9.5,
+          "fit": "frameshift → out-of-frame → truncated dystrophin (Monaco rule)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 10,605 U/L — 53× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "03",
+          "score": 8.5,
+          "fit": "frameshift creates downstream PTC → NMD-eligible",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 10,605 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 68.8 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 102.3 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 34.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 1.5,
+          "fit": "exon 8 — proximal, doesn't selectively affect distal isoforms",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "LVEF 68.8%, MRI ff 23.0% — muscle tissues preserved despite variant, characteristic of isoform-scoped disease."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "seqNum": 5,
+      "cohort": "S1_novel",
+      "cohortPatientId": "5",
+      "phenotype": "DMD",
+      "age": 16.3,
+      "ambulatory": "No",
+      "variant": {
+        "exon": "75",
+        "exonNum": 75,
+        "nucleotide": "c.10654dup",
+        "aaChange": "p.(Ser3552Lysfs*6)",
+        "consequence": "Frameshift",
+        "acmg": "LP"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": true,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (≤ variant exon 75)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": true,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (≤ variant exon 75)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "hit",
+          "reason": "depends on Dp71 — all hit"
+        }
+      ],
+      "tissuesHit": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 15259.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 492.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 44.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 2.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "low"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 30.0,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "high"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 0.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 79.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "low"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 1.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "high"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 51.1,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "low"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 283.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "high"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 42.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "high"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 51.8,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "low"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 302.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 179.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 41.7,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "01",
+          "score": 9.5,
+          "fit": "frameshift → out-of-frame → truncated dystrophin (Monaco rule)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 15,259 U/L — 76× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 51.1 % — reduced ejection fraction consistent with H01's DGC loss in cardiac muscle."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 51.8 % predicted — respiratory muscle involvement matches H01's tissue-wide dystrophy."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 41.7 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "03",
+          "score": 8.5,
+          "fit": "frameshift creates downstream PTC → NMD-eligible",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 15,259 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 41.7 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            },
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 51.1 % — moderate cardiac involvement (partial NMD escape in cardiomyocytes may soften trajectory)."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 5.0,
+          "fit": "exon 75 — hits Dp71 (last ubiquitous isoform)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 79.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 179.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "UACR",
+              "tone": "supports",
+              "text": "Urine albumin/creatinine ratio 42.0 mg/g — elevated urine albumin suggests Dp71 loss in podocytes."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": []
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "seqNum": 6,
+      "cohort": "S1_novel",
+      "cohortPatientId": "11",
+      "phenotype": "DMD",
+      "age": 8.7,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "20",
+        "exonNum": 20,
+        "nucleotide": "c.2510del",
+        "aaChange": "p.(Asn837Ilefs*9)",
+        "consequence": "Frameshift",
+        "acmg": "LP"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 20)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 20)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 20)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": false,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (> variant exon 20)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": false,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (> variant exon 20)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 20)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 20)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "spared",
+          "reason": "carried by Dp260+Dp71 — all spared"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 12111.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 440.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 34.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 26.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "low"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 3.5,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 377.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 93.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 67.9,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 89.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 7.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 91.3,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 499.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 263.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 31.4,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "01",
+          "score": 9.5,
+          "fit": "frameshift → out-of-frame → truncated dystrophin (Monaco rule)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 12,111 U/L — 61× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 31.4 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "03",
+          "score": 8.5,
+          "fit": "frameshift creates downstream PTC → NMD-eligible",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 12,111 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 31.4 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            },
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 93.0 FSIQ — cognitive function preserved despite advanced muscle disease; consistent with tissue-graded NMD escape in brain isoforms."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 67.9 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 91.3 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 26.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 1.5,
+          "fit": "exon 20 — proximal, doesn't selectively affect distal isoforms",
+          "rank": 4,
+          "patientEvidence": []
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "seqNum": 7,
+      "cohort": "S2_reported",
+      "cohortPatientId": "202",
+      "phenotype": "DMD",
+      "age": 7.8,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "45",
+        "exonNum": 45,
+        "nucleotide": "c.6577C>T",
+        "aaChange": "p.(Gln2193*)",
+        "consequence": "Nonsense",
+        "acmg": "P"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 45)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 45)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 45)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 13493.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 572.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 37.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 30.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "normal"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 4.0,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 397.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 88.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 69.0,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 69.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 9.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 99.6,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 567.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 182.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 20.9,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.5,
+          "fit": "PTC → NMD-mediated transcript loss (direct fit)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 13,493 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 6.0,
+          "fit": "premature stop → truncated protein (before NMD)",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 13,493 U/L — 67× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 3.0,
+          "fit": "exon 45 — hits Dp140 (brain/kidney)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 88.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 182.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "LVEF 69.0%, MRI ff 20.9% — muscle tissues preserved despite variant, characteristic of isoform-scoped disease."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 69.0 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 99.6 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 30.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P8",
+      "seqNum": 8,
+      "cohort": "S2_reported",
+      "cohortPatientId": "225",
+      "phenotype": "DMD",
+      "age": 6.8,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "53",
+        "exonNum": 53,
+        "nucleotide": "c.7817G>A",
+        "aaChange": "p.(Trp2606*)",
+        "consequence": "Nonsense",
+        "acmg": "P"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 53)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 53)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 16378.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 511.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 52.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 32.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "normal"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 3.1,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 462.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "normal"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 82.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "low"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 66.9,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 85.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 7.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 98.8,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 519.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 157.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "normal"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 23.9,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.5,
+          "fit": "PTC → NMD-mediated transcript loss (direct fit)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 16,378 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 6.0,
+          "fit": "premature stop → truncated protein (before NMD)",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 16,378 U/L — 82× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 3.0,
+          "fit": "exon 53 — hits Dp140 (brain/kidney)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 82.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 157.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "LVEF 66.9%, MRI ff 23.9% — muscle tissues preserved despite variant, characteristic of isoform-scoped disease."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 66.9 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 98.8 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 32.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P9",
+      "seqNum": 9,
+      "cohort": "S1_novel",
+      "cohortPatientId": "49",
+      "phenotype": "DMD",
+      "age": 4.3,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "53",
+        "exonNum": 53,
+        "nucleotide": "c.7745C>G",
+        "aaChange": "p.(Ser2582*)",
+        "consequence": "Nonsense",
+        "acmg": "P"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 53)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": false,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (> variant exon 53)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": false,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (> variant exon 53)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "partial",
+          "reason": "hit: Dp260; spared: Dp71"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "spared",
+          "reason": "carried by Dp71 — all spared"
+        }
+      ],
+      "tissuesHit": [
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [
+        "blood",
+        "brain",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina"
+      ],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 10225.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 384.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 26.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 35.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "high"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 2.0,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 469.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "normal"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 95.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 67.7,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 63.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 7.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "normal"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 102.8,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 486.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 142.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "low"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 19.7,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.5,
+          "fit": "PTC → NMD-mediated transcript loss (direct fit)",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 10,225 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 6.0,
+          "fit": "premature stop → truncated protein (before NMD)",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 10,225 U/L — 51× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 3.0,
+          "fit": "exon 53 — hits Dp140 (brain/kidney)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 142.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "LVEF 67.7%, MRI ff 19.7% — muscle tissues preserved despite variant, characteristic of isoform-scoped disease."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 67.7 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 102.8 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 35.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "seqNum": 10,
+      "cohort": "S2_reported",
+      "cohortPatientId": "266",
+      "phenotype": "DMD",
+      "age": 8.0,
+      "ambulatory": "Yes",
+      "variant": {
+        "exon": "int64",
+        "exonNum": 64,
+        "nucleotide": "c.9361+1G>C",
+        "aaChange": null,
+        "consequence": "Splice-site",
+        "acmg": "P"
+      },
+      "isoformImpact": [
+        {
+          "id": "Dp427m",
+          "label": "1M",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "muscle",
+          "tissues": [
+            "skeletal_muscle",
+            "cardiac_muscle"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp427c",
+          "label": "1C",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "cortical",
+          "tissues": [
+            "cortical_neurons",
+            "hippocampus"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp427p",
+          "label": "1P",
+          "hit": true,
+          "firstSharedExon": 1,
+          "promoterTissue": "Purkinje",
+          "tissues": [
+            "cerebellar_Purkinje_cells"
+          ],
+          "reason": "promoter fires at exon 1 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp260",
+          "label": "1R",
+          "hit": true,
+          "firstSharedExon": 30,
+          "promoterTissue": "retinal",
+          "tissues": [
+            "retinal_photoreceptors"
+          ],
+          "reason": "promoter fires at exon 30 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp140",
+          "label": "1B3",
+          "hit": true,
+          "firstSharedExon": 45,
+          "promoterTissue": "brain_kidney",
+          "tissues": [
+            "brain_glia",
+            "kidney"
+          ],
+          "reason": "promoter fires at exon 45 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp116",
+          "label": "1S",
+          "hit": true,
+          "firstSharedExon": 56,
+          "promoterTissue": "Schwann",
+          "tissues": [
+            "peripheral_nerve_Schwann_cells"
+          ],
+          "reason": "promoter fires at exon 56 (≤ variant exon 64)"
+        },
+        {
+          "id": "Dp71",
+          "label": "1G",
+          "hit": true,
+          "firstSharedExon": 63,
+          "promoterTissue": "ubiquitous",
+          "tissues": [
+            "retina",
+            "brain",
+            "kidney",
+            "liver",
+            "blood"
+          ],
+          "reason": "promoter fires at exon 63 (≤ variant exon 64)"
+        }
+      ],
+      "cellTypeImpact": [
+        {
+          "name": "Myonuclei",
+          "tissue": "skeletal_muscle",
+          "score": 10.0,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Thymic myoid cells",
+          "tissue": "thymus",
+          "score": 9.24,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Cardiomyocytes",
+          "tissue": "skeletal_muscle",
+          "score": 9.12,
+          "colorHint": "accent",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Rod photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.59,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Cone photoreceptor cells",
+          "tissue": "retina",
+          "score": 8.19,
+          "colorHint": "pink",
+          "status": "hit",
+          "reason": "depends on Dp260+Dp71 — all hit"
+        },
+        {
+          "name": "Salivary myoepithelial cells",
+          "tissue": "salivary_gland",
+          "score": 8.19,
+          "colorHint": "teal",
+          "status": "hit",
+          "reason": "depends on Dp427m — all hit"
+        },
+        {
+          "name": "Adipocytes",
+          "tissue": "adipose",
+          "score": 7.88,
+          "colorHint": "slate",
+          "status": "hit",
+          "reason": "depends on Dp71 — all hit"
+        }
+      ],
+      "tissuesHit": [
+        "blood",
+        "brain",
+        "brain_glia",
+        "cardiac_muscle",
+        "cerebellar_Purkinje_cells",
+        "cortical_neurons",
+        "hippocampus",
+        "kidney",
+        "liver",
+        "peripheral_nerve_Schwann_cells",
+        "retina",
+        "retinal_photoreceptors",
+        "skeletal_muscle"
+      ],
+      "tissuesSpared": [],
+      "labs": [
+        {
+          "key": "CK",
+          "label": "Creatine kinase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 13081.0,
+          "refLow": 40.0,
+          "refHigh": 200.0,
+          "flag": "high"
+        },
+        {
+          "key": "LDH",
+          "label": "Lactate dehydrogenase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 444.0,
+          "refLow": 140.0,
+          "refHigh": 280.0,
+          "flag": "high"
+        },
+        {
+          "key": "aldolase",
+          "label": "Aldolase",
+          "layer": "cellType",
+          "tissue": "muscle",
+          "unit": "U/L",
+          "value": 41.0,
+          "refLow": 1.0,
+          "refHigh": 7.5,
+          "flag": "high"
+        },
+        {
+          "key": "NSAA",
+          "label": "North Star Ambulatory Assessment",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "score/34",
+          "value": 29.0,
+          "refLow": 28.0,
+          "refHigh": 34.0,
+          "flag": "normal"
+        },
+        {
+          "key": "TTS",
+          "label": "Time to stand from supine",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "seconds",
+          "value": 4.1,
+          "refLow": 0.0,
+          "refHigh": 5.0,
+          "flag": "normal"
+        },
+        {
+          "key": "m6MWT",
+          "label": "6-minute walk test",
+          "layer": "phenotype",
+          "tissue": null,
+          "unit": "meters",
+          "value": 380.0,
+          "refLow": 400.0,
+          "refHigh": 600.0,
+          "flag": "low"
+        },
+        {
+          "key": "IQ",
+          "label": "Full-scale IQ",
+          "layer": "tissueType",
+          "tissue": "CNS",
+          "unit": "FSIQ",
+          "value": 87.0,
+          "refLow": 85.0,
+          "refHigh": 115.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LGE",
+          "label": "Late gadolinium enhancement (fibrosis)",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "presence",
+          "value": 0.0,
+          "refLow": 0.0,
+          "refHigh": 0.0,
+          "flag": "normal"
+        },
+        {
+          "key": "LVEF",
+          "label": "Left ventricular ejection fraction",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "%",
+          "value": 65.8,
+          "refLow": 55.0,
+          "refHigh": 70.0,
+          "flag": "normal"
+        },
+        {
+          "key": "NT_proBNP",
+          "label": "NT-proBNP",
+          "layer": "tissueType",
+          "tissue": "cardiac",
+          "unit": "pg/mL",
+          "value": 93.0,
+          "refLow": 0.0,
+          "refHigh": 125.0,
+          "flag": "normal"
+        },
+        {
+          "key": "UACR",
+          "label": "Urine albumin/creatinine ratio",
+          "layer": "tissueType",
+          "tissue": "kidney",
+          "unit": "mg/g",
+          "value": 44.0,
+          "refLow": 0.0,
+          "refHigh": 30.0,
+          "flag": "high"
+        },
+        {
+          "key": "FVC_pct",
+          "label": "FVC (% predicted)",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "% predicted",
+          "value": 93.6,
+          "refLow": 80.0,
+          "refHigh": 120.0,
+          "flag": "normal"
+        },
+        {
+          "key": "PCF",
+          "label": "Peak cough flow",
+          "layer": "tissueType",
+          "tissue": "respiratory",
+          "unit": "L/min",
+          "value": 512.0,
+          "refLow": 270.0,
+          "refHigh": 700.0,
+          "flag": "normal"
+        },
+        {
+          "key": "ERG_bwave",
+          "label": "ERG b-wave amplitude",
+          "layer": "tissueType",
+          "tissue": "retina",
+          "unit": "µV",
+          "value": 140.0,
+          "refLow": 150.0,
+          "refHigh": 350.0,
+          "flag": "low"
+        },
+        {
+          "key": "MRI_ff_VL",
+          "label": "MRI fat fraction (vastus lateralis)",
+          "layer": "tissueType",
+          "tissue": "skeletal",
+          "unit": "%",
+          "value": 27.7,
+          "refLow": 5.0,
+          "refHigh": 15.0,
+          "flag": "high"
+        }
+      ],
+      "hypothesisRanking": [
+        {
+          "id": "03",
+          "score": 9.0,
+          "fit": "splice defect → downstream PTC → NMD-eligible",
+          "rank": 1,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 13,081 U/L — massive CK release matches near-total Dp427m loss from NMD-degraded transcript."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 27.7 % — extensive muscle fibro-fatty replacement consistent with total protein loss."
+            }
+          ]
+        },
+        {
+          "id": "01",
+          "score": 5.0,
+          "fit": "splice defect can produce out-of-frame transcript",
+          "rank": 2,
+          "patientEvidence": [
+            {
+              "labKey": "CK",
+              "tone": "supports",
+              "text": "Creatine kinase 13,081 U/L — 65× ULN, direct readout of sarcolemmal membrane damage consistent with truncated / absent dystrophin."
+            },
+            {
+              "labKey": "MRI_ff_VL",
+              "tone": "supports",
+              "text": "MRI fat fraction (vastus lateralis) 27.7 % — advanced fibro-fatty replacement in skeletal muscle, the phenotypic endpoint of H01."
+            }
+          ]
+        },
+        {
+          "id": "04",
+          "score": 5.0,
+          "fit": "exon 64 — hits Dp71 (last ubiquitous isoform)",
+          "rank": 3,
+          "patientEvidence": [
+            {
+              "labKey": "IQ",
+              "tone": "supports",
+              "text": "Full-scale IQ 87.0 FSIQ — reduced IQ correlates with Dp140 loss (Ricotti 2016). Distal-isoform signature."
+            },
+            {
+              "labKey": "ERG_bwave",
+              "tone": "supports",
+              "text": "ERG b-wave amplitude 140.0 µV — attenuated ERG b-wave amplitude suggests Dp260 loss in retina."
+            },
+            {
+              "labKey": "UACR",
+              "tone": "supports",
+              "text": "Urine albumin/creatinine ratio 44.0 mg/g — elevated urine albumin suggests Dp71 loss in podocytes."
+            }
+          ]
+        },
+        {
+          "id": "02",
+          "score": 1.5,
+          "fit": "no evidence of in-frame rescue",
+          "rank": 4,
+          "patientEvidence": [
+            {
+              "labKey": "LVEF",
+              "tone": "supports",
+              "text": "Left ventricular ejection fraction 65.8 % — preserved ejection fraction consistent with in-frame rescue keeping cardiac DGC partially assembled."
+            },
+            {
+              "labKey": "FVC_pct",
+              "tone": "supports",
+              "text": "FVC (% predicted) 93.6 % predicted — preserved respiratory function typical of BMD trajectory."
+            },
+            {
+              "labKey": "NSAA",
+              "tone": "supports",
+              "text": "North Star Ambulatory Assessment 29.0 score/34 — retained motor function argues for partial-function dystrophin."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "featured": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ],
+  "phenoBreakdown": {
+    "BMD": 37,
+    "DMD": 351,
+    "IMD": 12,
+    "pending": 18
+  },
+  "notes": {
+    "impactRule": "isoform hit iff first_shared_exon ≤ variant exon. Approximation: exact splice-site consequences and in-frame deletion rescue are not modeled.",
+    "cellMappingSource": "curated from Muntoni 2003; Pillers 1993; Lidov 1995"
+  }
+}

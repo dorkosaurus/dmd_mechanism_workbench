@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chat with Patient Data</title>
+<!--
+================================================================
+  Patient-scoped generative view — two-panel layout.
+
+    LEFT:  overview (collapsible tiles — patient context)
+    RIGHT: generative panel
+             · default: prioritized hypothesis rank + question chips
+             · click a rank row → chain appears
+             · ask a question → new artifact stacks
+             · chat input sticky at bottom
+
+  Reuses:
+    - patient_data.json + mechanism_data.json
+    - widget_palette.js (reasoningChain, edgeEvidenceBar)
+    - theme.css
+
+  The left panel has a two-position expand toggle: narrow (35%)
+  or wide (55%). When wide, the right panel shrinks; both stay
+  visible.
+================================================================
+-->
+<link rel="stylesheet" href="theme.css">
+<style>
+  html, body { height: 100%; overflow: hidden; }
+  .pc-app { display: flex; flex-direction: column; height: 100vh;
+    max-width: 1600px; margin: 0 auto; padding: 12px; gap: 8px; }
+
+  /* --------- top strip: patient selector + identity --------- */
+  .pc-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; flex-shrink: 0; }
+  .pc-top-pat-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; }
+  .pc-picker { flex: 1; padding: 6px 10px; border: 1px solid var(--line-2);
+    border-radius: 5px; background: white; font-size: 12px; font-family: inherit;
+    color: var(--ink); min-width: 260px; max-width: 640px; }
+
+  /* patient details tile (in Overview) --------------------------- */
+  .pd-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .pd-uid { font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
+    font-family: "SF Mono", Menlo, monospace; color: var(--ink); }
+  .pd-cohort { font-size: 10px; color: var(--ink-3); }
+  .pd-badge { font-size: 10px; padding: 2px 8px; border-radius: 3px;
+    font-weight: 700; letter-spacing: 0.02em; }
+  .pd-badge.DMD { background: var(--bad-soft); color: var(--bad); }
+  .pd-badge.BMD { background: #e6f4ec; color: var(--good); }
+  .pd-badge.IMD { background: var(--warn-soft); color: var(--warn); }
+  .pd-badge.pending { background: var(--line); color: var(--ink-3); }
+  .pd-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px; }
+  .pd-item { display: flex; flex-direction: column; gap: 2px; }
+  .pd-k { color: var(--ink-3); font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.05em; }
+  .pd-v { color: var(--ink); font-size: 12px; font-weight: 600;
+    font-family: "SF Mono", Menlo, monospace; word-break: break-all; }
+  .pd-v.plain { font-family: inherit; }
+  /* --------- 2-panel body --------- */
+  .pc-body { display: grid; gap: 10px; flex: 1; min-height: 0;
+    grid-template-columns: 35% 1fr;
+    transition: grid-template-columns 0.2s ease; }
+  .pc-body.overview-full      { grid-template-columns: 1fr 0px; }
+  .pc-body.overview-full  .pc-right { visibility: hidden; }
+  .pc-body.overview-collapsed { grid-template-columns: 1fr; gap: 0; }
+  .pc-body.overview-collapsed .pc-left { display: none; }
+  .pc-ov-reopen { position: fixed; left: 10px; top: 68px; z-index: 100;
+    background: var(--panel); border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 11px;
+    color: var(--ink-2); cursor: pointer; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .pc-ov-reopen:hover { border-color: var(--accent); color: var(--accent); }
+
+  .pc-panel { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; display: flex; flex-direction: column;
+    min-height: 0; overflow: hidden; }
+  .pc-panel-h { display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    background: var(--bg); flex-shrink: 0; }
+  .pc-panel-h-title { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700; }
+  .pc-panel-h-sub { font-size: 11px; color: var(--ink-3); margin-left: 6px; }
+  .pc-panel-h-actions { margin-left: auto; display: flex; gap: 4px; }
+  .pc-panel-btn { background: transparent; border: 1px solid transparent;
+    color: var(--ink-3); padding: 3px 8px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; font-size: 12px; }
+  .pc-panel-btn:hover { border-color: var(--line-2); color: var(--ink); }
+  .pc-panel-btn.active { background: var(--accent-soft); border-color: var(--accent);
+    color: var(--accent); font-weight: 600; }
+  .pc-panel-body { flex: 1; overflow-y: auto; padding: 12px; }
+
+  /* --------- Overview left panel --------- */
+  /* biological-organization group headers (patient → variant → gene →
+     protein → pathway → cell type → tissue type → phenotype) */
+  .ov-group-h { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-3); font-weight: 700;
+    padding: 8px 0 4px 4px; margin-top: 6px;
+    border-bottom: 1px solid var(--line-2); }
+  .ov-group-h:first-child { margin-top: 0; padding-top: 0; }
+  .ov-group-h .ov-group-h-num { margin-right: 6px; color: var(--ink-3);
+    font-weight: 700; opacity: 0.5; }
+  .ov-group { margin-bottom: 4px; }
+
+  .ov-tile { background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .ov-tile-toggle { width: 100%; background: transparent; border: none;
+    padding: 10px 12px; font: inherit; text-align: left; display: flex;
+    align-items: center; gap: 8px; cursor: pointer; color: var(--ink); }
+  .ov-tile-toggle:hover { background: var(--panel); }
+  .ov-tile-h { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-2); font-weight: 700; }
+  .ov-tile-summary { flex: 1; text-align: right; font-size: 10px; color: var(--ink-3); }
+  .ov-tile-summary b { color: var(--ink-2); font-weight: 700; }
+  .ov-tile-summary .warn { color: var(--bad); font-weight: 700; }
+  .ov-tile-chevron { color: var(--ink-3); font-size: 10px; flex-shrink: 0; }
+  .ov-tile-body { padding: 8px 12px 12px; border-top: 1px solid var(--line);
+    background: var(--panel); }
+  .ov-tile-body .foot { color: var(--ink-3); font-size: 10px; margin-top: 6px; }
+
+  /* labs table */
+  .ov-labs-group { margin-bottom: 8px; }
+  .ov-labs-group-h { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-3); font-weight: 700; margin: 4px 0 3px 0;
+    padding-bottom: 2px; border-bottom: 1px solid var(--line); }
+  .ov-lab-row { display: grid; grid-template-columns: 1fr auto auto;
+    gap: 8px; align-items: baseline; font-size: 11px; padding: 3px 0; }
+  .ov-lab-lbl { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; }
+  .ov-lab-val { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .ov-lab-flag { font-size: 9px; text-transform: uppercase; padding: 0 5px;
+    border-radius: 3px; font-weight: 700; }
+  .ov-lab-flag.normal { color: var(--ink-3); background: var(--line); }
+  .ov-lab-flag.low    { color: var(--warn); background: var(--warn-soft); }
+  .ov-lab-flag.high   { color: var(--bad);  background: var(--bad-soft); }
+
+  /* iso / cell rows (compact) */
+  .ov-iso-row { display: grid; grid-template-columns: 60px 1fr 50px; gap: 8px;
+    align-items: center; margin-bottom: 4px; font-size: 11px; }
+  .ov-iso-lbl { color: var(--ink-2); font-family: "SF Mono", Menlo, monospace;
+    font-size: 10px; font-weight: 600; }
+  .ov-iso-track { height: 10px; background: var(--line); border-radius: 3px; }
+  .ov-iso-fill { height: 100%; border-radius: 3px; }
+  .ov-iso-fill.hit    { background: var(--bad); }
+  .ov-iso-fill.spared { background: var(--good); }
+  .ov-iso-tag { font-size: 9px; font-weight: 700; text-align: right;
+    text-transform: uppercase; }
+  .ov-iso-tag.hit    { color: var(--bad); }
+  .ov-iso-tag.spared { color: var(--good); }
+
+  .ov-cell-row { display: grid; grid-template-columns: 1fr 55px; gap: 8px;
+    align-items: center; margin-bottom: 4px; font-size: 11px; }
+  .ov-cell-lbl { color: var(--ink-2); font-size: 11px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .ov-cell-track { height: 8px; background: var(--line); border-radius: 3px;
+    margin-top: 2px; }
+  .ov-cell-fill { height: 100%; border-radius: 3px; }
+  .ov-cell-fill.hit     { background: var(--bad); }
+  .ov-cell-fill.partial { background: var(--warn); }
+  .ov-cell-fill.spared  { background: var(--good); }
+  .ov-cell-status { font-size: 9px; font-weight: 700; text-align: right;
+    text-transform: uppercase; }
+  .ov-cell-status.hit     { color: var(--bad); }
+  .ov-cell-status.partial { color: var(--warn); }
+  .ov-cell-status.spared  { color: var(--good); }
+
+  .ov-tis-group { margin-bottom: 8px; }
+  .ov-tis-group-h { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+    font-weight: 700; margin-bottom: 4px; }
+  .ov-tis-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ov-tis-chip { padding: 2px 7px; border-radius: 3px; font-size: 10px;
+    font-family: "SF Mono", Menlo, monospace; }
+  .ov-tis-chip.hit    { background: var(--bad-soft);  color: var(--bad); }
+  .ov-tis-chip.spared { background: var(--good-soft); color: var(--good); }
+
+  .ov-pw-row { display: grid; grid-template-columns: 1fr 40px; align-items: center;
+    gap: 8px; font-size: 11px; margin-bottom: 4px; }
+  .ov-pw-lbl { color: var(--ink-2); font-size: 10px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .ov-pw-track { height: 6px; background: var(--line); border-radius: 3px;
+    margin-top: 3px; }
+  .ov-pw-fill { height: 100%; background: var(--good); border-radius: 3px; }
+  .ov-pw-val { text-align: right; color: var(--ink-3); font-variant-numeric: tabular-nums;
+    font-size: 10px; }
+
+  /* exon SVG (compact) */
+  .ov-exon-svg { width: 100%; display: block; }
+
+  /* --------- Right panel: generative --------- */
+  .gen-artifact { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .gen-artifact:last-child { border-bottom: none; }
+  .gen-artifact-h { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px; }
+  .gen-artifact-badge { background: var(--accent); color: white; padding: 1px 6px;
+    border-radius: 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+  .gen-artifact-h .close { margin-left: auto; background: transparent;
+    border: 1px solid transparent; padding: 2px 8px; border-radius: 4px;
+    cursor: pointer; color: var(--ink-3); font-family: inherit; font-size: 14px;
+    line-height: 1; }
+  .gen-artifact-h .close:hover { border-color: var(--line-2); color: var(--ink); }
+
+  /* NMD × ACMG Marimekko artifact ---------------------------------- */
+  .mek-wrap { padding: 6px 0; }
+  .mek-lede { font-size: 12px; color: var(--ink-2); line-height: 1.5;
+    padding: 8px 12px; background: var(--bg); border-radius: 6px;
+    border-left: 3px solid var(--accent); margin-bottom: 10px; }
+  .mek-svg { width: 100%; height: auto; display: block; }
+  .mek-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px;
+    font-size: 11px; color: var(--ink-2); }
+  .mek-legend-sw { width: 12px; height: 12px; border-radius: 2px;
+    display: inline-block; vertical-align: middle; margin-right: 4px; }
+  .mek-notes { color: var(--ink-3); font-size: 10px; margin-top: 8px;
+    font-style: italic; }
+
+  /* patient-scoring strip (compact, above the Dashboard-style hyp table) */
+  .pat-scoring-strip { margin-bottom: 10px; padding: 8px 10px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 6px; }
+  .pss-h { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 6px; }
+  .pss-h .pss-sub { text-transform: none; letter-spacing: 0; color: var(--ink-3);
+    font-weight: 500; margin-left: 4px; }
+  .pss-rows { display: flex; flex-direction: column; gap: 3px; }
+  .pss-row { display: grid; grid-template-columns: 34px 40px 40px 1fr auto;
+    gap: 8px; align-items: baseline; font-size: 11px; padding: 4px 6px;
+    border-radius: 3px; cursor: pointer; }
+  .pss-row:hover { background: var(--panel); }
+  .pss-row.sel { background: var(--accent-soft); }
+  .pss-rank { color: var(--ink-3); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .pss-hid  { font-family: "SF Mono", Menlo, monospace; font-weight: 700; color: var(--ink-2); }
+  .pss-row.sel .pss-hid { color: var(--accent); }
+  .pss-score{ font-variant-numeric: tabular-nums; font-weight: 700;
+    color: var(--ink-2); text-align: right; }
+  .pss-fit  { color: var(--ink-2); font-style: italic; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .pss-pe   { color: var(--ink-3); font-size: 10px; text-align: right;
+    flex-shrink: 0; }
+  .pss-pe b { color: var(--bad); font-weight: 700; }
+
+  /* make the Dashboard hyp table render nicely inside our artifact */
+  .gen-artifact table.hyp { margin-top: 4px; }
+  .gen-artifact table.hyp .section-lbl { display: none; }
+  .gen-artifact table.hyp .panel { padding: 0; }
+
+  /* chain artifact */
+  .chain-toggle { display: inline-flex; border: 1px solid var(--line-2);
+    border-radius: 5px; overflow: hidden; margin-left: 8px; }
+  .chain-toggle button { background: transparent; border: none; padding: 3px 8px;
+    font: inherit; font-size: 11px; color: var(--ink-3); font-weight: 600;
+    cursor: pointer; }
+  .chain-toggle button.active { background: var(--accent); color: white; }
+  .chain-lede { font-size: 12px; color: var(--ink-2); line-height: 1.5;
+    margin: 8px 0; padding: 10px 12px; background: var(--bg); border-radius: 6px;
+    border-left: 3px solid var(--accent); }
+  .chain-pe { background: var(--bad-soft); border: 1px solid var(--bad);
+    border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+  .chain-pe-h { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--bad); font-weight: 700; margin-bottom: 6px; }
+  .chain-pe ul { list-style: none; padding: 0; margin: 0; }
+  .chain-pe li { display: flex; gap: 6px; padding: 3px 0; font-size: 11px;
+    color: var(--ink); line-height: 1.4; }
+  .chain-pe li .tick { color: var(--bad); font-weight: 800; flex: 0 0 10px; }
+
+  /* layered biological chain (reuse-ish styles from patient.html) */
+  .lc-container { position: relative; padding: 8px 0; }
+  .lc-stack { display: flex; flex-direction: column; padding-right: 170px; }
+  .lc-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; }
+  .lc-tag { display: flex; align-items: center; justify-content: flex-end;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; padding-right: 4px;
+    border-right: 2px solid var(--line-2); }
+  .lc-row.variant     .lc-tag { color: var(--accent); border-right-color: var(--accent); }
+  .lc-row.protein     .lc-tag { color: var(--violet); border-right-color: var(--violet); }
+  .lc-row.pathway     .lc-tag { color: var(--teal);   border-right-color: var(--teal); }
+  .lc-row.subcellular .lc-tag { color: var(--sky);    border-right-color: var(--sky); }
+  .lc-row.cellType    .lc-tag { color: var(--warn);   border-right-color: var(--warn); }
+  .lc-row.tissueType  .lc-tag { color: var(--pink);   border-right-color: var(--pink); }
+  .lc-row.phenotype   .lc-tag { color: var(--bad);    border-right-color: var(--bad); }
+  .lc-box { padding: 8px 12px; border: 1px solid var(--line-2); border-radius: 6px;
+    background: var(--panel); margin: 4px 0; }
+  .lc-row.variant     .lc-box { border-color: var(--accent); background: #eaf1fb; }
+  .lc-row.protein     .lc-box { border-color: var(--violet); background: #f3ecfb; }
+  .lc-row.pathway     .lc-box { border-color: var(--teal);   background: #e6f4f4; }
+  .lc-row.subcellular .lc-box { border-color: var(--sky);    background: #eaf1fa; }
+  .lc-row.cellType    .lc-box { border-color: var(--warn);   background: #fbf1e2; }
+  .lc-row.tissueType  .lc-box { border-color: var(--pink);   background: #f9e9f0; }
+  .lc-row.phenotype   .lc-box { border-color: var(--bad);    background: #fbe6e6; }
+  .lc-title { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .lc-meta  { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+  .lc-arrow { grid-column: 2; height: 10px; display: flex; align-items: center;
+    padding-left: 30px; }
+  .lc-loopback { position: absolute; top: 8px; right: 0; width: 170px;
+    height: calc(100% - 16px); pointer-events: none; }
+  .lc-therapy-label { position: absolute; right: 6px; top: 50%;
+    transform: translateY(-50%); background: var(--good-soft);
+    border: 1px solid var(--good); border-radius: 8px; padding: 8px 10px;
+    width: 150px; text-align: center; }
+  .lc-therapy-lbl-h { font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--good); font-weight: 700; margin-bottom: 3px; }
+  .lc-therapy-lbl-title { font-size: 11px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .lc-therapy-lbl-sub { font-size: 10px; color: var(--ink-3); margin-top: 3px; line-height: 1.3; }
+
+  /* chat */
+  .chat-turn { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .chat-turn.user { background: var(--bg); }
+  .chat-turn-role { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 4px; }
+  .chat-turn.user .chat-turn-role { color: var(--accent); }
+  .chat-turn-body { font-size: 13px; line-height: 1.5; color: var(--ink); }
+  .chat-turn-body b { font-weight: 700; }
+  .chat-cursor { display: inline-block; width: 6px; height: 12px;
+    background: var(--accent); animation: blink 0.9s infinite; vertical-align: middle;
+    margin-left: 2px; }
+  @keyframes blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }
+
+  /* --------- chat command bar (inside right panel, above artifact stream) --------- */
+  .pc-chat-bar { flex-shrink: 0; background: var(--bg);
+    border-bottom: 1px solid var(--line); }
+  .pc-input-row { display: flex; gap: 6px; padding: 8px 10px;
+    border-bottom: 1px solid var(--line); align-items: center; }
+  .pc-input-row .pc-input-lbl { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    padding: 0 6px 0 4px; flex-shrink: 0; }
+  .pc-input { flex: 1; padding: 7px 10px; border: 1px solid var(--line-2);
+    border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--ink);
+    background: white; }
+  .pc-input:focus { outline: none; border-color: var(--accent); }
+  .pc-send { padding: 6px 14px; background: var(--accent); color: white;
+    border: none; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit; }
+  .pc-send:disabled { background: var(--line-2); cursor: not-allowed; }
+  .pc-suggest-row { padding: 6px 12px 8px; display: flex; gap: 5px; flex-wrap: wrap;
+    align-items: center; }
+  .pc-suggest-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--ink-3); font-weight: 700; margin-right: 4px; }
+  .pc-suggest { background: var(--bg); border: 1px solid var(--line-2);
+    border-radius: 12px; padding: 3px 9px; font-size: 11px; color: var(--ink-2);
+    cursor: pointer; font-family: inherit; }
+  .pc-suggest:hover { border-color: var(--accent); color: var(--accent); }
+  .pc-more-toggle { background: transparent; border: none; color: var(--ink-3);
+    font-size: 11px; cursor: pointer; padding: 3px 6px; font-family: inherit;
+    margin-left: auto; }
+  .pc-more-toggle:hover { color: var(--accent); }
+
+  /* --------- expandable "See more example questions" panel --------- */
+  /* Styled to match Dynamic Dashboard's more-panel (generative.html):
+     rounded card, full border, wider padding, same chip look. Scrolls
+     internally so it never pushes the artifact stream out of view. */
+  .pc-more-panel { padding: 14px 16px; margin: 10px 14px 12px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px;
+    max-height: 55vh; overflow-y: auto; }
+  .pc-more-panel[hidden] { display: none; }
+  .pc-more-hd { display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; }
+  .pc-more-hd h3 { margin: 0; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 600; }
+  .pc-more-close { background: transparent; border: none; color: var(--ink-3);
+    font-size: 16px; cursor: pointer; padding: 0 4px; }
+  .pc-more-close:hover { color: var(--ink); }
+  /* 3-column layout. Categories flow top-to-bottom within each column
+     (CSS multi-columns pack tightly — no row-alignment gaps like grid). */
+  .pc-cats { column-count: 4; column-gap: 14px; }
+  .pc-cat { break-inside: avoid; margin-bottom: 12px; display: block; }
+  .pc-cat h4 { font-size: 13px; color: var(--ink); margin: 0 0 6px;
+    font-weight: 700; text-transform: none; letter-spacing: 0; }
+  .pc-cat-item { display: flex; flex-direction: column; align-items: stretch;
+    gap: 2px; padding: 6px 10px; margin-bottom: 4px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; cursor: pointer; font-family: inherit;
+    text-align: left; width: 100%; }
+  .pc-cat-item:hover { border-color: var(--accent); color: var(--accent); }
+  .pc-cat-item-tag { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px; color: var(--ink-3); }
+  .pc-cat-item-q { font-size: 11.5px; color: var(--ink); }
+  .pc-cat-item:hover .pc-cat-item-tag { color: var(--accent); }
+  .pc-cat-item:hover .pc-cat-item-q   { color: var(--accent); }
+
+  /* edge modal (reused, minor tweaks) */
+  .edge-modal-backdrop { position: fixed; inset: 0; background: rgba(26,34,51,0.45);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+    padding: 20px; }
+  .edge-modal { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 22px; max-width: 640px; width: 100%;
+    max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+  .edge-modal-h { display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .edge-modal-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 4px; }
+  .edge-modal-arrow { font-size: 14px; color: var(--ink); line-height: 1.35; }
+  .edge-modal-arrow b { color: var(--accent); font-weight: 700; }
+  .edge-modal-arrow .arrow-sep { color: var(--ink-3); margin: 0 8px; }
+  .edge-modal-close { background: var(--bg); border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 4px 10px; font-size: 16px; cursor: pointer;
+    color: var(--ink-2); font-family: inherit; }
+  .edge-modal-close:hover { background: var(--line); color: var(--ink); }
+  .edge-modal-body ul { list-style: none; margin: 0; padding: 0; }
+  .edge-modal-body li { display: flex; gap: 10px; padding: 10px 0;
+    font-size: 13px; line-height: 1.5; color: var(--ink-2);
+    border-bottom: 1px solid var(--line); }
+  .edge-modal-body li:last-child { border-bottom: none; }
+  .edge-modal-body .tick { color: var(--good); font-weight: 800; flex: 0 0 14px; }
+  .edge-modal-body .cite { color: var(--ink-3); font-size: 11px; margin-left: 8px;
+    font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="pc-app" id="app"><!-- rendered by renderPage() --></div>
+
+<script src="widget_palette.js"></script>
+<script>
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+let DATA = null;
+let MECH_DATA = null;
+let currentPatientId = null;
+let currentHypId = null;         // selected hypothesis → chain visible in right panel
+let currentEdgeId = null;        // selected chain edge → modal open
+let chatStreaming = false;
+let expandedTiles = new Set();   // default: all Overview tiles collapsed
+let overviewMode = 'normal';     // 'normal' | 'wide' | 'full' | 'collapsed'
+let morePanelOpen = false;       // "See more example questions" panel — default closed
+let chainView = 'flow';          // 'flow' | 'layers'
+let rightStream = [];            // artifact stream — NEWEST FIRST (prepended)
+let scrollTopOnRender = false;   // scroll right-panel body to top when new artifact arrives
+
+const patientLabel = (p) => `Patient ${p.seqNum}`;
+
+// ---- biological layers dictionary (curated per hypothesis) --------
+const LAYERS = [
+  ['variant','Variant'], ['protein','Protein'], ['pathway','Pathway'],
+  ['subcellular','Subcellular loc.'], ['cellType','Cell type'],
+  ['tissueType','Tissue type'], ['phenotype','Phenotype'],
+];
+const HYPOTHESIS_LAYERS = {
+  '01': {
+    variant:{title:'Out-of-frame deletion', meta:'e.g. Δexon 45; frameshift → PTC'},
+    protein:{title:'Truncated dystrophin (or absent)', meta:'no C-terminal DGC anchor'},
+    pathway:{title:'Ca²⁺ / calpain signaling cascade', meta:'activated by contraction stress'},
+    subcellular:{title:'Sarcolemma decouples from ECM', meta:'DGC disassembly · membrane micro-tears'},
+    cellType:{title:'Myofiber necrosis', meta:'CK release · satellite exhaustion'},
+    tissueType:{title:'Skeletal + cardiac muscle', meta:'fibro-fatty replacement'},
+    phenotype:{title:'DMD (Duchenne)', meta:'wheelchair ~10–12 y · cardiomyopathy'},
+    therapy:{title:'Exon-skipping ASO · µ-dystrophin AAV', meta:'restores in-frame Dp427m'},
+  },
+  '02': {
+    variant:{title:'In-frame central-rod deletion', meta:'e.g. Δexons 45–47; ≡0 mod 3'},
+    protein:{title:'Shortened but functional dystrophin', meta:'N-terminal + DGC preserved'},
+    pathway:{title:'Attenuated Ca²⁺ / calpain leak', meta:'gradual, not acute'},
+    subcellular:{title:'Partial DGC assembly at sarcolemma', meta:'membrane anchored, weaker'},
+    cellType:{title:'Slow myofiber loss', meta:'regeneration keeps pace longer'},
+    tissueType:{title:'Skeletal + cardiac muscle', meta:'milder cardiac course'},
+    phenotype:{title:'BMD (Becker)', meta:'ambulation to 30–40 y · late onset'},
+    therapy:{title:'Utrophin upreg · exon-skip → in-frame', meta:'convert DMD → BMD state'},
+  },
+  '03': {
+    variant:{title:'Nonsense or canonical splice-site', meta:'creates PTC in mRNA'},
+    protein:{title:'NMD-mediated transcript loss', meta:'protein absent (<5% WT)'},
+    pathway:{title:'Ca²⁺ / calpain cascade', meta:'downstream identical to H01'},
+    subcellular:{title:'Sarcolemmal DGC loss', meta:'tissue-graded NMD escape'},
+    cellType:{title:'Myofiber necrosis', meta:'brain/cardiac partial isoform rescue'},
+    tissueType:{title:'Muscle > brain > cardiac', meta:'graded severity by NMD efficiency'},
+    phenotype:{title:'DMD, milder if PTC escape', meta:'ataluren-eligible subset'},
+    therapy:{title:'Ataluren readthrough · NMD inhibitors', meta:'restore partial protein from PTC mRNA'},
+  },
+  '04': {
+    variant:{title:"Distal 5′ variant (exon ≥45)", meta:'or internal promoter (Dp140/Dp71)'},
+    protein:{title:'Dp140 / Dp116 / Dp71 ablated', meta:'Dp427m preserved in muscle'},
+    pathway:{title:'Isoform-scoped signaling loss', meta:'podocyte · glial · retinal'},
+    subcellular:{title:'Dystrophin lost at synapse · podocyte foot process', meta:'muscle DGC intact'},
+    cellType:{title:'Cortical astrocytes · rod/cone · podocytes', meta:'myofibers preserved'},
+    tissueType:{title:'CNS + retina + kidney', meta:'skeletal muscle spared'},
+    phenotype:{title:'Cognitive deficits · ERG anomalies · proteinuria risk', meta:'motor function preserved'},
+    therapy:{title:'Isoform-selective AAV (Dp140 / Dp71)', meta:'tissue-restricted promoter'},
+  },
+};
+
+// ================================================================
+// LEFT PANEL — Overview
+// ================================================================
+const LAB_GROUPS = [
+  { layer:'cellType',   label:'Cell type · myofibers' },
+  { layer:'tissueType', label:'Tissue', tissue:'skeletal',    tissueLbl:'skeletal muscle' },
+  { layer:'tissueType', label:'Tissue', tissue:'cardiac',     tissueLbl:'cardiac' },
+  { layer:'tissueType', label:'Tissue', tissue:'respiratory', tissueLbl:'respiratory' },
+  { layer:'tissueType', label:'Tissue', tissue:'CNS',         tissueLbl:'CNS (H04)' },
+  { layer:'tissueType', label:'Tissue', tissue:'retina',      tissueLbl:'retina (H04)' },
+  { layer:'tissueType', label:'Tissue', tissue:'kidney',      tissueLbl:'kidney (H04)' },
+  { layer:'phenotype',  label:'Phenotype · motor function' },
+];
+
+function fmtLabVal(l) {
+  if (l.unit === 'presence') return l.value ? 'present' : 'absent';
+  if (l.value >= 1000) return Number(l.value).toLocaleString('en-US');
+  return String(l.value);
+}
+
+function wrapTile(id, title, summary, body) {
+  const open = expandedTiles.has(id);
+  return `
+    <div class="ov-tile ${open ? 'expanded' : 'collapsed'}">
+      <button class="ov-tile-toggle" data-tile-toggle="${esc(id)}">
+        <span class="ov-tile-h">${esc(title)}</span>
+        <span class="ov-tile-summary">${summary || ''}</span>
+        <span class="ov-tile-chevron">${open ? '▾' : '▸'}</span>
+      </button>
+      ${open ? `<div class="ov-tile-body">${body}</div>` : ''}
+    </div>`;
+}
+
+function renderExonSvg(p) {
+  const nExons = DATA.gene.nExons;
+  const isoforms = DATA.isoforms;
+  const W = 320, pad = 8;
+  const trackY = 14, trackH = 8;
+  const laneY0 = trackY + trackH + 6;
+  const laneH = 4, laneGap = 2;
+  const totalH = laneY0 + isoforms.length * (laneH + laneGap) + 12;
+  const xForExon = (e) => pad + ((e - 1) / (nExons - 1)) * (W - 2 * pad);
+  const lanes = isoforms.map((iso, i) => {
+    const impact = p.isoformImpact.find(x => x.id === iso.id);
+    const hit = impact && impact.hit;
+    const x1 = xForExon(iso.firstSharedExon);
+    const x2 = xForExon(nExons);
+    const y  = laneY0 + i * (laneH + laneGap);
+    return `<rect x="${x1}" y="${y}" width="${x2 - x1}" height="${laneH}"
+              fill="${hit ? 'var(--bad)' : 'var(--good)'}" opacity="0.85"/>
+            <text x="${x1 - 3}" y="${y + laneH - 0.5}" text-anchor="end"
+                  font-size="7.5" font-family="SF Mono, Menlo, monospace"
+                  fill="var(--ink-3)">${esc(iso.id)}</text>`;
+  }).join('');
+  const vE = p.variant.exonNum;
+  let mark = '';
+  if (vE) {
+    const vx = xForExon(vE);
+    mark = `<line x1="${vx}" y1="${trackY - 3}" x2="${vx}" y2="${laneY0 + isoforms.length * (laneH + laneGap)}"
+              stroke="var(--bad)" stroke-width="1" stroke-dasharray="1.5 1.5"/>
+            <circle cx="${vx}" cy="${trackY - 5}" r="3" fill="var(--bad)" stroke="white" stroke-width="0.8"/>`;
+  }
+  return `<svg class="ov-exon-svg" viewBox="0 0 ${W} ${totalH}" preserveAspectRatio="xMidYMid meet">
+    <rect x="${pad}" y="${trackY}" width="${W - 2 * pad}" height="${trackH}"
+          fill="var(--line)" stroke="var(--line-2)"/>
+    <text x="${pad}" y="${totalH - 1}" font-size="8" fill="var(--ink-3)">exon 1</text>
+    <text x="${W - pad}" y="${totalH - 1}" text-anchor="end" font-size="8" fill="var(--ink-3)">${nExons}</text>
+    <text x="${W/2}" y="${totalH - 1}" text-anchor="middle" font-size="8" fill="var(--ink-3)">
+      variant at exon ${esc(String(vE || '?'))}
+    </text>
+    ${lanes}${mark}
+  </svg>`;
+}
+
+function renderOverview(p) {
+  const hitN = p.isoformImpact.filter(i => i.hit).length;
+  const totN = p.isoformImpact.length;
+  const cellHit = p.cellTypeImpact.filter(c => c.status === 'hit').length;
+  const abn = p.labs.filter(l => l.flag !== 'normal').length;
+
+  // -- patient details tile (first in Overview)
+  const v = p.variant;
+  const age = p.age ? `${p.age} yr` : '—';
+  const amb = p.ambulatory || '—';
+  const pdBody = `
+    <div class="pd-head">
+      <span class="pd-uid">${esc(patientLabel(p))}</span>
+      <span class="pd-badge ${esc(p.phenotype)}">${esc(p.phenotype)}</span>
+      <span class="pd-cohort">${esc(p.cohort)} #${esc(p.cohortPatientId)}</span>
+    </div>
+    <div class="pd-grid">
+      <div class="pd-item"><span class="pd-k">Age</span>
+        <span class="pd-v plain">${esc(age)}</span></div>
+      <div class="pd-item"><span class="pd-k">Ambulatory</span>
+        <span class="pd-v plain">${esc(amb)}</span></div>
+      <div class="pd-item"><span class="pd-k">Exon</span>
+        <span class="pd-v plain">${esc(v.exon || '—')}</span></div>
+      <div class="pd-item"><span class="pd-k">Consequence</span>
+        <span class="pd-v plain">${esc(v.consequence || '—')}</span></div>
+      <div class="pd-item"><span class="pd-k">Nucleotide (c.)</span>
+        <span class="pd-v">${esc(v.nucleotide || '—')}</span></div>
+      <div class="pd-item"><span class="pd-k">Protein (p.)</span>
+        <span class="pd-v">${esc(v.aaChange || '—')}</span></div>
+      <div class="pd-item"><span class="pd-k">ACMG</span>
+        <span class="pd-v plain">${esc(v.acmg || '—')}</span></div>
+      <div class="pd-item"><span class="pd-k">Source</span>
+        <span class="pd-v plain" style="font-size:11px">Zhang 2024</span></div>
+    </div>`;
+  const pdSummary = `<span class="pd-badge ${esc(p.phenotype)}" style="margin-right:4px">${esc(p.phenotype)}</span>` +
+    `<span>${p.age ? p.age + 'y' : '—'} · exon ${esc(v.exon || '?')} · ${esc(v.consequence || '—')}</span>`;
+  const patientTile = wrapTile('patient', 'Patient Details', pdSummary, pdBody);
+
+  // -- exon tile
+  const exonTile = wrapTile('exon', 'Variant × Isoform Coverage',
+    `<span>exon <b>${esc(String(p.variant.exonNum || '?'))}</b> · <b>${hitN}</b>/<b>${totN}</b> iso hit</span>`,
+    renderExonSvg(p));
+
+  // -- labs tile
+  const labGroups = LAB_GROUPS.map(g => {
+    const rows = p.labs.filter(l => l.layer === g.layer && (!g.tissue || l.tissue === g.tissue));
+    if (!rows.length) return '';
+    const label = g.tissueLbl ? `Tissue · ${g.tissueLbl}` : g.label;
+    const rowHtml = rows.map(l => `
+      <div class="ov-lab-row" title="${esc(l.label)} · ref ${l.refLow}-${l.refHigh} ${esc(l.unit)}">
+        <span class="ov-lab-lbl">${esc(l.label)}</span>
+        <span class="ov-lab-val">${esc(fmtLabVal(l))}${l.unit && l.unit !== 'presence' ? ' ' + esc(l.unit === '% predicted' ? '%' : l.unit) : ''}</span>
+        <span class="ov-lab-flag ${esc(l.flag)}">${esc(l.flag)}</span>
+      </div>`).join('');
+    return `<div class="ov-labs-group">
+      <div class="ov-labs-group-h">${esc(label)}</div>${rowHtml}</div>`;
+  }).join('');
+  const labsTile = wrapTile('labs', 'Clinical Labs',
+    `<span><span class="warn">${abn}</span>/<b>${p.labs.length}</b> abnormal</span>`,
+    labGroups);
+
+  // -- iso tile
+  const isoRows = p.isoformImpact.map(iso => {
+    const cls = iso.hit ? 'hit' : 'spared';
+    return `<div class="ov-iso-row">
+      <span class="ov-iso-lbl">${esc(iso.id)}</span>
+      <div class="ov-iso-track"><div class="ov-iso-fill ${cls}" style="width:100%"></div></div>
+      <span class="ov-iso-tag ${cls}">${cls}</span>
+    </div>`;
+  }).join('');
+  const isoTile = wrapTile('iso', 'Isoform Impact',
+    `<b>${hitN}</b>/<b>${totN}</b> hit`, isoRows);
+
+  // -- cell tile
+  const maxSc = Math.max(...p.cellTypeImpact.map(c => c.score), 1);
+  const cellRows = p.cellTypeImpact.map(c => {
+    const pct = Math.round((c.score / maxSc) * 100);
+    return `<div class="ov-cell-row" title="${esc(c.reason)}">
+      <div>
+        <div class="ov-cell-lbl">${esc(c.name)}</div>
+        <div class="ov-cell-track"><div class="ov-cell-fill ${esc(c.status)}" style="width:${pct}%"></div></div>
+      </div>
+      <span class="ov-cell-status ${esc(c.status)}">${esc(c.status)}</span>
+    </div>`;
+  }).join('');
+  const cellTile = wrapTile('cell', 'Cell Types Affected',
+    `<b>${cellHit}</b>/<b>${p.cellTypeImpact.length}</b> hit`, cellRows);
+
+  // -- tissue tile
+  const tisChips = (arr, cls) => arr.map(t => `<span class="ov-tis-chip ${cls}">${esc(t)}</span>`).join('')
+      || `<span style="color:var(--ink-3);font-size:10px">none</span>`;
+  const tisBody = `
+    <div class="ov-tis-group">
+      <div class="ov-tis-group-h" style="color:var(--bad)">Hit (${p.tissuesHit.length})</div>
+      <div class="ov-tis-chips">${tisChips(p.tissuesHit, 'hit')}</div>
+    </div>
+    <div class="ov-tis-group">
+      <div class="ov-tis-group-h" style="color:var(--good)">Spared (${p.tissuesSpared.length})</div>
+      <div class="ov-tis-chips">${tisChips(p.tissuesSpared, 'spared')}</div>
+    </div>`;
+  const tisTile = wrapTile('tis', 'Tissues Affected',
+    `<span class="warn">${p.tissuesHit.length}</span> hit · <b>${p.tissuesSpared.length}</b> spared`,
+    tisBody);
+
+  // -- pathway tile
+  let pwBody = '<div style="color:var(--ink-3);font-size:10px">pathway data unavailable</div>';
+  let pwSummary = '';
+  if (MECH_DATA) {
+    const rows = (MECH_DATA.tiles?.pathways?.rows || []).slice(0, 5);
+    const maxV = MECH_DATA.tiles?.pathways?.max || 10;
+    pwBody = rows.map(r => {
+      const pct = Math.round((r.value / maxV) * 100);
+      return `<div class="ov-pw-row">
+        <div>
+          <div class="ov-pw-lbl" title="${esc(r.label)}">${esc(r.label)}</div>
+          <div class="ov-pw-track"><div class="ov-pw-fill" style="width:${pct}%"></div></div>
+        </div>
+        <span class="ov-pw-val">${r.value.toFixed(1)}</span>
+      </div>`;
+    }).join('');
+    pwSummary = `<b>${rows.length}</b> pathways`;
+  }
+  const pwTile = wrapTile('pw', 'Pathway Implications', pwSummary, pwBody);
+
+  // -- gene metadata tile (small, static from DATA.gene)
+  const g = DATA.gene;
+  const geneBody = `
+    <div class="pd-grid">
+      <div class="pd-item"><span class="pd-k">Symbol</span>
+        <span class="pd-v">${esc(g.symbol)}</span></div>
+      <div class="pd-item"><span class="pd-k">UniProt</span>
+        <span class="pd-v">${esc(g.uniprot)}</span></div>
+      <div class="pd-item"><span class="pd-k">Locus</span>
+        <span class="pd-v plain">${esc(g.locus)} · ${g.locusSizeMb} Mb</span></div>
+      <div class="pd-item"><span class="pd-k">Exons</span>
+        <span class="pd-v plain">${g.nExons}</span></div>
+      <div class="pd-item" style="grid-column: 1 / -1;"><span class="pd-k">Isoforms (${g.isoformNames.length})</span>
+        <span class="pd-v plain">${esc(g.isoformNames.join(' · '))}</span></div>
+    </div>`;
+  const geneTile = wrapTile('gene', 'Gene', `<b>${esc(g.symbol)}</b> · ${g.nExons} exons · ${g.isoformNames.length} isoforms`, geneBody);
+
+  // -- gene-level cohort tiles from mechanism_data.json (widget palette)
+  //    These match the Dashboard's Mechanistic Overview section.
+  let genEvTile = '', phenTile = '';
+  if (MECH_DATA && window.WIDGETS) {
+    const gt = MECH_DATA.tiles?.geneticEvidence;
+    if (gt) {
+      const bd = gt.breakdown.map(s => `${s.label} ${s.pct}%`).join(' · ');
+      const gtBody = window.WIDGETS.stackedBar.render({title: 'Genetic Evidence', ...gt});
+      genEvTile = wrapTile('gene_ev', 'Cohort: Genetic Evidence',
+        `<b>${gt.big}</b> · ${esc(bd)}`, gtBody);
+    }
+    const pd = MECH_DATA.tiles?.phenotypeDist;
+    if (pd) {
+      const pdSum = `<b>${pd.center?.value || ''}</b> ${esc(pd.center?.label || '')}`;
+      const pdBody2 = window.WIDGETS.donutBreakdown.render({title: 'Phenotype Distribution', ...pd});
+      phenTile = wrapTile('pheno_dist', 'Cohort: Phenotype Distribution', pdSum, pdBody2);
+    }
+  }
+
+  // -- assemble by biological organization ----------------------------
+  // Each group: [label, tiles]. Grouping matches the layered biological
+  // view (variant → gene → protein → pathway → cell → tissue → phenotype)
+  // preceded by the patient card.
+  const groups = [
+    { n: '1', label: 'Patient',      tiles: [patientTile, labsTile] },
+    { n: '2', label: 'Variant',      tiles: [exonTile, genEvTile] },
+    { n: '3', label: 'Gene',         tiles: [geneTile] },
+    { n: '4', label: 'Protein',      tiles: [isoTile] },
+    { n: '5', label: 'Pathway',      tiles: [pwTile] },
+    { n: '6', label: 'Cell type',    tiles: [cellTile] },
+    { n: '7', label: 'Tissue type',  tiles: [tisTile] },
+    { n: '8', label: 'Phenotype',    tiles: [phenTile] },
+  ];
+
+  return groups.map(g => `
+    <div class="ov-group-h">
+      <span class="ov-group-h-num">${g.n}</span>${esc(g.label)}
+    </div>
+    <div class="ov-group">${g.tiles.filter(Boolean).join('')}</div>
+  `).join('');
+}
+
+// ================================================================
+// RIGHT PANEL — generative artifacts
+// ================================================================
+// Uses the SAME hypothesisTable widget as the Dashboard for consistency.
+// Patient-specific overlay: (a) the "selected" row is currentHypId (or
+// the patient's top-ranked hypothesis by default), (b) a small strip
+// above the table shows this patient's ranking + fit reasons + lab
+// bullet counts so the patient-scoped scoring is still visible.
+function renderHypRankArtifact(p) {
+  if (!MECH_DATA?.hypotheses || !window.WIDGETS) return '';
+  const ranking = p.hypothesisRanking || [];
+  const topId = ranking[0]?.id;
+  const selectedId = currentHypId || topId;
+  const patientRankById = Object.fromEntries(ranking.map(r => [r.id, r]));
+
+  // Reorder rows by this patient's ranking (top-scored first) and
+  // annotate each with .selected for the widget's row-highlighting.
+  const rowsInPatientOrder = ranking.map(r => {
+    const h = MECH_DATA.hypotheses.find(x => x.id === r.id);
+    return h ? { ...h, selected: h.id === selectedId } : null;
+  }).filter(Boolean);
+
+  const table = window.WIDGETS.hypothesisTable.render({
+    rows: rowsInPatientOrder,
+    meta: MECH_DATA.hypothesesMeta,
+  });
+
+  // Compact patient-scoring strip above the table.
+  const patientStrip = `
+    <div class="pat-scoring-strip">
+      <div class="pss-h">Patient-specific ranking for ${esc(patientLabel(p))}
+        <span class="pss-sub">
+          (score from variant × phenotype × exon position · lab bullets from this patient's data)
+        </span>
+      </div>
+      <div class="pss-rows">
+        ${ranking.map(r => `
+          <div class="pss-row ${r.id === selectedId ? 'sel' : ''}" data-hid="${esc(r.id)}">
+            <span class="pss-rank">#${r.rank}</span>
+            <span class="pss-hid">H${esc(r.id)}</span>
+            <span class="pss-score">${r.score.toFixed(1)}</span>
+            <span class="pss-fit">${esc(r.fit)}</span>
+            <span class="pss-pe">
+              ${(r.patientEvidence || []).length
+                ? `<b>${(r.patientEvidence || []).length}</b> lab bullets`
+                : '<span style="color:var(--ink-3)">no lab bullets</span>'}
+            </span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  return `<div class="gen-artifact">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">HYP-MODEL</span>
+      Prioritized hypotheses for ${esc(patientLabel(p))}
+      <span style="color:var(--ink-3);font-weight:500;text-transform:none;letter-spacing:0">
+        · click a row to see the chain
+      </span>
+    </div>
+    ${patientStrip}
+    ${table}
+  </div>`;
+}
+
+function renderLayeredChain(hypId) {
+  const L = HYPOTHESIS_LAYERS[hypId];
+  if (!L) return `<div style="color:var(--ink-3);font-size:11px;padding:8px">
+    No layered mapping curated for H${esc(hypId)}.</div>`;
+  const rows = LAYERS.map(([k, lbl], i) => {
+    const n = L[k] || {title:'(unclassified)', meta:''};
+    const arrow = (i < LAYERS.length - 1)
+      ? `<div class="lc-arrow"><svg width="14" height="12" viewBox="0 0 14 12">
+           <path d="M 7 0 L 7 9 M 3 5 L 7 9 L 11 5" fill="none" stroke="var(--ink-3)" stroke-width="1.5"/>
+         </svg></div>` : '';
+    return `<div class="lc-row ${k}">
+      <div class="lc-tag">${esc(lbl)}</div>
+      <div class="lc-box">
+        <div class="lc-title">${esc(n.title)}</div>
+        <div class="lc-meta">${esc(n.meta || '')}</div>
+      </div>
+    </div>${arrow}`;
+  }).join('');
+  const th = L.therapy || {title:'(therapy not curated)', meta:''};
+  return `<div class="lc-container">
+    <div class="lc-stack">${rows}</div>
+    <svg class="lc-loopback" viewBox="0 0 170 600" preserveAspectRatio="none">
+      <defs>
+        <marker id="lcArrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--good)"/>
+        </marker>
+      </defs>
+      <path d="M 4 590 C 160 590, 160 10, 4 10" fill="none" stroke="var(--good)"
+            stroke-width="2" stroke-dasharray="4 3" marker-end="url(#lcArrow2)"/>
+    </svg>
+    <div class="lc-therapy-label">
+      <div class="lc-therapy-lbl-h">Therapy · closes the loop</div>
+      <div class="lc-therapy-lbl-title">${esc(th.title)}</div>
+      <div class="lc-therapy-lbl-sub">${esc(th.meta || '')}</div>
+    </div>
+  </div>`;
+}
+
+function renderChainArtifact(p, hypId, artifactIdx) {
+  if (!hypId || !MECH_DATA) return '';
+  const byId = Object.fromEntries(MECH_DATA.hypotheses.map(h => [h.id, h]));
+  const hyp = byId[hypId];
+  if (!hyp) return '';
+
+  // Only apply currentEdgeId selection to the currently-focused chain
+  // (the last chain artifact for hypId that matches currentHypId).
+  const edgeSel = (hypId === currentHypId) ? currentEdgeId : null;
+
+  // Layered biological-organization chain is the sole view now — the
+  // Cause → Effect flow diagram was retired.
+  const chainHtml = renderLayeredChain(hypId);
+
+  const ranking = p.hypothesisRanking || [];
+  const r = ranking.find(x => x.id === hypId);
+  const pe = (r && r.patientEvidence) || [];
+  const peHtml = pe.length ? `
+    <div class="chain-pe">
+      <div class="chain-pe-h">PATIENT · evidence from this patient's labs (${pe.length} bullets)</div>
+      <ul>${pe.map(e => `<li><span class="tick">✓</span>${esc(e.text)}</li>`).join('')}</ul>
+    </div>` : '';
+  const lede = hyp.detail?.lede
+    ? `<div class="chain-lede">${esc(hyp.detail.lede)}</div>` : '';
+
+  return `<div class="gen-artifact" data-artifact-idx="${artifactIdx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">CHAIN</span>
+      Reasoning chain · H${esc(hypId)}: ${esc(hyp.name)}
+      <button class="close" data-artifact-remove="${artifactIdx}">×</button>
+    </div>
+    ${peHtml}
+    ${lede}
+    <div style="overflow-x:auto">${chainHtml}</div>
+  </div>`;
+}
+
+function renderChatArtifact(a, idx) {
+  return `<div class="chat-turn ${a.role} ${a.streaming ? 'streaming' : ''}" data-artifact-idx="${idx}">
+    <div class="chat-turn-role">${a.role === 'user' ? 'You' : 'Agent'}</div>
+    <div class="chat-turn-body">
+      ${a.role === 'assistant' ? a.text : esc(a.text)}
+      ${a.streaming ? '<span class="chat-cursor"></span>' : ''}
+    </div>
+  </div>`;
+}
+
+// Marimekko: NMD category × ACMG classification cross-tab from ClinVar.
+// Column widths proportional to ACMG totals; segment heights proportional
+// to NMD counts within each column.
+function renderNmdMarimekko(idx) {
+  const c = MECH_DATA?.nmdCohort;
+  if (!c) return `<div class="gen-artifact"><div class="gen-artifact-h">
+    <span class="gen-artifact-badge">NMD × ACMG</span> NMD cross-tab</div>
+    <div style="color:var(--bad);font-size:11px">
+      nmdCohort not baked — run hydrate_mechanism_view.py</div></div>`;
+
+  const W = 640, H = 360, pad = { l: 60, r: 20, t: 20, b: 60 };
+  const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+
+  const ACMG_LABEL = { benign: 'Benign', uncertain: 'Uncertain', pathogenic: 'Pathogenic' };
+  const NMD_LABEL  = { triggering: 'NMD triggering',
+                       transcript_dependent: 'Transcript dependent',
+                       escape: 'NMD escaping' };
+  const NMD_COLOR  = { triggering: 'var(--bad)',
+                       transcript_dependent: 'var(--sky)',
+                       escape: 'var(--warn)' };
+
+  // Column widths in pixels (proportional to ACMG totals).
+  const total = c.total;
+  const colX = {}; let x = pad.l;
+  c.acmgOrder.forEach(a => {
+    const w = (c.acmgTotals[a] / total) * plotW;
+    colX[a] = { x, w };
+    x += w;
+  });
+
+  // Build rects: for each ACMG column, stack NMD segments top-to-bottom
+  // sized by their share of the column.
+  const rects = [];
+  const labels = [];
+  c.acmgOrder.forEach(a => {
+    const col = colX[a];
+    const colTotal = c.acmgTotals[a];
+    let y = pad.t;
+    c.nmdOrder.forEach(n => {
+      const cnt = c.grid[a][n];
+      const h = colTotal > 0 ? (cnt / colTotal) * plotH : 0;
+      if (h > 0) {
+        rects.push(`<rect x="${col.x}" y="${y}" width="${col.w}" height="${h}"
+                       fill="${NMD_COLOR[n]}" opacity="0.85"
+                       stroke="white" stroke-width="1.5"/>`);
+        // Label if segment is big enough (>28px tall AND >70px wide)
+        if (h > 28 && col.w > 70) {
+          const pct = (cnt / colTotal * 100).toFixed(1);
+          labels.push(`<text x="${col.x + col.w/2}" y="${y + h/2 - 3}"
+                        text-anchor="middle" fill="white" font-size="11"
+                        font-weight="700">${cnt.toLocaleString('en-US')}</text>
+                      <text x="${col.x + col.w/2}" y="${y + h/2 + 11}"
+                        text-anchor="middle" fill="white" font-size="10"
+                        opacity="0.9">(${pct}%)</text>`);
+        }
+      }
+      y += h;
+    });
+  });
+
+  // X-axis: ACMG labels + totals below each column
+  const xAxis = c.acmgOrder.map(a => {
+    const col = colX[a];
+    return `<text x="${col.x + col.w/2}" y="${H - pad.b + 18}"
+              text-anchor="middle" fill="var(--ink)" font-size="12"
+              font-weight="700">${ACMG_LABEL[a]}</text>
+            <text x="${col.x + col.w/2}" y="${H - pad.b + 34}"
+              text-anchor="middle" fill="var(--ink-3)" font-size="11"
+              font-variant-numeric="tabular-nums">
+              n=${c.acmgTotals[a].toLocaleString('en-US')} · ${(c.acmgTotals[a]/total*100).toFixed(0)}%
+            </text>`;
+  }).join('');
+
+  // Y-axis label
+  const yAxis = `<text x="${pad.l - 10}" y="${pad.t + plotH/2}"
+    text-anchor="end" fill="var(--ink-2)" font-size="11"
+    transform="rotate(-90 ${pad.l - 10} ${pad.t + plotH/2})">
+    within-column proportion</text>`;
+
+  const legendHtml = c.nmdOrder.map(n =>
+    `<span><span class="mek-legend-sw" style="background:${NMD_COLOR[n]}"></span>
+     ${esc(NMD_LABEL[n])} <span style="color:var(--ink-3)">
+     (${c.nmdTotals[n].toLocaleString('en-US')} · ${(c.nmdTotals[n]/total*100).toFixed(1)}%)</span></span>`
+  ).join('');
+
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">NMD × ACMG</span>
+      Marimekko · ${esc(c.source)}
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    <div class="mek-wrap">
+      <div class="mek-lede">
+        <b>${total.toLocaleString('en-US')} ClinVar DMD variants</b> stratified by ACMG classification (column widths)
+        and NMD category (segment heights within each column). Column width shows how the
+        variant landscape breaks down by pathogenicity; segment height shows what fraction
+        of each pathogenicity class is predicted NMD-triggering.
+      </div>
+      <svg class="mek-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+        ${rects.join('')}
+        ${labels.join('')}
+        ${xAxis}
+        ${yAxis}
+      </svg>
+      <div class="mek-legend">${legendHtml}</div>
+      <div class="mek-notes">${esc(c.rules.notes)}</div>
+    </div>
+  </div>`;
+}
+
+// Render one widget-based artifact (uses window.WIDGETS from
+// widget_palette.js). `a.widget` is the widget key; `a.props` overrides
+// the widget's example.
+function renderWidgetArtifact(a, idx) {
+  if (!window.WIDGETS || !window.WIDGETS[a.widget]) {
+    return `<div class="gen-artifact"><div class="gen-artifact-h">
+      <span class="gen-artifact-badge">WIDGET</span>${esc(a.widget)}
+      </div><div style="color:var(--bad);font-size:11px">
+      Widget "${esc(a.widget)}" not found in palette.</div></div>`;
+  }
+  const props = a.props || window.WIDGETS[a.widget].example;
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">${esc(a.widget.toUpperCase())}</span>
+      ${esc(a.title || a.widget)}
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    ${a.note ? `<div class="chain-lede">${esc(a.note)}</div>` : ''}
+    <div style="overflow-x:auto">${window.WIDGETS[a.widget].render(props)}</div>
+  </div>`;
+}
+
+// Render the right-panel artifact stream — each artifact is rendered
+// in order; the stream grows as user clicks / asks; body scrolls.
+function renderStream(p) {
+  return rightStream.map((a, i) => {
+    switch (a.type) {
+      case 'hyp_rank':      return renderHypRankArtifact(p);
+      case 'chain':         return renderChainArtifact(p, a.hypId, i);
+      case 'chat':          return renderChatArtifact(a, i);
+      case 'widget':        return renderWidgetArtifact(a, i);
+      case 'nmd_marimekko': return renderNmdMarimekko(i);
+      default:              return '';
+    }
+  }).join('');
+}
+
+// Patient-scoped EXAMPLES catalog — organized by biological layer of
+// organization (matches the Overview panel groups + the Dynamic Dashboard's
+// question panel). Each item tagged with the artifact the answer produces.
+function buildExamples(p) {
+  // Build 4 unique isoform questions from this patient's actual impact
+  // map (2 hit + 2 spared where possible). Deduplicates in case the
+  // patient has all-hit or all-spared isoforms.
+  const isoItems = [];
+  const seenIso = new Set();
+  const pushIso = (id, hit) => {
+    const q = `Why is ${id} ${hit ? 'hit' : 'spared'}?`;
+    if (!seenIso.has(q)) { seenIso.add(q); isoItems.push({tag:'chat', question:q}); }
+  };
+  const hitIsos    = p.isoformImpact.filter(i =>  i.hit);
+  const sparedIsos = p.isoformImpact.filter(i => !i.hit);
+  hitIsos.slice(0, 2).forEach(i => pushIso(i.id, true));
+  sparedIsos.slice(0, 2).forEach(i => pushIso(i.id, false));
+  // top up to 4 if under-full (e.g. all-hit or all-spared patient)
+  for (const i of p.isoformImpact) {
+    if (isoItems.length >= 4) break;
+    pushIso(i.id, i.hit);
+  }
+
+  return [
+    { category: 'Patient', items: [
+      { tag: 'chat', question: 'What labs are abnormal?' },
+    ]},
+    { category: 'Variant', items: [
+      { tag: 'chat',                    question: 'What is this patient\'s variant?' },
+      { tag: 'chat + chain',            question: 'Why is this the top hypothesis?' },
+      { tag: 'widget · variantLollipop',question: 'Where do variants cluster on the protein?' },
+      { tag: 'widget · stackedBar',     question: 'What variant classes drive DMD?' },
+    ]},
+    { category: 'Gene', items: [
+      { tag: 'widget · exonArchitecturePanel', question: 'Show me the exon architecture of DMD' },
+      { tag: 'widget · geneHeader',            question: 'Give me a gene overview' },
+    ]},
+    { category: 'Protein (isoform)', items: isoItems.concat([
+      { tag: 'widget · heatmap', question: 'How does isoform expression vary across cell types?' },
+    ]) },
+    { category: 'Cell type', items: [
+      { tag: 'chat',              question: 'Which cell types are affected?' },
+      { tag: 'widget · hbarList', question: 'Where is DMD expressed at cell-type resolution?' },
+    ]},
+    { category: 'Tissue type', items: [
+      { tag: 'chat', question: 'Which tissues are spared?' },
+    ]},
+    { category: 'Phenotype', items: [
+      { tag: 'chat',                    question: 'What is this patient\'s phenotype and prognosis?' },
+      { tag: 'widget · donutBreakdown', question: 'What is the cohort phenotype distribution?' },
+    ]},
+    { category: 'Mechanism (hypothesis)', items: [
+      { tag: 'chat + chain',                  question: 'Show me the reasoning chain' },
+      { tag: 'chat + chain',                  question: 'Explain the mechanism' },
+      { tag: 'chat + chain',                  question: 'What supports H01?' },
+      { tag: 'chat + chain',                  question: 'What supports H02?' },
+      { tag: 'chat + chain',                  question: 'What supports H03?' },
+      { tag: 'chat + chain',                  question: 'What supports H04?' },
+      { tag: 'chat',                          question: 'Compare the hypotheses' },
+      { tag: 'widget · edgeEvidenceBar',      question: 'What evidence supports the genotype-to-protein step?' },
+      { tag: 'widget · hypothesisDetail',     question: 'Give me the full hypothesis detail pack' },
+      { tag: 'marimekko · NMD × ACMG',        question: 'How do NMD categories break down across ACMG classes?' },
+    ]},
+    { category: 'Therapy (closes the loop)', items: [
+      { tag: 'chat + chain', question: 'What therapies apply?' },
+      { tag: 'chat + chain', question: 'What AAV options exist?' },
+    ]},
+    { category: 'Cross-axis views', items: [
+      { tag: 'widget · linkedHeatmap', question: 'Link variants to cell types and pathways' },
+    ]},
+    { category: 'Cohort context', items: [
+      { tag: 'chat', question: 'Compare to a typical DMD patient' },
+    ]},
+  ];
+}
+
+// Top of right panel: input + hero chips + expandable "more" panel.
+function renderChatBar(p) {
+  const suggestions = [
+    'Why is this the top hypothesis?',
+    'Show me the reasoning chain',
+    'Which tissues are spared?',
+    p.isoformImpact.find(i => !i.hit)
+      ? `Why is ${p.isoformImpact.find(i => !i.hit).id} spared?`
+      : `Why is ${p.isoformImpact[0].id} hit?`,
+    'What therapies apply?',
+  ];
+  const chips = suggestions.map(s =>
+    `<button class="pc-suggest" data-q="${esc(s)}">${esc(s)}</button>`).join('');
+
+  const examples = buildExamples(p);
+  const cats = examples.map(cat => `
+    <div class="pc-cat">
+      <h4>${esc(cat.category)}</h4>
+      ${cat.items.map(item => `
+        <button class="pc-cat-item" data-q="${esc(item.question)}">
+          <span class="pc-cat-item-tag">${esc(item.tag)}</span>
+          <span class="pc-cat-item-q">${esc(item.question)}</span>
+        </button>`).join('')}
+    </div>`).join('');
+
+  return `
+    <div class="pc-chat-bar">
+      <form class="pc-input-row" id="chat-form">
+        <span class="pc-input-lbl">Ask</span>
+        <input class="pc-input" id="chat-input" autocomplete="off"
+               placeholder="Ask about ${esc(patientLabel(p))}…"
+               ${chatStreaming ? 'disabled' : ''}/>
+        <button class="pc-send" type="submit" ${chatStreaming ? 'disabled' : ''}>Send</button>
+        <button type="button" class="pc-panel-btn" id="reset-stream"
+                title="Clear artifact stream" style="font-size:14px;padding:5px 8px">↺</button>
+      </form>
+      <div class="pc-suggest-row">
+        <span class="pc-suggest-lbl">Try:</span>
+        ${chips}
+        <button type="button" class="pc-more-toggle" id="more-toggle">
+          ${morePanelOpen ? 'Hide example questions ▴' : 'See more example questions ▾'}
+        </button>
+      </div>
+      <div class="pc-more-panel" ${morePanelOpen ? '' : 'hidden'}>
+        <div class="pc-more-hd">
+          <h3>Example questions · categorized · tagged by artifact</h3>
+          <button type="button" class="pc-more-close" id="more-close" aria-label="Close">×</button>
+        </div>
+        <div class="pc-cats">${cats}</div>
+      </div>
+    </div>`;
+}
+
+function renderRightPanel(p) {
+  return `
+    <div class="pc-panel pc-right">
+      ${renderChatBar(p)}
+      <div class="pc-panel-body" id="right-body">
+        ${renderStream(p)}
+      </div>
+    </div>`;
+}
+
+// ================================================================
+// TOP STRIP — selector + identity
+// ================================================================
+function renderTopStrip(p) {
+  // Patient selector was moved up to mechanism.html's global patient
+  // strip (right under the title). Nothing to render here.
+  return '';
+}
+
+// ================================================================
+// LEFT PANEL WRAPPER (with expand controls)
+// ================================================================
+function renderLeftPanel(p) {
+  const modes = [
+    ['collapsed', '◀ hide'],
+    ['normal',    '⇤ normal'],
+    ['full',      '⛶ full'],
+  ];
+  const modeBtns = modes.map(([m, lbl]) =>
+    `<button class="pc-panel-btn ${overviewMode === m ? 'active' : ''}" data-ov-mode="${m}">
+       ${esc(lbl)}
+     </button>`).join('');
+  return `
+    <div class="pc-panel pc-left">
+      <div class="pc-panel-h">
+        <span class="pc-panel-h-title">Overview</span>
+        <span class="pc-panel-h-sub">patient context · all tiles collapsible</span>
+        <div class="pc-panel-h-actions">${modeBtns}</div>
+      </div>
+      <div class="pc-panel-body">${renderOverview(p)}</div>
+    </div>`;
+}
+
+// When overview is fully hidden, show a small floating "◀ show overview"
+// button so the user can bring it back.
+function renderOverviewReopen() {
+  if (overviewMode !== 'collapsed') return '';
+  return `
+    <button class="pc-ov-reopen" id="ov-reopen" title="Show Overview">
+      ◀ Overview
+    </button>`;
+}
+
+// ================================================================
+// EDGE MODAL
+// ================================================================
+function renderEdgeModal(p) {
+  if (!currentEdgeId || !MECH_DATA || !currentHypId) return '';
+  const byId = Object.fromEntries(MECH_DATA.hypotheses.map(h => [h.id, h]));
+  const hyp = byId[currentHypId];
+  if (!hyp?.detail?.chain) return '';
+  const edge = hyp.detail.chain.edges.find(e => (e.id || `${e.from}-${e.to}`) === currentEdgeId);
+  if (!edge) return '';
+  const byNode = Object.fromEntries(hyp.detail.chain.nodes.map(n => [n.id, n]));
+  const fn = byNode[edge.from], tn = byNode[edge.to];
+  const fromLbl = fn ? `${fn.label1} ${fn.label2 || ''}`.trim() : edge.from;
+  const toLbl   = tn ? `${tn.label1} ${tn.label2 || ''}`.trim() : edge.to;
+  const rows = (edge.evidence || []).map(e => `
+    <li>
+      <span class="tick">${e.tone === 'warn' ? '!' : '✓'}</span>
+      <span>${esc(e.text)}<span class="cite">${esc(e.cite || '')}</span></span>
+    </li>`).join('') || `<div style="color:var(--ink-3);font-size:11px;padding:6px 0;font-style:italic">
+      No curated evidence for this edge yet.</div>`;
+  return `
+    <div class="edge-modal-backdrop" id="edge-modal-backdrop">
+      <div class="edge-modal">
+        <div class="edge-modal-h">
+          <div>
+            <div class="edge-modal-title">Edge Evidence</div>
+            <div class="edge-modal-arrow"><b>${esc(fromLbl)}</b><span class="arrow-sep">→</span><b>${esc(toLbl)}</b></div>
+            <div style="font-family:'SF Mono',Menlo,monospace;font-size:10px;color:var(--ink-3);margin-top:4px">
+              H${esc(currentHypId)} · ${esc(currentEdgeId)} · ${(edge.evidence || []).length} citation${(edge.evidence || []).length === 1 ? '' : 's'}
+            </div>
+          </div>
+          <button class="edge-modal-close" id="edge-modal-close" aria-label="Close">×</button>
+        </div>
+        <div class="edge-modal-body">${rows.startsWith('<li') ? `<ul>${rows}</ul>` : rows}</div>
+      </div>
+    </div>`;
+}
+
+// ================================================================
+// CHAT PLANNER (canned patterns, patient-scoped)
+// ================================================================
+function planChat(query, p) {
+  const q = (query || '').toLowerCase();
+  const byId = Object.fromEntries((MECH_DATA?.hypotheses || []).map(h => [h.id, h]));
+  const top = p.hypothesisRanking?.[0];
+  const topHyp = top ? byId[top.id] : null;
+
+  // ---- 0. Widget-emitting routes (checked FIRST for specific keywords) ----
+  //     These produce a `widgetToOpen` in the plan; ask() will append the
+  //     widget artifact after the assistant turn.
+  if (/lollipop|cluster.*(on|along).*(protein|amino acid|position)|variant.*(protein) position/.test(q)) {
+    return {
+      text: `Plotting DMD variant density along the protein axis — marker height = report count, color = predicted consequence class. ` +
+            `${patientLabel(p)}'s variant is at exon ${p.variant.exon} (${p.variant.consequence}). ` +
+            `Below: a demonstration lollipop map from the widget palette.`,
+      widgetToOpen: { widget: 'variantLollipop', title: 'Variant lollipop · DMD protein axis',
+        note: `Demonstration data from widget_palette.js. Production would highlight ${patientLabel(p)}'s variant position.` },
+    };
+  }
+  if (/exon (architecture|structure|layout|ruler)|which exons? (encode|contain|make up)|domain (architecture|panel|band)/.test(q)) {
+    return {
+      text: `DMD's 79 exons encode four functional domains: N-terminal actin-binding (ex 1-8), central rod of 24 spectrin repeats (ex 8-63), cysteine-rich (ex 64-70), and C-terminal syntrophin-binding (ex 71-79). ` +
+            `${patientLabel(p)}'s variant sits at exon ${p.variant.exon}.`,
+      widgetToOpen: { widget: 'exonArchitecturePanel', title: 'Exon architecture · DMD',
+        note: 'PSI values are demonstrative pending a full splicing atlas bake.' },
+    };
+  }
+  if (/isoform.*(cell type|tissue|matrix|heatmap|across)|expression.*isoform.*(cell|tissue)|(cell type|tissue).*isoform|isoform (expression|profile) (matrix|heatmap|grid)/.test(q)) {
+    return {
+      text: `Heatmap of DMD's 7 isoforms against a cell-type panel — Dp427m in myofibers + cardiomyocytes, Dp260 in retinal photoreceptors, Dp140 in fetal CNS + kidney, Dp116 in Schwann cells, Dp71 broadly. ` +
+            `${patientLabel(p)}'s variant hits isoforms whose promoter fires ≤ exon ${p.variant.exonNum || '?'}.`,
+      widgetToOpen: { widget: 'heatmap', title: 'Isoform × cell type expression heatmap',
+        note: 'Demonstration matrix; a broader single-cell atlas bake would be needed for real values.' },
+    };
+  }
+  if (/linked heatmap|link.*(variant|pathway|cell type).*(cell type|pathway)|cross[- ]?axis|connect.*(variant|pathway|cell type)/.test(q)) {
+    return {
+      text: `Linked heatmap joins three axes: variant classes → cell types → pathways. Cell type is the shared middle axis. ` +
+            `Answers "which variant classes hit which cell types, and which processes those cell types drive."`,
+      widgetToOpen: { widget: 'linkedHeatmap', title: 'Linked heatmap · variants ↔ cell types ↔ pathways',
+        note: 'Demonstration matrix; production would compute pathogenicity-weighted overlaps.' },
+    };
+  }
+  if (/cohort (distribution|breakdown)|phenotype distribution|becker fraction|donut|dmd\/bmd fraction/.test(q)) {
+    return {
+      text: `Cohort phenotype distribution from Zhang 2024 (N=2,097): DMD ~81%, BMD ~15%, IMD ~2%, pending ~2%. ` +
+            `${patientLabel(p)}'s label is <b>${p.phenotype}</b>.`,
+      widgetToOpen: MECH_DATA?.tiles?.phenotypeDist ? {
+        widget: 'donutBreakdown',
+        title: 'Phenotype distribution (cohort donut)',
+        props: { title: 'Phenotype Distribution', ...MECH_DATA.tiles.phenotypeDist },
+      } : null,
+    };
+  }
+  if (/variant class(es)?|variant type|structural vs snv|snv vs structural|stackedbar|variant landscape/.test(q)) {
+    return {
+      text: `DMD variant landscape (LOVD 41,566 reports, ~10,136 unique): structural ~73%, SNV ~25%, other ~2%. Deletions dominate due to the 2.3 Mb locus + repetitive introns → non-allelic homologous recombination.`,
+      widgetToOpen: MECH_DATA?.tiles?.geneticEvidence ? {
+        widget: 'stackedBar',
+        title: 'DMD variant landscape (cohort)',
+        props: { title: 'DMD Variant Landscape', ...MECH_DATA.tiles.geneticEvidence },
+      } : null,
+    };
+  }
+  if (/evidence (supports|for) (the|a|any).*(step|edge|arrow|link)|edge evidence|citations? for.*(step|edge|arrow)|why does.*imply|genotype.*protein step/.test(q)) {
+    if (topHyp?.detail?.chain) {
+      const edges = topHyp.detail.chain.edges;
+      const edge = edges.find(e => e.evidence && e.evidence.length) || edges[0];
+      return {
+        text: `Each arrow in the reasoning chain carries citation-backed evidence. Here's one edge from H${top.id}'s chain with its citation list — in the chain artifact you can click any arrow to open the same view in a modal.`,
+        widgetToOpen: {
+          widget: 'edgeEvidenceBar',
+          title: `Edge evidence · H${top.id} · ${edge.from} → ${edge.to}`,
+          props: { edge, evidence: edge.evidence || [] },
+        },
+      };
+    }
+  }
+  if (/hypothesis detail|full hypothesis|hypothesis pack|hypothesis card|lede.*evidence/.test(q)) {
+    if (topHyp && topHyp.detail) {
+      return {
+        text: `Full hypothesis detail pack for H${top.id} — lede + curated evidence bullets + reasoning chain, from widget_palette.hypothesisDetail.`,
+        widgetToOpen: {
+          widget: 'hypothesisDetail',
+          title: `Hypothesis detail · H${top.id}: ${topHyp.name}`,
+          props: { hypothesis: topHyp, selectedEdgeId: null },
+        },
+      };
+    }
+  }
+  if (/nmd|nonsense.?mediated decay|marimekko|acmg.*(nmd|categor)|nmd.*(acmg|categor)|ptc.*(distribution|breakdown)|escaping.*(vs|versus).*triggering/.test(q)) {
+    return {
+      text: `Cross-tabulating ClinVar's ${MECH_DATA?.nmdCohort?.total?.toLocaleString('en-US') || '?'} DMD variants by ACMG classification (Benign · Uncertain · Pathogenic) × NMD category (Triggering · Transcript-dependent · Escaping). Column widths = ACMG totals, segment heights = NMD share within each column.`,
+      artifactToOpen: { type: 'nmd_marimekko' },
+    };
+  }
+  if (/hbar|bar list|cell.?type resolution|top cell types|hpa cell types/.test(q)) {
+    if (MECH_DATA?.tiles?.cellTypes) {
+      return {
+        text: `hbarList widget from the palette — top ${MECH_DATA.tiles.cellTypes.rows.length} DMD-expressing cell types from Human Protein Atlas (log10-scaled nCPM).`,
+        widgetToOpen: {
+          widget: 'hbarList', title: 'Cell types (hbarList widget)',
+          props: { title: 'Cell Types (Human Protein Atlas)', ...MECH_DATA.tiles.cellTypes },
+        },
+      };
+    }
+  }
+  if (/gene overview|dmd overview|gene header|gene summar/.test(q)) {
+    return {
+      text: `DMD encodes dystrophin on Xp21.2 — 79 exons, 7 tissue-specific isoforms, 2.3 Mb locus. ${patientLabel(p)}'s variant at exon ${p.variant.exon} lies within this coding region.`,
+      widgetToOpen: MECH_DATA?.gene && MECH_DATA?.header ? {
+        widget: 'geneHeader',
+        title: 'Gene header · DMD',
+        props: { gene: MECH_DATA.gene, header: MECH_DATA.header },
+      } : null,
+    };
+  }
+
+  // ---- 1. Isoform-specific (MUST come before "spared"/"tissue" routes) ----
+  const isoMatch = q.match(/dp\s?(427[mcp]?|260|140|116|71)/);
+  if (isoMatch) {
+    const target = 'Dp' + isoMatch[1].replace(/\s/g, '');
+    const iso = p.isoformImpact.find(i => i.id.toLowerCase() === target.toLowerCase());
+    if (iso) {
+      const status = iso.hit ? '<b>hit</b>' : '<b>spared</b>';
+      const tissuesFor = (iso.tissues || []).join(', ') || 'not specified';
+      const cellsUsingIt = p.cellTypeImpact
+        .filter(c => (c.reason || '').includes(iso.id))
+        .map(c => `${c.name} (${c.status})`);
+      const consequenceLine = iso.hit
+        ? `<b>Consequence:</b> tissues that depend on ${iso.id} (${tissuesFor}) lose dystrophin function in this patient.`
+        : `<b>Consequence:</b> tissues carried by ${iso.id} (${tissuesFor}) retain dystrophin — the variant is upstream of ${iso.id}'s promoter (exon ${iso.firstSharedExon}) so ${iso.id} mRNA is unaffected.`;
+      return {
+        text: `<b>${iso.id}</b> is ${status} for <b>${patientLabel(p)}</b>.<br><br>` +
+              `<b>Why:</b> ${esc(iso.reason)}. ${iso.id}'s promoter fires at exon ${iso.firstSharedExon}; this patient's variant is at exon ${p.variant.exon} (${p.variant.consequence}).<br><br>` +
+              `<b>Promoter tissue:</b> ${esc(iso.promoterTissue)}<br>` +
+              `<b>Expressed in:</b> ${esc(tissuesFor)}<br><br>` +
+              consequenceLine +
+              (cellsUsingIt.length ? `<br><br><b>HPA cell types touched:</b> ${cellsUsingIt.join(' · ')}.` : ''),
+      };
+    }
+  }
+
+  // ---- 2. "Why is [this/H0X] the top hypothesis?" ----
+  if (/why.*(top|rank|hypothesis|first)/.test(q) || /^why h(0?\d)/.test(q)) {
+    if (!top || !topHyp) return { text: 'No ranking available.' };
+    const pe = (top.patientEvidence || []).length;
+    const runners = p.hypothesisRanking.slice(1).map(r =>
+      `<b>H${r.id}</b> (score ${r.score.toFixed(1)}, ${(r.patientEvidence || []).length} lab bullets) — <i>${esc(r.fit)}</i>`
+    ).join('<br>');
+    return {
+      text: `<b>H${top.id} — ${esc(topHyp.name)}</b> is top-ranked (score ${top.score.toFixed(1)}/10).<br><br>` +
+            `<b>Scoring rule that fired:</b> <i>${esc(top.fit)}</i><br>` +
+            `<b>Patient-lab support:</b> ${pe} bullet${pe === 1 ? '' : 's'} argue for this hypothesis in ${patientLabel(p)}${pe ? ' — open the chain to see them' : ''}.<br><br>` +
+            `<b>Runners-up:</b><br>${runners}<br><br>` +
+            `Ask <i>"compare H${top.id} vs H0X"</i> or <i>"what supports H0X"</i> for the head-to-head.`,
+      hypToOpen: top.id,
+    };
+  }
+
+  // ---- 3. "What supports H0X" / "labs for H0X" ----
+  const hypMatch = q.match(/(?:supports?|labs?|evidence|for)\s+h(0?\d)/);
+  if (hypMatch) {
+    const hid = hypMatch[1].padStart(2, '0');
+    const r = p.hypothesisRanking.find(x => x.id === hid);
+    const h = byId[hid];
+    if (r && h) {
+      const pe = r.patientEvidence || [];
+      const bullets = pe.length
+        ? pe.map(e => `• ${esc(e.text)}`).join('<br>')
+        : `<i>No patient labs argue for H${hid} directly.</i>`;
+      return {
+        text: `<b>H${hid} — ${esc(h.name)}</b> (rank ${r.rank}, score ${r.score.toFixed(1)}, ${pe.length} lab bullets)<br><br>` +
+              `<b>Scoring rule:</b> <i>${esc(r.fit)}</i><br><br>` +
+              `<b>Patient-lab evidence:</b><br>${bullets}`,
+        hypToOpen: hid,
+      };
+    }
+  }
+
+  // ---- 4. Reasoning chain / mechanism ----
+  if (/reasoning|chain|mechanism|how does.*(cause|work)|explain/.test(q)) {
+    if (!topHyp?.detail?.chain) {
+      return { text: `No reasoning chain curated for H${top.id} yet.`, hypToOpen: top.id };
+    }
+    const n = topHyp.detail.chain.nodes.length;
+    const e = topHyp.detail.chain.edges.length;
+    return {
+      text: `Opening the reasoning chain for <b>H${top.id}</b>. ` +
+            `${n} nodes across <i>cause → mechanism → phenotype</i> tiers, connected by ${e} evidence-backed edges. ` +
+            `Click any arrow for edge-level citations, or toggle to <b>Layers</b> view for the biological-organization pipeline (variant → protein → pathway → subcellular → cell → tissue → phenotype).<br><br>` +
+            (topHyp.detail.lede ? `<i>${esc(topHyp.detail.lede)}</i>` : ''),
+      hypToOpen: top.id,
+    };
+  }
+
+  // ---- 5. Abnormal labs / "what's off" ----
+  if (/abnormal|off|out of range|elevated|reduced|what.*labs/.test(q)) {
+    const abn = p.labs.filter(l => l.flag !== 'normal');
+    if (!abn.length) return { text: `All ${p.labs.length} routine labs are within reference range for ${patientLabel(p)}.` };
+    const grouped = abn.map(l => {
+      const fold = (l.flag === 'high' && l.refHigh) ? ` (${(l.value / l.refHigh).toFixed(1)}× ULN)`
+                 : (l.flag === 'low' && l.refLow)   ? ` (${(l.refLow / l.value).toFixed(1)}× under LLN)` : '';
+      return `• <b>${esc(l.label)}</b>: ${l.value} ${esc(l.unit)} [${esc(l.flag)}]${fold}`;
+    }).join('<br>');
+    return {
+      text: `<b>${abn.length}/${p.labs.length} labs abnormal</b> for ${patientLabel(p)}:<br><br>${grouped}`,
+    };
+  }
+
+  // ---- 6a. Compare to typical / cohort (checked BEFORE compare-hypotheses
+  //          and phenotype routes, since "typical DMD patient" contains both
+  //          "compare" and "DMD" keywords that other routes would otherwise
+  //          grab) ----
+  if (/typical|classical|usual|average/.test(q)) {
+    const hitIso = p.isoformImpact.filter(i => i.hit).map(i => i.id);
+    const sparedIso = p.isoformImpact.filter(i => !i.hit).map(i => i.id);
+    return {
+      text: `<b>Typical DMD</b> = truncating variant → total Dp427m loss → cardiomyopathy + respiratory failure by teens.<br><br>` +
+            `<b>${patientLabel(p)}:</b> ${p.variant.consequence} at exon ${p.variant.exon}, hitting ${hitIso.length} isoforms (${hitIso.join(', ')}) and sparing ${sparedIso.length} (${sparedIso.join(', ') || 'none'}).<br><br>` +
+            (p.phenotype === 'BMD'
+              ? `BMD suggests in-frame rescue keeps some functional dystrophin — atypical for a truncating variant.`
+              : p.phenotype === 'IMD'
+              ? `IMD is a boundary label — this variant produces intermediate severity, possibly via partial NMD escape.`
+              : `The isoform impact matches a classical severe presentation.`),
+    };
+  }
+
+  // ---- 6b. Compare hypotheses (requires hypothesis context) ----
+  const cmpMatch = q.match(/compar.*(?:hypothes|h0?\d|rank|top)|h(0?\d).*(?:vs|versus|or)\s*h(0?\d)/)
+                || (q.startsWith('compare') && /hypothes|rank/.test(q));
+  if (cmpMatch) {
+    return {
+      text: `Ranking for ${patientLabel(p)}:<br>` +
+        p.hypothesisRanking.map(r => {
+          const h = byId[r.id];
+          const pe = (r.patientEvidence || []).length;
+          return `<b>#${r.rank} · H${r.id}</b> — score ${r.score.toFixed(1)}, ${pe} lab bullets. <i>${esc(r.fit)}</i>`;
+        }).join('<br>') +
+        `<br><br>Ask <i>"why H0X"</i> or click any row in the rank artifact to see its chain.`,
+    };
+  }
+
+  // ---- 7. Tissues (only if isoform check didn't match) ----
+  if (/tissue|which tissue|what tissue|which organ|body/.test(q) || /spared|hit/.test(q)) {
+    return {
+      text: `Given ${patientLabel(p)}'s variant at exon ${p.variant.exon}:<br><br>` +
+            `<b>${p.tissuesHit.length} tissues hit</b> — ${p.tissuesHit.join(', ')}<br>` +
+            `<b>${p.tissuesSpared.length} tissues spared</b> — ${p.tissuesSpared.join(', ')}<br><br>` +
+            `Projection: an isoform is hit iff <code>first_shared_exon ≤ ${p.variant.exonNum}</code> — that determines which tissues lose dystrophin.`,
+    };
+  }
+
+  // ---- 8. Cell types ----
+  if (/cell type|myonuclei|photoreceptor|cardiomyocyte/.test(q)) {
+    const hits = p.cellTypeImpact.filter(c => c.status === 'hit');
+    const spared = p.cellTypeImpact.filter(c => c.status === 'spared');
+    const rows = [...hits, ...spared].map(c =>
+      `• <b>${esc(c.name)}</b> [${esc(c.status)}] — ${esc(c.reason)}`).join('<br>');
+    return {
+      text: `HPA cell-type map for ${patientLabel(p)}:<br><br>${rows}<br><br>` +
+            `Mapping curated from Muntoni 2003 (Dp427m in muscle), Pillers 1993 (Dp260 in retina), Lidov 1995 (Dp71 ubiquitous).`,
+    };
+  }
+
+  // ---- 9. Therapy / treatment ----
+  if (/therap|treatment|drug|skipping|ataluren|elevidys|aav/.test(q)) {
+    if (!topHyp) return { text: 'No hypothesis to reason from.' };
+    const th = topHyp.detail?.chain?.therapeutic;
+    return {
+      text: `<b>Therapeutic strategy for H${top.id}:</b> ${esc(topHyp.therapeutic || '')}.<br><br>` +
+            (th ? `<b>Chain therapy node:</b> <i>${esc(th.label1)}</i> — ${esc(th.label2)}.<br><br>` : '') +
+            `<b>Reminder:</b> real prescribing requires variant confirmation, ` +
+            `exon-skipping compatibility check, and AAV eligibility screening ` +
+            `(anti-capsid NAb titers, T-cell response). ` +
+            `This is a mechanism-level pointer, not a clinical recommendation.`,
+      hypToOpen: top.id,
+    };
+  }
+
+  // ---- 10. Phenotype / prognosis ----
+  if (/phenotype|prognosis|becker|dmd|bmd|imd|severity|progression|ambulator/.test(q)) {
+    return {
+      text: `${patientLabel(p)} labeled <b>${p.phenotype}</b>` +
+            (p.age ? ` at age <b>${p.age}</b>` : '') +
+            (p.ambulatory ? `, <b>${p.ambulatory === 'Yes' ? 'ambulant' : 'non-ambulant'}</b>` : '') +
+            `.<br><br>` +
+            `<b>Zhang 2024 cohort:</b> DMD ${DATA.phenoBreakdown.DMD || 0}, BMD ${DATA.phenoBreakdown.BMD || 0}, ` +
+            `IMD ${DATA.phenoBreakdown.IMD || 0}, pending ${DATA.phenoBreakdown.pending || 0}.<br><br>` +
+            `The phenotype label is clinical (age at ambulation loss, muscle biopsy) — Monaco rule holds ~90%, not 100%.`,
+    };
+  }
+
+  // ---- 11. Variant / genotype ----
+  if (/variant|mutation|exon|c\.|p\.|nucleotide|acmg/.test(q)) {
+    const v = p.variant;
+    return {
+      text: `<b>${patientLabel(p)} variant:</b><br>` +
+            `• <b>Exon:</b> ${esc(v.exon || '?')} (parsed as ${v.exonNum ?? '?'})<br>` +
+            `• <b>Nucleotide (c.):</b> <code>${esc(v.nucleotide || '—')}</code><br>` +
+            `• <b>Protein (p.):</b> <code>${esc(v.aaChange || '—')}</code><br>` +
+            `• <b>Consequence:</b> ${esc(v.consequence)}<br>` +
+            `• <b>ACMG:</b> ${esc(v.acmg || 'not classified')}<br>` +
+            `• <b>Source:</b> Zhang 2024, ${esc(p.cohort)} cohort record ${esc(p.cohortPatientId)}`,
+    };
+  }
+
+  return null;
+}
+
+function streamText(text, artifactRef, done) {
+  const words = text.split(/(\s+)/);
+  let i = 0;
+  chatStreaming = true;
+  const timer = setInterval(() => {
+    // With newest-first stream ordering, target the .streaming turn
+    // rather than :last-of-type (which would be the oldest).
+    const bubble = document.querySelector('.chat-turn.streaming .chat-turn-body');
+    if (!bubble) { clearInterval(timer); chatStreaming = false; return; }
+    const partial = words.slice(0, ++i).join('');
+    bubble.innerHTML = partial + '<span class="chat-cursor"></span>';
+    if (i >= words.length) {
+      clearInterval(timer); chatStreaming = false;
+      bubble.innerHTML = text;
+      done && done();
+    }
+  }, 20);
+}
+
+function ask(query) {
+  if (chatStreaming || !query.trim()) return;
+  const p = DATA.patients.find(x => x.id === currentPatientId);
+  if (!p) return;
+
+  const plan = planChat(query, p) || {
+    text: `I don't have a canned answer for "<i>${esc(query)}</i>". Try one of the suggestion chips.`,
+  };
+
+  const assistantArtifact = { type: 'chat', role: 'assistant', text: '', streaming: true };
+
+  // PREPEND to top so newest Q&A appears first. Chain (if the plan
+  // opened one) sits *below* the assistant turn, so reading top-to-bottom
+  // is: user question → agent answer → (optionally) the chain the answer
+  // references. Older content pushed further down.
+  const newArtifacts = [
+    { type: 'chat', role: 'user', text: query },
+    assistantArtifact,
+  ];
+  if (plan.hypToOpen) {
+    currentHypId = plan.hypToOpen;
+    currentEdgeId = null;
+    newArtifacts.push({ type: 'chain', hypId: plan.hypToOpen });
+  }
+  if (plan.widgetToOpen) {
+    newArtifacts.push({ type: 'widget', ...plan.widgetToOpen });
+  }
+  if (plan.artifactToOpen) {
+    // generic artifact push (e.g. nmd_marimekko) — plan supplies {type, ...}
+    newArtifacts.push({ ...plan.artifactToOpen });
+  }
+  rightStream = [...newArtifacts, ...rightStream];
+
+  scrollTopOnRender = true;
+  renderPage();
+  requestAnimationFrame(() => streamText(plan.text, assistantArtifact, () => {
+    assistantArtifact.text = plan.text;
+    assistantArtifact.streaming = false;
+    renderPage();
+  }));
+}
+
+// Called on patient change or reset button — seed the stream with just
+// the ranked hypothesis artifact.
+function seedStream() {
+  rightStream = [{ type: 'hyp_rank' }];
+  currentHypId = null;
+  currentEdgeId = null;
+  scrollTopOnRender = false;
+}
+
+// ================================================================
+// MAIN RENDER
+// ================================================================
+function renderPage() {
+  const p = DATA.patients.find(x => x.id === currentPatientId) || DATA.patients[0];
+  currentPatientId = p.id;
+
+  const bodyCls = overviewMode === 'full'      ? 'overview-full'
+                 : overviewMode === 'collapsed' ? 'overview-collapsed' : '';
+
+  document.getElementById('app').innerHTML = `
+    ${renderTopStrip(p)}
+    <div class="pc-body ${bodyCls}">
+      ${renderLeftPanel(p)}
+      ${renderRightPanel(p)}
+    </div>
+    ${renderOverviewReopen()}
+    ${renderEdgeModal(p)}
+  `;
+
+  // Newest artifacts are at the top of the stream, so scroll the
+  // right-panel body to the top when new artifacts arrive. Skip on
+  // plain re-renders (tile toggles, view mode changes, etc.).
+  if (scrollTopOnRender) {
+    requestAnimationFrame(() => {
+      const body = document.getElementById('right-body');
+      if (body) body.scrollTop = 0;
+      scrollTopOnRender = false;
+    });
+  }
+
+  // ---- wire patient selector (dropdown only — chips row removed) ----
+  const picker = document.getElementById('pat-picker');
+  if (picker) picker.addEventListener('change', () => {
+    currentPatientId = picker.value;
+    seedStream();
+    renderPage();
+  });
+
+  // ---- Overview: tile expand + overview mode ----
+  document.querySelectorAll('[data-tile-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.tileToggle;
+      if (expandedTiles.has(id)) expandedTiles.delete(id); else expandedTiles.add(id);
+      renderPage();
+    });
+  });
+  document.querySelectorAll('[data-ov-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      overviewMode = btn.dataset.ovMode;
+      renderPage();
+    });
+  });
+  const ovReopen = document.getElementById('ov-reopen');
+  if (ovReopen) ovReopen.addEventListener('click', () => {
+    overviewMode = 'normal';
+    renderPage();
+  });
+
+  // ---- rank row click (Dashboard-style table) → prepend chain artifact ----
+  // The hypothesisTable widget emits <tr data-hid="…">; also catch clicks
+  // on the compact patient-scoring strip above the table.
+  document.querySelectorAll('table.hyp tbody tr[data-hid], .pss-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const hid = row.dataset.hid;
+      if (!hid) return;
+      currentHypId = hid; currentEdgeId = null;
+      rightStream = [{ type: 'chain', hypId: hid }, ...rightStream];
+      scrollTopOnRender = true;
+      renderPage();
+    });
+  });
+
+  // ---- chain view toggle (shared across all chain artifacts) ----
+  document.querySelectorAll('[data-chain-view]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      chainView = btn.dataset.chainView; currentEdgeId = null;
+      renderPage();
+    });
+  });
+
+  // ---- remove any single artifact from the stream ----
+  document.querySelectorAll('[data-artifact-remove]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.artifactRemove, 10);
+      if (!isNaN(idx) && rightStream[idx]) {
+        rightStream.splice(idx, 1);
+        renderPage();
+      }
+    });
+  });
+
+  // ---- reset stream button ----
+  const resetBtn = document.getElementById('reset-stream');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    seedStream();
+    renderPage();
+  });
+
+  // ---- chain edges → edge-evidence modal ----
+  document.querySelectorAll('[data-edge-id]').forEach(hit => {
+    hit.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      currentEdgeId = hit.dataset.edgeId;
+      renderPage();
+    });
+  });
+  const backdrop = document.getElementById('edge-modal-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', (ev) => {
+      if (ev.target === backdrop) { currentEdgeId = null; renderPage(); }
+    });
+    const cbtn = document.getElementById('edge-modal-close');
+    if (cbtn) cbtn.addEventListener('click', () => { currentEdgeId = null; renderPage(); });
+  }
+
+  // ---- chat input + suggestion chips + more-panel questions ----
+  document.querySelectorAll('.pc-suggest, .pc-cat-item').forEach(b =>
+    b.addEventListener('click', () => {
+      ask(b.dataset.q);
+      if (morePanelOpen) { morePanelOpen = false; renderPage(); }
+    }));
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  if (form) form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const q = (input.value || '').trim();
+    if (q) { input.value = ''; ask(q); }
+  });
+  const moreToggle = document.getElementById('more-toggle');
+  if (moreToggle) moreToggle.addEventListener('click', () => {
+    morePanelOpen = !morePanelOpen; renderPage();
+  });
+  const moreClose = document.getElementById('more-close');
+  if (moreClose) moreClose.addEventListener('click', () => {
+    morePanelOpen = false; renderPage();
+  });
+}
+
+// Drift-detection: on load, log any EXAMPLES question that routes to
+// FALLBACK (null from planChat) so we can catch it before the user does.
+function driftCheck() {
+  if (!DATA || !MECH_DATA) return;
+  const p = DATA.patients[0];
+  const bad = buildExamples(p).flatMap(c => c.items)
+    .filter(i => planChat(i.question, p) === null);
+  if (bad.length) {
+    console.warn('[patient_chat] questions routing to fallback:', bad.map(b => b.question));
+  }
+}
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape' && currentEdgeId) { currentEdgeId = null; renderPage(); }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const [pat, mech] = await Promise.all([
+      fetch('patient_data.json', {cache:'no-store'}),
+      fetch('mechanism_data.json', {cache:'no-store'}),
+    ]);
+    if (!pat.ok) throw new Error(`patient_data.json HTTP ${pat.status}`);
+    DATA = await pat.json();
+    if (mech.ok) MECH_DATA = await mech.json();
+    const qp = new URLSearchParams(location.search).get('patient');
+    currentPatientId = (qp && DATA.patients.some(x => x.id === qp))
+      ? qp : (DATA.featured[0] || DATA.patients[0].id);
+    seedStream();
+    renderPage();
+    driftCheck();
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div style="padding:40px;color:var(--bad)">Failed to load: ${esc(e.message)}</div>`;
+  }
+});
+</script>
+</body>
+</html>

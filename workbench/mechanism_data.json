@@ -1,0 +1,1214 @@
+{
+  "gene": {
+    "symbol": "DMD",
+    "fullName": "Duchenne Muscular Dystrophy",
+    "uniprot": "P11532",
+    "locus": "Xp21.2",
+    "nExons": 79,
+    "locusSizeMb": 2.4,
+    "isoformNames": [
+      "Dp427m",
+      "Dp427c",
+      "Dp427p",
+      "Dp260",
+      "Dp140",
+      "Dp116",
+      "Dp71"
+    ]
+  },
+  "header": {
+    "variantsAnalyzed": 41566,
+    "uniqueVariants": 10136,
+    "phenotyped": 2097,
+    "mechanismConfidence": 87
+  },
+  "tiles": {
+    "geneticEvidence": {
+      "total": 41566,
+      "big": "41,566",
+      "bigSub": "LOVD-DMD variant reports",
+      "breakdown": [
+        {
+          "label": "Structural",
+          "pct": 74,
+          "color": "var(--accent)"
+        },
+        {
+          "label": "SNV",
+          "pct": 25,
+          "color": "var(--violet)"
+        },
+        {
+          "label": "Other",
+          "pct": 1,
+          "color": "var(--teal)"
+        }
+      ],
+      "footer": "del 62% · sub 25% · dup 11% · delins 1%"
+    },
+    "phenotypeDist": {
+      "segments": [
+        {
+          "label": "DMD (Duchenne)",
+          "pct": 81,
+          "color": "var(--bad)"
+        },
+        {
+          "label": "BMD (Becker)",
+          "pct": 15,
+          "color": "var(--teal)"
+        },
+        {
+          "label": "IMD (intermediate)",
+          "pct": 2,
+          "color": "var(--warn)"
+        },
+        {
+          "label": "Undetermined",
+          "pct": 2,
+          "color": "var(--slate)"
+        }
+      ],
+      "center": {
+        "value": "81%",
+        "label": "DMD (Duchenne)"
+      },
+      "footer": "Zhang et al. 2024 · N=2,097 patients"
+    },
+    "isoformImpact": {
+      "rows": [
+        {
+          "label": "Dp427m",
+          "value": 100,
+          "unit": "%",
+          "color": "var(--bad)"
+        },
+        {
+          "label": "Dp427c",
+          "value": 100,
+          "unit": "%",
+          "color": "var(--bad)"
+        },
+        {
+          "label": "Dp427p",
+          "value": 100,
+          "unit": "%",
+          "color": "var(--bad)"
+        },
+        {
+          "label": "Dp260",
+          "value": 63,
+          "unit": "%",
+          "color": "var(--warn)"
+        },
+        {
+          "label": "Dp140",
+          "value": 44,
+          "unit": "%",
+          "color": "var(--warn)"
+        },
+        {
+          "label": "Dp116",
+          "value": 30,
+          "unit": "%",
+          "color": "var(--teal)"
+        },
+        {
+          "label": "Dp71",
+          "value": 22,
+          "unit": "%",
+          "color": "var(--teal)"
+        }
+      ],
+      "max": 100,
+      "footer": "Exon coverage of NM_004006.2 (79 exons)"
+    },
+    "cellTypes": {
+      "rows": [
+        {
+          "label": "Myonuclei",
+          "value": 10.0,
+          "color": "var(--accent)"
+        },
+        {
+          "label": "Thymic myoid cells",
+          "value": 9.24,
+          "color": "var(--teal)"
+        },
+        {
+          "label": "Cardiomyocytes",
+          "value": 9.12,
+          "color": "var(--accent)"
+        },
+        {
+          "label": "Rod photoreceptor cells",
+          "value": 8.59,
+          "color": "var(--pink)"
+        },
+        {
+          "label": "Cone photoreceptor cells",
+          "value": 8.19,
+          "color": "var(--pink)"
+        },
+        {
+          "label": "Salivary myoepithelial cells",
+          "value": 8.19,
+          "color": "var(--teal)"
+        },
+        {
+          "label": "Adipocytes",
+          "value": 7.88,
+          "color": "var(--slate)"
+        }
+      ],
+      "max": 10,
+      "footer": "Human Protein Atlas · nCPM (log-scaled)"
+    },
+    "pathways": {
+      "rows": [
+        {
+          "label": "Striated Muscle Contraction",
+          "value": 6.42,
+          "color": "var(--good)"
+        },
+        {
+          "label": "Formation of the dystrophin-glycoprotein complex (DGC)",
+          "value": 6.42,
+          "color": "var(--good)"
+        },
+        {
+          "label": "Non-integrin membrane-ECM interactions",
+          "value": 5.62,
+          "color": "var(--sky)"
+        },
+        {
+          "label": "Muscle contraction",
+          "value": 4.68,
+          "color": "var(--good)"
+        },
+        {
+          "label": "Extracellular matrix organization",
+          "value": 4.23,
+          "color": "var(--sky)"
+        }
+      ],
+      "max": 10,
+      "footer": "Reactome membership · specificity = 10 − log(n_genes)"
+    }
+  },
+  "hypotheses": [
+    {
+      "id": "01",
+      "name": "Out-of-frame deletions → truncated dystrophin → sarcolemmal fragility",
+      "subtitle": "Monaco rule; loss of C-terminal DGC anchor; membrane tears → Ca²⁺ influx → necrosis",
+      "supporting": 18204,
+      "oddsRatio": 14.2,
+      "evidence": 9.4,
+      "druggability": 4,
+      "therapeutic": "Exon-skipping ASOs (Dp427m rescue); micro-dystrophin gene therapy",
+      "selected": true,
+      "detail": {
+        "lede": "Out-of-frame deletions in DMD ablate the C-terminal dystroglycan-binding domain, decoupling the sarcolemma from the extracellular matrix. Contraction stress produces membrane micro-tears, unregulated Ca²⁺ influx activates calpain and disrupts mitochondrial handling, triggering necrosis and progressive fibro-fatty replacement.",
+        "evidence": [
+          {
+            "tone": "good",
+            "text": "Monaco reading-frame rule: 90% of out-of-frame → DMD; 91% of in-frame → BMD",
+            "cite": "Monaco 1988"
+          },
+          {
+            "tone": "good",
+            "text": "LOVD: 18,204 out-of-frame deletion entries vs 4,822 in-frame (matches 68% severe rate)",
+            "cite": "LOVD-DMD 2026"
+          },
+          {
+            "tone": "good",
+            "text": "Dystrophin-null mdx muscle: elevated resting [Ca²⁺]ᵢ and calpain activation",
+            "cite": "Turner 1988; Alderton 2000"
+          },
+          {
+            "tone": "good",
+            "text": "Membrane sealants (poloxamer-188) reduce sarcolemmal damage in mdx / GRMD",
+            "cite": "Yasuda 2005"
+          },
+          {
+            "tone": "good",
+            "text": "Micro-dystrophin (rAAV) restores DGC + delays fibrosis in Phase III",
+            "cite": "Mendell 2020; ELEVIDYS 2023"
+          },
+          {
+            "tone": "good",
+            "text": "Exon-51 skipping (eteplirsen) restores in-frame Dp427m in ~13% of pts",
+            "cite": "Mendell 2013"
+          },
+          {
+            "tone": "warn",
+            "text": "Frame-rule exception: Δexon 5 in-frame → severe DMD via aberrant splicing",
+            "cite": "Aartsma-Rus 2006"
+          }
+        ],
+        "chain": {
+          "nodes": [
+            {
+              "id": "m1",
+              "col": 2,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Sarcolemma",
+              "label2": "decouples from ECM",
+              "meta": "membrane micro-tears"
+            },
+            {
+              "id": "m2",
+              "col": 1,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Ca²⁺ influx +",
+              "label2": "calpain activation",
+              "meta": "contraction stress"
+            },
+            {
+              "id": "m3",
+              "col": 0,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Mitochondrial",
+              "label2": "dysfunction",
+              "meta": "ROS, Δψₘ collapse"
+            },
+            {
+              "id": "p1",
+              "col": 0,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Myofiber",
+              "label2": "necrosis",
+              "meta": "CK release, inflammation"
+            },
+            {
+              "id": "p2",
+              "col": 1,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Failed regen. /",
+              "label2": "satellite exhaustion",
+              "meta": "TGF-β elevation"
+            },
+            {
+              "id": "p3",
+              "col": 2,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Fibro-fatty",
+              "label2": "replacement",
+              "meta": "progressive weakness"
+            },
+            {
+              "id": "v1",
+              "col": 0,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Out-of-frame",
+              "label2": "deletion",
+              "meta": "LOVD n=18,204"
+            },
+            {
+              "id": "v2",
+              "col": 1,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Premature stop",
+              "label2": "codon",
+              "meta": "NMD-eligible"
+            },
+            {
+              "id": "v3",
+              "col": 2,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Truncated /",
+              "label2": "absent dystrophin",
+              "meta": "no C-term DGC anchor"
+            }
+          ],
+          "edges": [
+            {
+              "from": "m1",
+              "to": "m2",
+              "id": "m1-m2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Contraction-induced micro-tears in mdx sarcolemma admit extracellular Ca²⁺ down its steep gradient.",
+                  "cite": "Petrof 1993"
+                },
+                {
+                  "tone": "good",
+                  "text": "Calpain-1 is activated by elevated cytosolic [Ca²⁺] and proteolyses a broad set of sarcomeric + membrane substrates.",
+                  "cite": "Alderton 2000"
+                }
+              ]
+            },
+            {
+              "from": "m2",
+              "to": "m3",
+              "id": "m2-m3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Sustained Ca²⁺ overload opens the mitochondrial permeability transition pore, collapsing ΔΨₘ and triggering ROS.",
+                  "cite": "Millay 2008"
+                },
+                {
+                  "tone": "good",
+                  "text": "Mdx mitochondria show reduced membrane potential and elevated superoxide output under contractile load.",
+                  "cite": "Vila 2017"
+                }
+              ]
+            },
+            {
+              "from": "m3",
+              "to": "p1",
+              "id": "m3-p1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Cyclophilin-D knockout (blocks MPTP opening) rescues necrosis in mdx muscle.",
+                  "cite": "Millay 2008"
+                },
+                {
+                  "tone": "good",
+                  "text": "Elevated serum creatine kinase is a clinical proxy for ongoing sarcolemmal permeability + necrosis in DMD.",
+                  "cite": "Zatz 2016"
+                }
+              ]
+            },
+            {
+              "from": "p1",
+              "to": "p2",
+              "id": "p1-p2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Serial injury cycles deplete the satellite-cell pool via replicative senescence.",
+                  "cite": "Sacco 2010"
+                },
+                {
+                  "tone": "good",
+                  "text": "Mdx satellite cells show telomere shortening and impaired self-renewal by late disease.",
+                  "cite": "Dumont 2015"
+                }
+              ]
+            },
+            {
+              "from": "p2",
+              "to": "p3",
+              "id": "p2-p3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Fibro-adipogenic progenitors expand and differentiate when muscle regeneration fails, replacing myofibers with fat + collagen.",
+                  "cite": "Uezumi 2010"
+                },
+                {
+                  "tone": "good",
+                  "text": "TGF-β signalling drives fibrotic ECM deposition in DMD muscle biopsies.",
+                  "cite": "Bernasconi 1995"
+                }
+              ]
+            },
+            {
+              "from": "v1",
+              "to": "v2",
+              "id": "v1-v2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Frameshift produced by exon deletion introduces a PTC downstream, on average within ~200 codons.",
+                  "cite": "Aartsma-Rus 2006"
+                },
+                {
+                  "tone": "good",
+                  "text": "Reading-frame rule: deletion produces a PTC unless total deleted length ≡ 0 mod 3.",
+                  "cite": "Monaco 1988"
+                }
+              ]
+            },
+            {
+              "from": "v2",
+              "to": "v3",
+              "id": "v2-v3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Nonsense-mediated decay degrades transcripts with a PTC ≥50 nt upstream of the last exon-exon junction.",
+                  "cite": "Popp & Maquat 2013"
+                },
+                {
+                  "tone": "good",
+                  "text": "Western blot of DMD muscle: <3% dystrophin detected in PTC-carrying patients.",
+                  "cite": "Hoffman 1988"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m1",
+              "id": "v3-m1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dystrophin C-terminal domain binds β-dystroglycan, bridging cytoskeletal actin to sarcolemmal laminin via the DGC.",
+                  "cite": "Ervasti & Campbell 1993"
+                },
+                {
+                  "tone": "good",
+                  "text": "In dystrophin-null mdx muscle, DGC components (β-DG, sarcoglycans, nNOS) dissociate from the sarcolemma.",
+                  "cite": "Ohlendieck 1991"
+                }
+              ]
+            }
+          ],
+          "therapeutic": {
+            "label1": "Therapeutic entry: exon skipping · micro-dystrophin AAV",
+            "label2": "restores in-frame Dp427m or delivers truncated functional protein"
+          }
+        }
+      }
+    },
+    {
+      "id": "02",
+      "name": "In-frame deletions → partial-function dystrophin → BMD phenotype",
+      "subtitle": "Central-rod deletion retains N-term + DGC; slower progression, later onset",
+      "supporting": 4822,
+      "oddsRatio": 3.6,
+      "evidence": 8.7,
+      "druggability": 3,
+      "therapeutic": "Small-molecule stabilizers (utrophin upregulation); guides ASO target selection",
+      "selected": false,
+      "detail": {
+        "lede": "In-frame deletions in the central rod domain remove spectrin-like repeats but preserve the N-terminal actin-binding domain and the C-terminal DGC anchor. A shortened but functional dystrophin still couples the sarcolemma to the ECM, yielding reduced but non-zero membrane stability — the biological basis of BMD's later onset and slower progression.",
+        "evidence": [
+          {
+            "tone": "good",
+            "text": "Monaco reading-frame rule: 91% of in-frame deletions → BMD phenotype",
+            "cite": "Monaco 1988"
+          },
+          {
+            "tone": "good",
+            "text": "Δexons 45–47 (in-frame, spectrin repeats 17-19) → BMD with ambulation to 40s+",
+            "cite": "Beggs 1991"
+          },
+          {
+            "tone": "good",
+            "text": "Truncated dystrophin visualized on Western in BMD muscle at ~50–80% wild-type levels",
+            "cite": "Hoffman 1988"
+          },
+          {
+            "tone": "good",
+            "text": "Micro-dystrophin (Δrod) rescue in mdx approximates the BMD state",
+            "cite": "Wang 2000"
+          },
+          {
+            "tone": "warn",
+            "text": "Some large in-frame deletions (Δexons 3–41) still produce severe DMD — position matters",
+            "cite": "Nicholson 1993"
+          }
+        ],
+        "chain": {
+          "nodes": [
+            {
+              "id": "m1",
+              "col": 2,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Partial DGC",
+              "label2": "assembly",
+              "meta": "sarcolemma anchored"
+            },
+            {
+              "id": "m2",
+              "col": 1,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Reduced membrane",
+              "label2": "rigidity",
+              "meta": "residual susceptibility"
+            },
+            {
+              "id": "m3",
+              "col": 0,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Gradual Ca²⁺",
+              "label2": "leak",
+              "meta": "not acute"
+            },
+            {
+              "id": "p1",
+              "col": 0,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Slower muscle",
+              "label2": "loss",
+              "meta": "wheelchair ~40y+"
+            },
+            {
+              "id": "p2",
+              "col": 1,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Preserved",
+              "label2": "ambulation",
+              "meta": "milder cardiac"
+            },
+            {
+              "id": "p3",
+              "col": 2,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "BMD",
+              "label2": "phenotype",
+              "meta": "late onset"
+            },
+            {
+              "id": "v1",
+              "col": 0,
+              "row": 0,
+              "tier": "cause",
+              "label1": "In-frame",
+              "label2": "deletion",
+              "meta": "≡0 mod 3"
+            },
+            {
+              "id": "v2",
+              "col": 1,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Central-rod",
+              "label2": "spectrin loss",
+              "meta": "N-term + DGC preserved"
+            },
+            {
+              "id": "v3",
+              "col": 2,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Shortened but",
+              "label2": "functional dystrophin",
+              "meta": "50–80% WT level"
+            }
+          ],
+          "edges": [
+            {
+              "from": "m1",
+              "to": "m2",
+              "id": "m1-m2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Partial DGC bears mechanical load but with reduced fidelity — subclinical membrane injury still occurs.",
+                  "cite": "Petrof 1993"
+                }
+              ]
+            },
+            {
+              "from": "m2",
+              "to": "m3",
+              "id": "m2-m3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Low-grade Ca²⁺ leak produces slower calpain activation and delayed cellular damage.",
+                  "cite": "Alderton 2000"
+                }
+              ]
+            },
+            {
+              "from": "m3",
+              "to": "p1",
+              "id": "m3-p1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "BMD muscle biopsies show necrosis foci at lower density than DMD — regeneration keeps pace longer.",
+                  "cite": "Bushby 1993"
+                }
+              ]
+            },
+            {
+              "from": "p1",
+              "to": "p2",
+              "id": "p1-p2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "BMD patients often retain ambulation into their 30s–40s; cardiomyopathy still develops but later.",
+                  "cite": "Bushby 1993"
+                }
+              ]
+            },
+            {
+              "from": "p2",
+              "to": "p3",
+              "id": "p2-p3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "The clinical BMD label is applied when ambulation is retained past age 16.",
+                  "cite": "Emery & Skinner 1976"
+                }
+              ]
+            },
+            {
+              "from": "v1",
+              "to": "v2",
+              "id": "v1-v2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "In-frame indels remove spectrin repeats without shifting the reading frame; typical central-rod deletions span exons 45–55.",
+                  "cite": "Aartsma-Rus 2006"
+                }
+              ]
+            },
+            {
+              "from": "v2",
+              "to": "v3",
+              "id": "v2-v3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Shortened dystrophin retains the N-terminal actin-binding domain and the C-terminal β-DG binding domain.",
+                  "cite": "Ervasti & Campbell 1993"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m1",
+              "id": "v3-m1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "DGC assembles around a partial dystrophin; sarcoglycans + β-DG remain at the sarcolemma at reduced levels.",
+                  "cite": "Ohlendieck 1993"
+                }
+              ]
+            }
+          ],
+          "therapeutic": {
+            "label1": "Therapeutic entry: utrophin upregulation · exon-skipping toward in-frame",
+            "label2": "convert DMD reading-frame to a BMD-like partial rescue"
+          }
+        }
+      }
+    },
+    {
+      "id": "03",
+      "name": "Nonsense / splice variants → NMD → tissue-graded transcript loss",
+      "subtitle": "Premature stop triggers surveillance; cardiac + brain isoforms less rescued",
+      "supporting": 7411,
+      "oddsRatio": 6.1,
+      "evidence": 7.2,
+      "druggability": 2,
+      "therapeutic": "Readthrough agents (ataluren); NMD inhibitors under investigation",
+      "selected": false,
+      "detail": {
+        "lede": "Nonsense mutations and canonical splice-site variants create a premature termination codon (PTC). Transcripts with a PTC ≥50 nt upstream of the last exon-exon junction are degraded by nonsense-mediated decay (NMD), yielding near-total dystrophin loss. NMD efficiency varies across tissues, so cardiac and brain-restricted isoforms sometimes retain trace expression — a tissue-graded loss pattern.",
+        "evidence": [
+          {
+            "tone": "good",
+            "text": "PTC ≥50 nt upstream of last EEJ triggers NMD in mammalian cells",
+            "cite": "Popp & Maquat 2013"
+          },
+          {
+            "tone": "good",
+            "text": "Nonsense-variant DMD muscle: <3% dystrophin by Western blot",
+            "cite": "Hoffman 1988"
+          },
+          {
+            "tone": "good",
+            "text": "Ataluren (Translarna) promotes ribosomal readthrough of PTC codons → partial rescue",
+            "cite": "Bushby 2014"
+          },
+          {
+            "tone": "good",
+            "text": "Splice-site variants generate downstream PTC in ~70% of cases (via exon skipping or intron retention)",
+            "cite": "Aartsma-Rus 2006"
+          },
+          {
+            "tone": "warn",
+            "text": "NMD efficiency varies 2–5× across tissues; brain + cardiac often show partial escape",
+            "cite": "Linde 2007"
+          }
+        ],
+        "chain": {
+          "nodes": [
+            {
+              "id": "m1",
+              "col": 2,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Total Dp427m",
+              "label2": "loss in muscle",
+              "meta": "no functional rescue"
+            },
+            {
+              "id": "m2",
+              "col": 1,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Tissue-graded",
+              "label2": "NMD escape",
+              "meta": "brain/cardiac partial"
+            },
+            {
+              "id": "m3",
+              "col": 0,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Readthrough",
+              "label2": "opportunity",
+              "meta": "context-dependent"
+            },
+            {
+              "id": "p1",
+              "col": 0,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Severe muscle",
+              "label2": "phenotype (DMD)",
+              "meta": "progressive loss"
+            },
+            {
+              "id": "p2",
+              "col": 1,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Milder brain +",
+              "label2": "cardiac course",
+              "meta": "if isoform escapes"
+            },
+            {
+              "id": "p3",
+              "col": 2,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Ataluren",
+              "label2": "responsive subset",
+              "meta": "PTC-context dependent"
+            },
+            {
+              "id": "v1",
+              "col": 0,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Nonsense or",
+              "label2": "splice-site variant",
+              "meta": "creates PTC"
+            },
+            {
+              "id": "v2",
+              "col": 1,
+              "row": 0,
+              "tier": "cause",
+              "label1": "PTC ≥50 nt",
+              "label2": "upstream of last EEJ",
+              "meta": "NMD-eligible"
+            },
+            {
+              "id": "v3",
+              "col": 2,
+              "row": 0,
+              "tier": "cause",
+              "label1": "NMD degrades",
+              "label2": "mutant transcript",
+              "meta": "protein absent"
+            }
+          ],
+          "edges": [
+            {
+              "from": "m1",
+              "to": "m2",
+              "id": "m1-m2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "NMD activity varies by tissue and transcript context; brain isoforms show partial NMD escape.",
+                  "cite": "Linde 2007"
+                }
+              ]
+            },
+            {
+              "from": "m2",
+              "to": "m3",
+              "id": "m2-m3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "PTC codons in favorable sequence contexts are susceptible to pharmacological readthrough (aminoglycosides, ataluren).",
+                  "cite": "Welch 2007"
+                }
+              ]
+            },
+            {
+              "from": "m3",
+              "to": "p1",
+              "id": "m3-p1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Muscle NMD is efficient → near-total Dp427m loss → severe DMD phenotype indistinguishable from deletion carriers.",
+                  "cite": "Flanigan 2009"
+                }
+              ]
+            },
+            {
+              "from": "p1",
+              "to": "p2",
+              "id": "p1-p2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Cardiac + CNS symptoms track residual isoform expression; partial NMD escape can soften those phenotypes.",
+                  "cite": "Bello 2016"
+                }
+              ]
+            },
+            {
+              "from": "p2",
+              "to": "p3",
+              "id": "p2-p3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Ataluren approval (EMA 2014) requires a nonsense mutation genotype; ~13% of DMD patients are eligible.",
+                  "cite": "Bushby 2014"
+                }
+              ]
+            },
+            {
+              "from": "v1",
+              "to": "v2",
+              "id": "v1-v2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Nonsense codons directly encode a PTC; splice-site variants produce a PTC via exon skipping or intron retention.",
+                  "cite": "Aartsma-Rus 2006"
+                }
+              ]
+            },
+            {
+              "from": "v2",
+              "to": "v3",
+              "id": "v2-v3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "The exon-junction complex marks a PTC as NMD-eligible when it lies ≥50 nt upstream of the terminal EEJ.",
+                  "cite": "Popp & Maquat 2013"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m1",
+              "id": "v3-m1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "NMD reduces mutant mRNA levels to ~5-15% of wild-type in patient muscle biopsies.",
+                  "cite": "Kerr 2001"
+                }
+              ]
+            }
+          ],
+          "therapeutic": {
+            "label1": "Therapeutic entry: ataluren readthrough · NMD-inhibitor combinations",
+            "label2": "restore partial protein production from PTC-containing mRNA"
+          }
+        }
+      }
+    },
+    {
+      "id": "04",
+      "name": "Distal-promoter variants → tissue-specific isoform loss (Dp140/Dp71)",
+      "subtitle": "5′-restricted lesions spare muscle but ablate CNS/retinal isoforms — cognitive/ERG phenotype",
+      "supporting": 612,
+      "oddsRatio": 2.4,
+      "evidence": 6.5,
+      "druggability": 1,
+      "therapeutic": "Isoform-selective replacement (AAV with tissue-restricted promoter)",
+      "selected": false,
+      "detail": {
+        "lede": "Variants in the 3′ half of DMD (exons 45–79) or in the internal promoters of Dp140, Dp116, and Dp71 selectively ablate the shorter isoforms while sparing Dp427m in skeletal and cardiac muscle. Patients with these variants often present with cognitive impairment, retinal ERG abnormalities, or kidney phenotypes, but with preserved motor function — an isoform-scoped disease pattern distinct from classical DMD.",
+        "evidence": [
+          {
+            "tone": "good",
+            "text": "Dp71 knockout in mice: ubiquitous but subtle phenotypes (retinal ERG, kidney podocyte)",
+            "cite": "Cohn 1999"
+          },
+          {
+            "tone": "good",
+            "text": "DMD patients with distal deletions have lower IQ, correlated with Dp140 loss",
+            "cite": "Ricotti 2016"
+          },
+          {
+            "tone": "good",
+            "text": "Dp260 (retinal) loss → negative ERG b-wave — a clinical marker of DMD",
+            "cite": "Pillers 1993"
+          },
+          {
+            "tone": "good",
+            "text": "Dp116 loss in Schwann cells → subtle peripheral nerve conduction changes",
+            "cite": "Byers 1993"
+          },
+          {
+            "tone": "warn",
+            "text": "Cohort is small (n=612 in LOVD) — statistical power for isoform-phenotype mapping is limited",
+            "cite": "LOVD-DMD 2026"
+          }
+        ],
+        "chain": {
+          "nodes": [
+            {
+              "id": "m1",
+              "col": 2,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "CNS dystrophin",
+              "label2": "loss (Dp140/Dp71)",
+              "meta": "cortical + glial"
+            },
+            {
+              "id": "m2",
+              "col": 1,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Retinal dystrophin",
+              "label2": "loss (Dp260/Dp71)",
+              "meta": "photoreceptor synapse"
+            },
+            {
+              "id": "m3",
+              "col": 0,
+              "row": 1,
+              "tier": "mechanism",
+              "label1": "Kidney podocyte",
+              "label2": "dystrophin loss (Dp71)",
+              "meta": "glomerular signaling"
+            },
+            {
+              "id": "p1",
+              "col": 0,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Preserved motor",
+              "label2": "function",
+              "meta": "muscle-sparing"
+            },
+            {
+              "id": "p2",
+              "col": 1,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Cognitive",
+              "label2": "deficits",
+              "meta": "IQ reduction ~10 pts"
+            },
+            {
+              "id": "p3",
+              "col": 2,
+              "row": 2,
+              "tier": "phenotype",
+              "label1": "Retinal ERG",
+              "label2": "abnormalities",
+              "meta": "negative b-wave"
+            },
+            {
+              "id": "v1",
+              "col": 0,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Variant in distal",
+              "label2": "5′ region (ex ≥45)",
+              "meta": "or internal promoter"
+            },
+            {
+              "id": "v2",
+              "col": 1,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Dp427m spared",
+              "label2": "in muscle",
+              "meta": "skeletal + cardiac unaffected"
+            },
+            {
+              "id": "v3",
+              "col": 2,
+              "row": 0,
+              "tier": "cause",
+              "label1": "Dp140/Dp116/Dp71",
+              "label2": "selectively ablated",
+              "meta": "CNS + kidney + Schwann affected"
+            }
+          ],
+          "edges": [
+            {
+              "from": "m1",
+              "to": "p2",
+              "id": "m1-p2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Patients with variants ablating Dp140 show cognitive IQ deficits averaging ~10 points below patients with Dp140-sparing variants.",
+                  "cite": "Ricotti 2016"
+                }
+              ]
+            },
+            {
+              "from": "m2",
+              "to": "p3",
+              "id": "m2-p3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Retinal loss of Dp260 produces a negative-configuration b-wave on scotopic ERG — a clinical marker of DMD retinal involvement.",
+                  "cite": "Pillers 1993"
+                }
+              ]
+            },
+            {
+              "from": "v1",
+              "to": "v2",
+              "id": "v1-v2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Distal variants (exon ≥45) fall downstream of Dp427m's transcribed region only when they lie in later exons; Dp427m's promoter and full-length mRNA remain intact.",
+                  "cite": "Muntoni 2003"
+                }
+              ]
+            },
+            {
+              "from": "v1",
+              "to": "v3",
+              "id": "v1-v3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dp140's promoter is in intron 44; Dp71's promoter is in intron 62. Variants distal to these ablate specific isoforms.",
+                  "cite": "Byers 1993"
+                }
+              ]
+            },
+            {
+              "from": "v2",
+              "to": "p1",
+              "id": "v2-p1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dp427m preserved → sarcolemmal DGC intact → skeletal + cardiac muscle spared from progressive dystrophy.",
+                  "cite": "Muntoni 2003"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m1",
+              "id": "v3-m1",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression.",
+                  "cite": "Lidov 1995"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m2",
+              "id": "v3-m2",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression.",
+                  "cite": "Pillers 1993"
+                }
+              ]
+            },
+            {
+              "from": "v3",
+              "to": "m3",
+              "id": "v3-m3",
+              "evidence": [
+                {
+                  "tone": "good",
+                  "text": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants.",
+                  "cite": "Haenggi 2006"
+                }
+              ]
+            }
+          ],
+          "therapeutic": {
+            "label1": "Therapeutic entry: isoform-selective AAV replacement",
+            "label2": "deliver Dp140/Dp71 mini-genes under tissue-restricted promoters"
+          }
+        }
+      }
+    }
+  ],
+  "hypothesesMeta": {
+    "top": 4,
+    "total": 41566,
+    "unit": "hypotheses shown"
+  },
+  "nmdCohort": {
+    "source": "ClinVar DMD variant subset",
+    "total": 11790,
+    "acmgOrder": [
+      "benign",
+      "uncertain",
+      "pathogenic"
+    ],
+    "nmdOrder": [
+      "triggering",
+      "transcript_dependent",
+      "escape"
+    ],
+    "acmgTotals": {
+      "benign": 3865,
+      "uncertain": 4447,
+      "pathogenic": 3478
+    },
+    "nmdTotals": {
+      "triggering": 2021,
+      "transcript_dependent": 9761,
+      "escape": 8
+    },
+    "grid": {
+      "benign": {
+        "triggering": 1,
+        "transcript_dependent": 3864,
+        "escape": 0
+      },
+      "uncertain": {
+        "triggering": 88,
+        "transcript_dependent": 4355,
+        "escape": 4
+      },
+      "pathogenic": {
+        "triggering": 1932,
+        "transcript_dependent": 1542,
+        "escape": 4
+      }
+    },
+    "rules": {
+      "nmd_escape_aa_threshold": 3600,
+      "protein_length": 3685,
+      "notes": "Approximation of Popp & Maquat 2013: PTCs upstream of the last exon-exon junction trigger NMD; late PTCs escape. Splice-site variants are assumed to trigger NMD via exon skipping. In-frame and missense variants are 'transcript-dependent' — no PTC generated."
+    }
+  }
+}
