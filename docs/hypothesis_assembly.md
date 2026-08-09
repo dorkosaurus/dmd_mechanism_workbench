@@ -498,12 +498,19 @@ literature-guided formation (rather than post-hoc citation). Roughly
 forty citations already exist in the codebase and can be migrated
 in one bake pass.
 
-**Subcellular-layer evidence.** No source currently informs the
-subcellular localization node directly (dystrophin immunohistochemistry
-at the sarcolemma would fill this — requires muscle biopsy, uncommon
-in current clinical practice). Literature at this node (Ervasti &
-Campbell 1993, Ohlendieck 1991) partially fills the gap once
-literature is a premise source.
+**Subcellular-layer evidence — now closed.** UniProt subcellular
+annotations for P11532 (sarcolemma, cytoplasm/cytoskeleton,
+postsynaptic membrane, with note on ANK2 and costameres) provide
+curated protein-biology data at the subcellular node. Literature
+citations at the protein→subcellular edge (Ervasti & Campbell 1993,
+Ohlendieck 1991, Petrof 1993 and downstream) are now
+*dual-attributed*: they inform the transition edge AND the
+subcellular node with half weight, on the principle that papers
+establishing a transition typically also establish the biology at
+the layers they connect. Result: 100% chain coverage for H01 across
+all 10 patients in the roster. Muscle biopsy IHC would still be a
+stronger patient-scope premise if data ever becomes available; the
+UniProt + literature composition fills the cohort-scope gap.
 
 **Aberrant splicing predictions.** No AbSplice premise producer yet.
 Splice-site patients (P10 in the current roster) rely on the coarse

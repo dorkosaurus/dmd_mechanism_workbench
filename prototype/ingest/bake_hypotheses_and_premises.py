@@ -153,6 +153,7 @@ PREMISE_SOURCES = [
     ("patient_tissue_impact",   "model", "compose_v1",      "Per-patient tissue impact: composes cell-type impact × isoforms.primary_expression_tissues", None),
     # B: literature as first-class premise (migrated from hypothesis_chain_edge_evidence)
     ("literature",              "data",  "curated_2026-08", "Peer-reviewed citations anchoring specific chain-edge and chain-node claims (Monaco 1988, Popp & Maquat 2013, Ervasti & Campbell 1993, Pillers 1993, ...)", None),
+    ("uniprot_subcellular",     "data",  "UniProt REST",    "UniProt-curated subcellular localization (sarcolemma, cytoskeleton, postsynaptic membrane for DMD P11532)", "https://www.uniprot.org/uniprotkb/P11532"),
 ]
 
 # Cell-type → required-isoform dependency map (mirrors hydrate_patient_view.CELL_TO_ISOFORMS).
@@ -299,6 +300,53 @@ def emit_reactome_premise(conn) -> str:
     conn.execute(
         "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
         (premise_id, "reactome", "cohort", "DMD", json.dumps(ev), 0.9, _prov()),
+    )
+    return premise_id
+
+
+def emit_uniprot_subcellular_premise(conn, uniprot_id: str = "P11532") -> str:
+    """Fetch UniProt subcellular annotations and emit as a cohort-scope
+    premise for the subcellular node. Result is cached under
+    data/raw/uniprot_{id}_subcellular.json — subsequent runs skip the fetch.
+    Fills the subcellular chain-node gap with curated protein-biology data."""
+    cache = REPO / "data" / "raw" / f"uniprot_{uniprot_id}_subcellular.json"
+    if cache.exists() and cache.stat().st_size > 100:
+        d = json.loads(cache.read_text())
+    else:
+        import urllib.request
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.json"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            d = json.loads(resp.read())
+        cache.write_text(json.dumps(d, indent=2))
+
+    # Extract subcellular location comments
+    locations = []
+    notes = []
+    for comment in d.get("comments", []):
+        if comment.get("commentType") != "SUBCELLULAR LOCATION":
+            continue
+        for loc_entry in comment.get("subcellularLocations", []):
+            loc = loc_entry.get("location", {}).get("value")
+            topology = loc_entry.get("topology", {}).get("value", "")
+            if loc:
+                locations.append({"location": loc, "topology": topology})
+        for note in comment.get("note", {}).get("texts", []):
+            if note.get("value"):
+                notes.append(note["value"])
+
+    ev = {
+        "uniprot_id": uniprot_id,
+        "locations":  locations,
+        "notes":      notes[:3],
+        "gene":       "DMD",
+    }
+    premise_id = _pid("uniprot_subcellular", "DMD")
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "uniprot_subcellular", "cohort", "DMD",
+         json.dumps(ev), 0.95, _prov(str(cache.relative_to(REPO)))),
     )
     return premise_id
 
@@ -458,17 +506,36 @@ def emit_literature_premises(conn, lit_data: dict) -> int:
 def literature_links_for_template(lit_data: dict, tmpl_id: str
                                   ) -> list[tuple[str, float, str, tuple[str, str, str]]]:
     """Return (premise_id, weight, rationale, chain_position) for each
-    literature citation attributed to this hypothesis template's chain."""
+    literature citation attributed to this hypothesis template's chain.
+
+    Also produces "dual attribution": when a citation informs an edge
+    landing at or emanating from a specific layer (e.g. protein →
+    subcellular, cellType → tissue), the same citation is *also*
+    attributed to that layer as node evidence — because papers that
+    establish a transition typically also establish the biology at
+    the layers they connect. This especially matters for the
+    subcellular node, which otherwise has only UniProt data."""
     out = []
+    NODE_DUAL_ATTRIBUTION = {"subcellular"}  # extendable to other node gaps
     for citation, entry in lit_data.items():
         for claim in entry["per_hyp"].get(tmpl_id, []):
             weight = 0.5 if claim["tone"] == "good" else -0.3
-            out.append((
-                entry["premise_id"],
-                weight,
-                (claim["text"] or "")[:180],
-                claim["position"],
-            ))
+            text = (claim["text"] or "")[:180]
+            pos = claim["position"]
+            out.append((entry["premise_id"], weight, text, pos))
+
+            # Dual attribution: if this edge connects with a
+            # dual-attribution layer, ALSO attribute at that layer's node.
+            (link_type, lf, lt) = pos
+            if link_type == "edge":
+                for endpoint in (lf, lt):
+                    if endpoint in NODE_DUAL_ATTRIBUTION:
+                        out.append((
+                            entry["premise_id"],
+                            weight * 0.5,   # half weight for the dual attribution
+                            f"[dual] {text}",
+                            ("node", endpoint, endpoint),
+                        ))
     return out
 
 
@@ -590,6 +657,11 @@ def premise_chain_positions(source_id: str, evidence: dict) -> list[tuple[str, s
         return [("node", "cellType", "cellType"), ("edge", "protein", "cellType")]
     if source_id == "patient_tissue_impact":
         return [("node", "tissue", "tissue"), ("edge", "cellType", "tissue")]
+    if source_id == "uniprot_subcellular":
+        # Curated protein-biology at the subcellular node + informs the
+        # protein→subcellular edge (where does the protein normally sit).
+        return [("node", "subcellular", "subcellular"),
+                ("edge", "protein", "subcellular")]
     # `literature` premises carry their per-hypothesis chain positions
     # via literature_links_for_template — no source-level default.
     return []
@@ -634,6 +706,19 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
     # ESM3 fold informs H01/H03 by making the truncated protein claim structural.
     if esm3_pid and hyp_id in ("01", "03"):
         out.append((esm3_pid, 0.6, "ESM3 fold of WT + truncated dystrophin visualizes the DGC-anchor loss"))
+
+    # UniProt subcellular localization anchors the sarcolemma-based DGC
+    # mechanism. Supports all mechanisms of protein LOSS (they all depend
+    # on knowing where dystrophin normally sits) — weak for H04 which is
+    # about distal isoforms with different localization patterns.
+    us_pid = cohort_premises.get("uniprot_subcellular")
+    if us_pid:
+        if hyp_id in ("01", "02", "03"):
+            out.append((us_pid, 0.6,
+                "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"))
+        elif hyp_id == "04":
+            out.append((us_pid, 0.2,
+                "UniProt: primary localization is sarcolemma; distal isoforms (Dp71 in retina/CNS/kidney) have separate localization patterns"))
 
     # Composition premises: cell-type & tissue impact.
     # Weight signs matter — spared distal cell types actively argue against H04.
@@ -742,9 +827,10 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         "tissue_impact":   tis_pid, "tissue_impact_ev":   _load_ev(tis_pid),
     }
     cohort_premises = {
-        "nmd_cohort": _pid("nmd_cohort", "DMD"),
-        "hpa":        _pid("hpa", "DMD"),
-        "reactome":   _pid("reactome", "DMD"),
+        "nmd_cohort":          _pid("nmd_cohort", "DMD"),
+        "hpa":                 _pid("hpa", "DMD"),
+        "reactome":            _pid("reactome", "DMD"),
+        "uniprot_subcellular": _pid("uniprot_subcellular", "DMD"),
     }
     lit_data = lit_data or {}
 
@@ -931,7 +1017,8 @@ def main() -> None:
     emit_hpa_premise(conn)
     emit_reactome_premise(conn)
     emit_nmd_cohort_premise(conn)
-    print("[cohort]   HPA + Reactome + NMD cohort premises emitted")
+    emit_uniprot_subcellular_premise(conn, "P11532")
+    print("[cohort]   HPA + Reactome + NMD + UniProt-subcellular cohort premises emitted")
 
     # 2b. Migrate curated citations from hypothesis_chain_edge_evidence
     #     into the literature premise source. One premise per unique
