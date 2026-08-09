@@ -353,7 +353,7 @@ def emit_uniprot_subcellular_premise(conn, uniprot_id: str = "P11532") -> str:
 
 
 # Module-level cache of the curated AbSplice TSV keyed on variant_key.
-_ABSPLICE_TSV = REPO / "data" / "raw" / "absplice_dmd_variants.tsv"
+_ABSPLICE_TSV = REPO / "data" / "variants" / "absplice_dmd_variants.tsv"
 _ABSPLICE_CACHE: dict[str, dict] | None = None
 
 
