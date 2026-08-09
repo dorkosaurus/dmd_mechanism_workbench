@@ -21,6 +21,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -140,14 +141,61 @@ HYP_TEMPLATES = [
 # Premise source registry
 # ----------------------------------------------------------------------
 PREMISE_SOURCES = [
-    ("zhang_2024",     "data",  "supp S1+S2 (2024)", "Per-patient genotype/phenotype records (Zhang et al. 2024, PMC11344408)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11344408/"),
-    ("clinvar_nmd",    "model", "aenmd-rule v1",     "NMD prediction (PTC ≥50nt upstream of last EEJ) applied to ClinVar DMD variants", None),
-    ("hpa_expression", "data",  "HPA 2024",          "Human Protein Atlas single cell type specific nCPM", "https://www.proteinatlas.org/"),
-    ("reactome",       "data",  "Reactome v96",      "Reactome DMD pathway memberships + specificity scoring", "https://reactome.org/"),
-    ("isoform_arch",   "data",  "UniProt+RefSeq",    "DMD isoform architecture (first-shared-exon per isoform)", "https://www.uniprot.org/uniprotkb/P11532"),
-    ("synthetic_labs", "model", "synthetic_v1",      "Per-patient synthetic clinical labs (Birnkrant 2018 ranges)", None),
-    ("esm3",           "model", "esm3-open-2024-03", "ESM3 protein fold + InterPro function annotation", "https://forge.evolutionaryscale.ai/"),
+    ("zhang_2024",           "data",  "supp S1+S2 (2024)",  "Per-patient genotype/phenotype records (Zhang et al. 2024, PMC11344408)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11344408/"),
+    ("clinvar_nmd",          "model", "aenmd-rule v1",      "NMD prediction (PTC ≥50nt upstream of last EEJ) applied to ClinVar DMD variants", None),
+    ("hpa_expression",       "data",  "HPA 2024",           "Human Protein Atlas single cell type specific nCPM", "https://www.proteinatlas.org/"),
+    ("reactome",             "data",  "Reactome v96",       "Reactome DMD pathway memberships + specificity scoring", "https://reactome.org/"),
+    ("isoform_arch",         "data",  "UniProt+RefSeq",     "DMD isoform architecture (first-shared-exon per isoform)", "https://www.uniprot.org/uniprotkb/P11532"),
+    ("synthetic_labs",       "model", "synthetic_v1",       "Per-patient synthetic clinical labs (Birnkrant 2018 ranges)", None),
+    ("esm3",                 "model", "esm3-open-2024-03",  "ESM3 protein fold + InterPro function annotation", "https://forge.evolutionaryscale.ai/"),
+    # A: composition premises — close the variant→cellType and cellType→tissue chain gap
+    ("patient_celltype_impact", "model", "compose_v1",      "Per-patient cell-type impact: isoform_arch × curated cell-to-isoform dependency map (Muntoni 2003, Pillers 1993, Lidov 1995)", None),
+    ("patient_tissue_impact",   "model", "compose_v1",      "Per-patient tissue impact: composes cell-type impact × isoforms.primary_expression_tissues", None),
+    # B: literature as first-class premise (migrated from hypothesis_chain_edge_evidence)
+    ("literature",              "data",  "curated_2026-08", "Peer-reviewed citations anchoring specific chain-edge and chain-node claims (Monaco 1988, Popp & Maquat 2013, Ervasti & Campbell 1993, Pillers 1993, ...)", None),
 ]
+
+# Cell-type → required-isoform dependency map (mirrors hydrate_patient_view.CELL_TO_ISOFORMS).
+CELL_TO_ISOFORMS: dict[str, list[str]] = {
+    "Myonuclei":                    ["Dp427m"],
+    "Cardiomyocytes":               ["Dp427m"],
+    "Thymic myoid cells":           ["Dp427m"],
+    "Salivary myoepithelial cells": ["Dp427m"],
+    "Rod photoreceptor cells":      ["Dp260", "Dp71"],
+    "Cone photoreceptor cells":     ["Dp260", "Dp71"],
+    "Adipocytes":                   ["Dp71"],
+}
+
+# Node → biological-layer mapping per curated hypothesis chain
+# (hypothesis_chain_nodes uses v1/v2/v3, m1/m2/m3, p1/p2/p3 node IDs;
+# this table maps each to its position in the seven-layer hierarchy).
+CHAIN_NODE_TO_LAYER: dict[str, dict[str, str]] = {
+    '01': {
+        'v1': 'variant', 'v2': 'variant', 'v3': 'protein',
+        'm1': 'subcellular', 'm2': 'pathway', 'm3': 'subcellular',
+        'p1': 'cellType', 'p2': 'cellType', 'p3': 'tissue',
+    },
+    '02': {
+        'v1': 'variant', 'v2': 'protein', 'v3': 'protein',
+        'm1': 'subcellular', 'm2': 'subcellular', 'm3': 'pathway',
+        'p1': 'cellType', 'p2': 'phenotype', 'p3': 'phenotype',
+    },
+    '03': {
+        'v1': 'variant', 'v2': 'variant', 'v3': 'protein',
+        'm1': 'subcellular', 'm2': 'cellType', 'm3': 'cellType',
+        'p1': 'cellType', 'p2': 'phenotype', 'p3': 'phenotype',
+    },
+    '04': {
+        'v1': 'variant', 'v2': 'protein', 'v3': 'protein',
+        'm1': 'cellType', 'm2': 'cellType', 'm3': 'cellType',
+        'p1': 'phenotype', 'p2': 'phenotype', 'p3': 'phenotype',
+    },
+}
+
+
+def _slug(s: str) -> str:
+    """Sanitize a citation string into a stable slug."""
+    return re.sub(r'[^A-Za-z0-9]+', '_', s).strip('_').lower()
 
 
 def register_sources(conn):
@@ -270,6 +318,67 @@ def emit_nmd_cohort_premise(conn) -> str:
     return premise_id
 
 
+def emit_celltype_impact_premise(conn, cohort: str, pid: str, exon_n: int | None) -> str | None:
+    """Composition premise: for each HPA cell type, is it hit / partial /
+    spared given the variant's isoform-hit pattern + the curated cell-to-
+    isoform dependency map. Closes the variant→cellType chain gap that
+    HPA (gene-scoped) and isoform_arch (ends at protein) together leave open."""
+    if exon_n is None: return None
+    iso_hit = {r[0]: r[1] <= exon_n
+               for r in conn.execute(
+                   "SELECT isoform_id, first_shared_exon FROM isoforms")}
+    cells = []
+    for (name, tissue) in conn.execute(
+        "SELECT cell_type, tissue FROM celltype_expression "
+        "WHERE gene_symbol='DMD' ORDER BY score DESC"):
+        req = CELL_TO_ISOFORMS.get(name, [])
+        if not req:
+            status, hit_isos, spared_isos = "unknown", [], []
+        else:
+            hit_isos    = [i for i in req if iso_hit.get(i, True)]
+            spared_isos = [i for i in req if not iso_hit.get(i, True)]
+            status = "hit" if len(hit_isos) == len(req) \
+                     else "spared" if not hit_isos \
+                     else "partial"
+        cells.append({"name": name, "tissue": tissue, "status": status,
+                      "hit_isoforms": hit_isos, "spared_isoforms": spared_isos})
+    ev = {"variant_exon": exon_n, "cells": cells,
+          "curation": "Muntoni 2003, Pillers 1993, Lidov 1995"}
+    pid_ = _pid("celltype_impact", cohort, pid)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (pid_, "patient_celltype_impact", "patient", pid, json.dumps(ev), 0.85, _prov()),
+    )
+    return pid_
+
+
+def emit_tissue_impact_premise(conn, cohort: str, pid: str, exon_n: int | None) -> str | None:
+    """Composition premise: tissues hit / spared for this patient, derived
+    from which isoforms are hit × each isoform's primary_expression_tissues."""
+    if exon_n is None: return None
+    iso_hit = {r[0]: r[1] <= exon_n
+               for r in conn.execute(
+                   "SELECT isoform_id, first_shared_exon FROM isoforms")}
+    hit_tissues, all_tissues = set(), set()
+    for (iso_id, tissues_str) in conn.execute(
+        "SELECT isoform_id, primary_expression_tissues FROM isoforms"):
+        tissues = [t.strip() for t in (tissues_str or "").split(";") if t.strip()]
+        for t in tissues:
+            all_tissues.add(t)
+            if iso_hit.get(iso_id, True):
+                hit_tissues.add(t)
+    spared_tissues = all_tissues - hit_tissues
+    ev = {"variant_exon": exon_n,
+          "tissues_hit":    sorted(hit_tissues),
+          "tissues_spared": sorted(spared_tissues)}
+    pid_ = _pid("tissue_impact", cohort, pid)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (pid_, "patient_tissue_impact", "patient", pid, json.dumps(ev), 0.85, _prov()),
+    )
+    return pid_
+
+
 def emit_esm3_premise(conn, cohort: str, pid: str) -> str | None:
     """ESM3 fold premise for patients whose variant we've folded."""
     known = {
@@ -289,6 +398,78 @@ def emit_esm3_premise(conn, cohort: str, pid: str) -> str | None:
         (premise_id, "esm3", "patient", pid, json.dumps(ev), 0.7, _prov(k.get("cache"))),
     )
     return premise_id
+
+
+# ----------------------------------------------------------------------
+# Literature migration: hypothesis_chain_edge_evidence → literature premises
+# ----------------------------------------------------------------------
+# Each unique citation becomes one `literature` premise in the registry.
+# For each hypothesis that cites the paper, we record: which chain edge
+# (mapped to biological-layer edge via CHAIN_NODE_TO_LAYER), the claim
+# text, and the tone (good/warn).
+
+def collect_literature_data(conn) -> dict[str, dict]:
+    """Return {citation → {premise_id, claims, per_hyp: {template_id: [claim]}}}.
+    Each per_hyp claim has {position: (link_type, layer_from, layer_to),
+    text, tone}."""
+    lit_data: dict[str, dict] = {}
+    rows = conn.execute("""
+        SELECT hypothesis_id, from_node, to_node, ord, tone, text, citation
+        FROM hypothesis_chain_edge_evidence
+        ORDER BY citation, hypothesis_id, ord
+    """).fetchall()
+    for (hid, from_node, to_node, _ord, tone, text, citation) in rows:
+        if not citation: continue
+        entry = lit_data.setdefault(citation, {
+            "premise_id": _pid("lit", _slug(citation)),
+            "claims": [],
+            "per_hyp": {},
+        })
+        layers = CHAIN_NODE_TO_LAYER.get(hid, {})
+        lf, lt = layers.get(from_node), layers.get(to_node)
+        if not lf or not lt:
+            continue
+        position = ("node", lf, lf) if lf == lt else ("edge", lf, lt)
+        entry["claims"].append({"hyp": hid, "text": text, "tone": tone,
+                                 "position": list(position)})
+        entry["per_hyp"].setdefault(hid, []).append({
+            "position": position, "text": text, "tone": tone,
+        })
+    return lit_data
+
+
+def emit_literature_premises(conn, lit_data: dict) -> int:
+    """Emit one premise per unique citation. Chain-position attribution
+    happens per hypothesis at bake time (see literature_links_for_template)."""
+    for citation, entry in lit_data.items():
+        ev = {
+            "citation":         citation,
+            "claims":           entry["claims"],
+            "n_hyp_citations":  len(entry["per_hyp"]),
+        }
+        conn.execute(
+            "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+            (entry["premise_id"], "literature", "cohort", "DMD",
+             json.dumps(ev), 0.9, _prov()),
+        )
+    return len(lit_data)
+
+
+def literature_links_for_template(lit_data: dict, tmpl_id: str
+                                  ) -> list[tuple[str, float, str, tuple[str, str, str]]]:
+    """Return (premise_id, weight, rationale, chain_position) for each
+    literature citation attributed to this hypothesis template's chain."""
+    out = []
+    for citation, entry in lit_data.items():
+        for claim in entry["per_hyp"].get(tmpl_id, []):
+            weight = 0.5 if claim["tone"] == "good" else -0.3
+            out.append((
+                entry["premise_id"],
+                weight,
+                (claim["text"] or "")[:180],
+                claim["position"],
+            ))
+    return out
 
 
 # ----------------------------------------------------------------------
@@ -405,6 +586,12 @@ def premise_chain_positions(source_id: str, evidence: dict) -> list[tuple[str, s
         # Our labs use "tissueType" in the labs table but LAYERS uses "tissue"
         norm = "tissue" if layer == "tissueType" else layer
         return [("node", norm, norm)]
+    if source_id == "patient_celltype_impact":
+        return [("node", "cellType", "cellType"), ("edge", "protein", "cellType")]
+    if source_id == "patient_tissue_impact":
+        return [("node", "tissue", "tissue"), ("edge", "cellType", "tissue")]
+    # `literature` premises carry their per-hypothesis chain positions
+    # via literature_links_for_template — no source-level default.
     return []
 
 
@@ -416,6 +603,10 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
     iso_pid   = patient_premises.get("iso")
     esm3_pid  = patient_premises.get("esm3")
     lab_pids  = patient_premises.get("labs", [])
+    ct_pid    = patient_premises.get("celltype_impact")
+    ct_ev     = patient_premises.get("celltype_impact_ev", {})
+    tis_pid   = patient_premises.get("tissue_impact")
+    tis_ev    = patient_premises.get("tissue_impact_ev", {})
     nmd_pid   = cohort_premises.get("nmd_cohort")
     hpa_pid   = cohort_premises.get("hpa")
     reactome_pid = cohort_premises.get("reactome")
@@ -444,6 +635,57 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
     if esm3_pid and hyp_id in ("01", "03"):
         out.append((esm3_pid, 0.6, "ESM3 fold of WT + truncated dystrophin visualizes the DGC-anchor loss"))
 
+    # Composition premises: cell-type & tissue impact.
+    # Weight signs matter — spared distal cell types actively argue against H04.
+    if ct_pid and ct_ev:
+        cells = ct_ev.get("cells", [])
+        muscle_cells = [c for c in cells
+                        if any(m in (c.get("tissue") or "").lower()
+                               for m in ("muscle", "cardiac", "thymus", "salivary"))]
+        distal_cells = [c for c in cells
+                        if any(d in (c.get("tissue") or "").lower()
+                               for d in ("retina", "adipose"))]
+        muscle_hit    = sum(1 for c in muscle_cells if c["status"] == "hit")
+        distal_hit    = sum(1 for c in distal_cells if c["status"] == "hit")
+        distal_spared = sum(1 for c in distal_cells if c["status"] == "spared")
+
+        if hyp_id in ("01", "03") and muscle_hit > 0:
+            out.append((ct_pid, 0.6,
+                f"{muscle_hit} muscle-lineage cell types affected — supports muscle-fragility mechanism"))
+        if hyp_id == "02" and muscle_hit > 0:
+            out.append((ct_pid, 0.3,
+                f"{muscle_hit} muscle cell types affected — consistent with partial-function BMD scenario"))
+        if hyp_id == "04":
+            if distal_hit > 0:
+                out.append((ct_pid, 0.8,
+                    f"{distal_hit} distal (retinal/adipose) cell types affected — supports distal-isoform-loss mechanism"))
+            if distal_spared > 0:
+                out.append((ct_pid, -0.5,
+                    f"{distal_spared} distal cell types SPARED — argues against distal-isoform-loss mechanism"))
+            if distal_hit == 0 and distal_spared > 0:
+                # Full-negative case: all distal cells spared → H04 unsupported
+                out.append((ct_pid, -0.3, "no evidence of distal-isoform cell-type effects for this patient"))
+
+    if tis_pid and tis_ev:
+        hit_tissues    = tis_ev.get("tissues_hit", [])
+        spared_tissues = tis_ev.get("tissues_spared", [])
+        muscle_hit = any("muscle" in t for t in hit_tissues)
+        cns_hit    = any(t in hit_tissues for t in ("brain", "brain_glia", "cortical_neurons",
+                                                     "hippocampus", "cerebellar_Purkinje_cells"))
+        renal_hit  = "kidney" in hit_tissues
+        retina_hit = any("retina" in t for t in hit_tissues)
+
+        if hyp_id in ("01", "03") and muscle_hit:
+            out.append((tis_pid, 0.5, "skeletal + cardiac muscle tissue affected — core H01/H03 phenotype"))
+        if hyp_id == "04":
+            distal_tissues_hit = sum([cns_hit, renal_hit, retina_hit])
+            if distal_tissues_hit > 0:
+                out.append((tis_pid, 0.7,
+                    f"{distal_tissues_hit} distal tissue systems (CNS/kidney/retina) affected — supports H04"))
+            else:
+                out.append((tis_pid, -0.4,
+                    "no distal tissue systems affected — argues against H04"))
+
     # Abnormal labs contribute per-lab weight for the mechanism they support.
     if hyp_id == "01":
         # elevated CK, low LVEF, low FVC, high MRI ff → all support muscle fragility
@@ -470,7 +712,8 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
 
 def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: float | None,
                                  amb: str | None, exon_str: str | None, nuc: str | None,
-                                 aa: str | None, cons: str | None, acmg: str | None
+                                 aa: str | None, cons: str | None, acmg: str | None,
+                                 lit_data: dict | None = None
                                  ) -> tuple[int, int]:
     """Emit premises + patient_hypothesis + patient_therapeutic rows for one patient.
     Returns (n_hyps, n_therapies)."""
@@ -482,13 +725,28 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     iso_pid   = emit_isoform_premise(conn, cohort, pid, exon_n)
     esm3_pid  = emit_esm3_premise(conn, cohort, pid)  # None for most
     lab_pids  = emit_lab_premises(conn, cohort, pid)
+    ct_pid    = emit_celltype_impact_premise(conn, cohort, pid, exon_n)
+    tis_pid   = emit_tissue_impact_premise(conn, cohort, pid, exon_n)
 
-    patient_premises = {"zhang": zhang_pid, "iso": iso_pid, "esm3": esm3_pid, "labs": lab_pids}
+    # Load evidence blobs for the composition premises so premise-weighting
+    # can inspect their content (which cells hit/spared, which tissues, etc.).
+    def _load_ev(pid_):
+        if not pid_: return {}
+        r = conn.execute("SELECT evidence FROM premise WHERE premise_id=?", (pid_,)).fetchone()
+        try: return json.loads(r[0]) if r else {}
+        except Exception: return {}
+
+    patient_premises = {
+        "zhang": zhang_pid, "iso": iso_pid, "esm3": esm3_pid, "labs": lab_pids,
+        "celltype_impact": ct_pid, "celltype_impact_ev": _load_ev(ct_pid),
+        "tissue_impact":   tis_pid, "tissue_impact_ev":   _load_ev(tis_pid),
+    }
     cohort_premises = {
         "nmd_cohort": _pid("nmd_cohort", "DMD"),
         "hpa":        _pid("hpa", "DMD"),
         "reactome":   _pid("reactome", "DMD"),
     }
+    lit_data = lit_data or {}
 
     # 2. Score templates and emit patient_hypothesis rows
     scores = score_templates(cons, phen, exon_n)
@@ -523,9 +781,31 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         prem_weights = premise_weights_for_template(tmpl_id, patient_premises, cohort_premises)
 
         # Track per-layer contributions to compute the score vector.
+        # `layer_evidence` (abs) drives coverage — any-evidence counts.
+        # `signed_layer`  (signed) drives aggregate — negative premises
+        # (e.g. spared distal cells arguing against H04) reduce the score.
         layer_evidence: dict[str, float] = {layer: 0.0 for layer in LAYERS}
         edge_evidence:  dict[tuple[str, str], float] = {}
+        signed_layer:   dict[str, float] = {layer: 0.0 for layer in LAYERS}
+        signed_edge:    dict[tuple[str, str], float] = {}
         n_chain_links = 0
+
+        def _link(pr_id, w, rat, positions):
+            nonlocal n_chain_links
+            for (link_type, lf, lt) in positions:
+                conn.execute(
+                    "INSERT OR REPLACE INTO hypothesis_chain_link VALUES (?,?,?,?,?,?,?)",
+                    (hyp_id, link_type, lf, lt, pr_id, w, rat),
+                )
+                n_chain_links += 1
+                if link_type == "node":
+                    layer_evidence[lf] += abs(w)
+                    signed_layer[lf]   += w
+                else:
+                    edge_evidence[(lf, lt)] = edge_evidence.get((lf, lt), 0) + abs(w)
+                    signed_edge[(lf, lt)]   = signed_edge.get((lf, lt), 0) + w
+
+        # A. Route the data/model premises via source-level chain positions
         for (pr_id, w, rat) in prem_weights:
             if not pr_id: continue
             conn.execute(
@@ -533,16 +813,16 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
                 (hyp_id, pr_id, w, rat),
             )
             source_id, ev = _get_premise_source_and_ev(pr_id)
-            for (link_type, lf, lt) in premise_chain_positions(source_id, ev):
-                conn.execute(
-                    "INSERT OR REPLACE INTO hypothesis_chain_link VALUES (?,?,?,?,?,?,?)",
-                    (hyp_id, link_type, lf, lt, pr_id, w, rat),
-                )
-                n_chain_links += 1
-                if link_type == "node":
-                    layer_evidence[lf] = layer_evidence.get(lf, 0) + abs(w)
-                else:
-                    edge_evidence[(lf, lt)] = edge_evidence.get((lf, lt), 0) + abs(w)
+            _link(pr_id, w, rat, premise_chain_positions(source_id, ev))
+
+        # B. Literature premises — attribution is per-hypothesis (each
+        # citation carries its own chain position for THIS template).
+        for (pr_id, w, rat, position) in literature_links_for_template(lit_data, tmpl_id):
+            conn.execute(
+                "INSERT OR REPLACE INTO hypothesis_premise VALUES (?,?,?,?)",
+                (hyp_id, pr_id, w, rat),
+            )
+            _link(pr_id, w, rat, [position])
 
         # Compute score vector:
         #   aggregate   = sum of all evidence weights (nodes + edges)
@@ -552,7 +832,8 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         #                 fewer gaps score higher
         n_layers_covered = sum(1 for v in layer_evidence.values() if v > 0)
         n_layers_empty   = len(LAYERS) - n_layers_covered
-        aggregate = sum(layer_evidence.values()) + sum(edge_evidence.values())
+        # Aggregate = signed sum (negative premises reduce score).
+        aggregate = sum(signed_layer.values()) + sum(signed_edge.values())
         coverage  = n_layers_covered / len(LAYERS)
         consistency = 1.0
         parsimony = 1.0 / (1.0 + n_layers_empty)
@@ -652,6 +933,14 @@ def main() -> None:
     emit_nmd_cohort_premise(conn)
     print("[cohort]   HPA + Reactome + NMD cohort premises emitted")
 
+    # 2b. Migrate curated citations from hypothesis_chain_edge_evidence
+    #     into the literature premise source. One premise per unique
+    #     citation; per-hypothesis chain-position attribution via
+    #     CHAIN_NODE_TO_LAYER.
+    lit_data = collect_literature_data(conn)
+    n_lit = emit_literature_premises(conn, lit_data)
+    print(f"[literature] {n_lit} unique citations promoted to premises")
+
     # 3. Wipe & regenerate per-patient hypotheses + therapeutics for the roster
     #    (we scope by generator_id so re-runs are idempotent across versions).
     conn.execute("DELETE FROM patient_hypothesis WHERE generator_id=? AND generator_version=?",
@@ -674,7 +963,8 @@ def main() -> None:
         aa = html.unescape(aa) if aa else aa
         nuc = html.unescape(nuc) if nuc else nuc
         n_h, n_t = bake_hypotheses_for_patient(
-            conn, cohort, pid, phen, age, amb, exon, nuc, aa, cons, acmg)
+            conn, cohort, pid, phen, age, amb, exon, nuc, aa, cons, acmg,
+            lit_data=lit_data)
         total_h += n_h
         total_t += n_t
 

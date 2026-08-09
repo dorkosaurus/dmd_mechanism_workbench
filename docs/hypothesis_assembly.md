@@ -107,8 +107,41 @@ attributed to node and edge positions in the biological chain:
 | **DMD isoform architecture** | data | variant→protein (edge), protein (node) | Which of the seven DMD isoforms is impacted given the variant's exon position (first-shared-exon rule); a structural argument for the variant → protein transition |
 | **ESM3 protein fold** | model | protein (node), variant→protein (edge) | Per-patient ESM3-predicted 3D structure of the wild-type and truncated protein product; visualizes what protein content is preserved and what is lost |
 | **Reactome pathway memberships** | data | pathway (node), pathway→subcellular (edge) | Which biological pathways include dystrophin; a claim about downstream molecular consequences of protein loss |
-| **Human Protein Atlas cell-type expression** | data | cell type (node), cellType→tissue (edge) | Which cell types express which DMD isoforms; a claim about which cells will be functionally affected by isoform-specific loss |
+| **Human Protein Atlas cell-type expression** | data | cell type (node), cellType→tissue (edge) | Baseline expression of DMD across cell types — *gene-scoped, not patient-scoped*. Establishes which cell types normally express DMD; does not by itself say which cells are affected in a given patient |
 | **Per-patient clinical labs** | model / data | cell type (node), tissue (node), phenotype (node) | Fifteen assays per patient (CK, LVEF, FVC, MRI fat fraction, 6MWT, NSAA, IQ, ERG, UACR, etc.); each lab occupies its natural layer of the chain and provides the concrete empirical anchor for that node |
+
+### The composition step (now implemented)
+
+The HPA premise tells us *which cell types express DMD at all*. The
+isoform-architecture premise tells us *which isoforms are affected by
+this patient's variant*. Two composition premises now close the loop
+between them:
+
+- **`patient_celltype_impact`** — for each HPA cell type, computes
+  whether it is *hit*, *partially spared*, *spared*, or *unknown* given
+  the isoforms this patient's variant touches, using a curated cell-
+  type-to-isoform dependency map (Muntoni 2003 for muscle isoforms,
+  Pillers 1993 for Dp260 in retina, Lidov 1995 for Dp71 ubiquitous).
+  Attributed to `node:cellType` + `edge:protein→cellType`.
+- **`patient_tissue_impact`** — union of tissues from hit isoforms
+  (from `isoforms.primary_expression_tissues`). Attributed to
+  `node:tissue` + `edge:cellType→tissue`.
+
+These premises carry **signed weights**: spared distal cell types
+(e.g. photoreceptors, adipocytes) actively argue *against* H04 (distal-
+isoform-loss mechanism) — not just via the absence of positive
+evidence but via explicit negative weight. Patient 4 (variant at exon
+8, only hits Dp427m/c/p) shows this: H04's aggregate falls to +8.2
+because the composition premises supply negative weight ("distal cell
+types SPARED — argues against distal-isoform-loss mechanism"). Patient
+5 (variant at exon 75, hits everything including Dp71) shows the
+opposite: H04's aggregate rises to +12.6 because the same composition
+premises now argue positively (all distal cells affected).
+
+The aggregate dimension of the score vector is a **signed sum**, so
+these negative premises actually reduce hypothesis scores. Coverage
+still counts *any* premise (positive or negative) so the chain
+completeness metric is unaffected.
 
 Additional sources — AbSplice for aberrant-splicing predictions,
 ESM2 log-likelihood ratios for variant-level functional-disruption
@@ -224,6 +257,172 @@ would need to be established. The score vector surfaces this: high
 aggregate at a few nodes, but coverage is only 43%. A single scalar
 score would have obscured the reason H02 doesn't fit.
 
+## Where literature evidence lives
+
+Literature is where mechanism biology becomes *citable* rather than
+inferred from raw data. Every edge in the biological chain — every
+claim of the form *"A implies B"* — ultimately rests on prior
+published work that established the transition. Without literature
+attribution, the chain reads as speculation; with it, each transition
+carries the paper trail that justifies calling it a mechanism at all.
+
+### The principle
+
+**Literature should inform every edge across the biological hierarchy.**
+The reading-frame rule at `variant → protein` is Monaco 1988. NMD's
+50-nucleotide-upstream-of-last-EEJ boundary at `variant → protein`
+is Popp & Maquat 2013. DGC assembly at `protein → subcellular` is
+Ervasti & Campbell 1993. Ca²⁺ influx at membrane micro-tears at
+`subcellular → cellType` is Petrof 1993. Dp260-loss producing a
+negative ERG b-wave at `protein → cellType (retinal)` is Pillers 1993.
+Dp140-loss correlating with IQ deficit at `cellType → phenotype (CNS)`
+is Ricotti 2016. **Every edge in the chain has, or should have, at
+least one paper anchoring it.**
+
+### Where literature currently lives (and why that's inadequate)
+
+Literature evidence in the current build lives in two places, neither
+of which treats it as a first-class premise:
+
+**1. Embedded inside curated hypothesis chains.** The
+`hypothesis_chain_edge_evidence` table stores, per hypothesis, per
+edge in that hypothesis's specific curated chain, one or more
+citations (Monaco 1988, Hoffman 1988, Popp & Maquat 2013, etc.).
+These are visible in the edge-evidence modal when a user clicks an
+arrow in the reasoning chain. They are, however, *scoped to that
+hypothesis's chain*. There is no way to query *"which papers support
+the reading-frame rule"* independent of H01, or to reuse Popp &
+Maquat 2013 across all hypotheses that share the NMD claim.
+
+**2. Implicit in curated auxiliary sources.** The cell-type-to-isoform
+dependency map in the hydrator cites Muntoni 2003, Pillers 1993,
+Lidov 1995 in a Python comment. The NMD classifier cites Popp &
+Maquat 2013 in a comment. The claim templates for each hypothesis
+carry paraphrased-from-Monaco-1988 language. These citations *exist*
+in the codebase but do not surface as premises; they do not appear in
+the chain audit trail; they cannot be counted, weighted, or updated
+independently.
+
+### Where literature should live: as edge- and node-attributed premises
+
+Literature should be a first-class premise source in the registry,
+with each *claim from each paper* materialized as one or more
+premises attributed to specific chain positions:
+
+```
+premise_source: 'literature' (source_type: 'data')
+
+premise:
+  premise_id: 'lit:monaco_1988:reading_frame_rule'
+  source_id:  'literature'
+  scope:      'cohort'                   (or 'variant' when variant-specific)
+  scope_key:  'DMD'
+  evidence: {
+    pmid: '3325541',
+    doi:  '10.1016/0092-8674(88)90463-1',
+    citation: 'Monaco AP et al. 1988. Cell.',
+    claim_text: 'Reading-frame rule: out-of-frame deletions produce DMD;
+                 in-frame deletions produce BMD (~90% concordance).',
+  }
+  confidence: 0.98
+
+hypothesis_chain_link:
+  hypothesis_id: any hypothesis in the H01, H02, or H03 template family
+  link_type: 'edge'
+  layer_from: 'variant'
+  layer_to:   'protein'
+  premise_id: 'lit:monaco_1988:reading_frame_rule'
+  weight:     +0.9 (for H01)
+  weight:     +0.9 (for H02, symmetrically)
+  weight:     +0.5 (for H03)
+```
+
+Now the same Monaco claim informs multiple hypotheses at the same
+edge, with different signed weights. It is queryable, versionable,
+and can accumulate additional co-citing papers over time. The
+edge-evidence modal in the GUI becomes a rendering of literature
+premises attributed to that edge, rather than a hand-curated bundle
+inside one hypothesis.
+
+### Coverage across the chain
+
+The literature-source-per-edge target for DMD would look something like:
+
+| Edge | Anchoring paper(s) | Claim being cited |
+|---|---|---|
+| variant → protein | Monaco 1988 | Reading-frame rule concordance |
+| variant → protein | Popp & Maquat 2013 | PTC ≥50nt upstream of last EEJ → NMD-eligible |
+| variant → protein | Aartsma-Rus 2006 | Splice-site variants produce downstream PTC via exon skipping |
+| variant → protein | Hoffman 1988 | Western blot of DMD muscle: <3% dystrophin in PTC carriers |
+| protein → subcellular | Ervasti & Campbell 1993 | Dystrophin C-terminal binds β-dystroglycan; DGC bridges actin to laminin |
+| protein → subcellular | Ohlendieck 1991 | DGC components dissociate from sarcolemma in mdx muscle |
+| subcellular → cellType | Petrof 1993 | Contraction-induced micro-tears admit extracellular Ca²⁺ |
+| subcellular → cellType | Alderton 2000 | Elevated cytosolic Ca²⁺ activates calpain-1 → proteolysis |
+| subcellular → cellType | Millay 2008 | Sustained Ca²⁺ overload opens the mitochondrial permeability transition pore |
+| protein → cellType | Pillers 1993 | Dp260-loss → negative ERG b-wave in retinal photoreceptors |
+| protein → cellType | Byers 1993 | Dp116 loss in Schwann cells → subtle nerve conduction changes |
+| protein → cellType | Lidov 1995 | Dp71 is expressed broadly (retina, brain, kidney) |
+| cellType → tissue | Muntoni 2003 | Dp427m is the muscle-specific isoform driving skeletal + cardiac dystrophy |
+| cellType → tissue | Uezumi 2010 | Fibro-adipogenic progenitors expand + differentiate when muscle regeneration fails |
+| tissue → phenotype | Bushby 1993 | BMD ambulation retained past age 16 (clinical criterion) |
+| tissue → phenotype | Ricotti 2016 | Dp140-loss correlates with ~10-point IQ deficit |
+| tissue → phenotype | Bello 2016 | Cardiac + CNS symptoms track residual isoform expression |
+
+Most of these citations already exist in the codebase as prose or
+comments; promoting them into the `premise` registry is a bake job,
+not a fresh curation. Roughly forty citations already live in the
+curated hypothesis chains (`hypothesis_chain_edge_evidence` table);
+they can be re-emitted as literature premises with cross-hypothesis
+attribution during a single migration pass.
+
+### Literature's role: guiding hypothesis formation, not just validating it
+
+Literature premises should not be added to hypotheses after the
+hypotheses are formed. They should **enter the assembly at formation
+time and shape which hypotheses form at all**.
+
+Concretely: when the world model assembles a candidate walk through
+the biological hierarchy, it consults the literature premises
+available at each edge to answer *"is this transition a plausible
+mechanism claim to make?"* Edges anchored by strong literature
+(e.g., variant → protein via the reading-frame rule, backed by
+Monaco 1988 and multiple downstream confirmations) can be traversed
+with high confidence. Edges with no literature support get either
+skipped (chain doesn't form through that transition) or flagged as
+speculative (chain forms but its coverage/consistency score reflects
+the gap).
+
+This is the difference between literature-as-decoration
+(*"here are the citations for the mechanism we already picked"*) and
+literature-as-substrate (*"which mechanisms are the literature-
+supported walks through the biology, and what evidence anchors each
+step?"*). We are targeting the second.
+
+Consequences once literature is a premise source integrated into
+formation:
+
+- Every candidate hypothesis is evaluated at formation time for
+  literature support at each of its chain steps — hypotheses without
+  literature anchors either don't form or form with an explicit "no
+  literature support" mark.
+- Chain coverage improves — the `subcellular` node currently sits
+  empty because we have no source informing it directly; the DGC
+  literature (Ervasti & Campbell 1993, Ohlendieck 1991) informs it
+  and fills the gap.
+- Hypothesis ranking gains a "literature support" dimension — the
+  strength of peer-reviewed anchoring across the chain. Distinct from
+  patient-specific evidence; both contribute to the final vector.
+- Novel hypotheses proposed by an LLM must cite specific papers
+  attributable to specific edges. An LLM claim without literature
+  attribution at any step of its proposed chain is flagged as
+  unsupported speculation — held in a review queue rather than
+  ranked alongside literature-anchored hypotheses.
+- New literature (from PubMed queries, from a `litreview` MCP tool,
+  from clinician-flagged papers, from cited-in-consultation papers)
+  enters via the same premise pipeline. When new literature lands at
+  an edge, hypotheses that traverse that edge automatically inherit
+  the strengthened support at the next generation run.
+
 ## The pipeline
 
 Assembly is a linear pipeline, run once per patient during hydration:
@@ -278,10 +477,33 @@ questions with the same underlying data:
 
 ## Known gaps and roadmap
 
+**Variant → cell-type composition premise.** The isoform-architecture
+premise ends at the protein node; the HPA cell-type expression
+premise is gene-scoped and does not compose with the patient's
+variant. The result is that the chain currently has no patient-scope
+link from protein to cellType. Fix: two new premise producers,
+`patient_celltype_impact` and `patient_tissue_impact`, that compose
+`isoform_architecture` × `CELL_TO_ISOFORMS` curated map ×
+`isoforms.primary_expression_tissues` field into patient-specific
+cellType and tissue node premises with signed weights (spared cell
+types actively argue against distal-isoform-loss hypotheses).
+
+**Literature as a first-class premise source.** Literature currently
+lives embedded inside curated hypothesis chains
+(`hypothesis_chain_edge_evidence` table) and as prose comments in
+auxiliary sources. It should be promoted to the `premise` registry
+with each claim attributed to specific chain positions — enabling
+cross-hypothesis reuse, LLM-cited novel hypothesis validation, and
+literature-guided formation (rather than post-hoc citation). Roughly
+forty citations already exist in the codebase and can be migrated
+in one bake pass.
+
 **Subcellular-layer evidence.** No source currently informs the
-subcellular localization node directly. Immunohistochemistry of
-dystrophin at the sarcolemma would fill this — requires muscle
-biopsy, uncommon in current clinical practice.
+subcellular localization node directly (dystrophin immunohistochemistry
+at the sarcolemma would fill this — requires muscle biopsy, uncommon
+in current clinical practice). Literature at this node (Ervasti &
+Campbell 1993, Ohlendieck 1991) partially fills the gap once
+literature is a premise source.
 
 **Aberrant splicing predictions.** No AbSplice premise producer yet.
 Splice-site patients (P10 in the current roster) rely on the coarse
