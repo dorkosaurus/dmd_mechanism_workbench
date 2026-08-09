@@ -984,10 +984,14 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         # `layer_evidence` (abs) drives coverage — any-evidence counts.
         # `signed_layer`  (signed) drives aggregate — negative premises
         # (e.g. spared distal cells arguing against H04) reduce the score.
+        # `position_premises` keeps the raw (pr_id, w, rat) list per chain
+        # position so we can detect contradictions (positions where both
+        # positive and negative premises accrue meaningful weight).
         layer_evidence: dict[str, float] = {layer: 0.0 for layer in LAYERS}
         edge_evidence:  dict[tuple[str, str], float] = {}
         signed_layer:   dict[str, float] = {layer: 0.0 for layer in LAYERS}
         signed_edge:    dict[tuple[str, str], float] = {}
+        position_premises: dict[str, list[tuple[str, float, str]]] = {}
         n_chain_links = 0
 
         def _link(pr_id, w, rat, positions):
@@ -998,6 +1002,8 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
                     (hyp_id, link_type, lf, lt, pr_id, w, rat),
                 )
                 n_chain_links += 1
+                key = f"node:{lf}" if link_type == "node" else f"edge:{lf}->{lt}"
+                position_premises.setdefault(key, []).append((pr_id, w, rat))
                 if link_type == "node":
                     layer_evidence[lf] += abs(w)
                     signed_layer[lf]   += w
@@ -1025,26 +1031,51 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
             _link(pr_id, w, rat, [position])
 
         # Compute score vector:
-        #   aggregate   = sum of all evidence weights (nodes + edges)
+        #   aggregate   = signed sum of all evidence weights (nodes + edges)
         #   coverage    = fraction of layers with any evidence
-        #   consistency = 1.0 (no contradiction detection yet — placeholder)
-        #   parsimony   = 1 / (1 + number of empty layers) — chains with
-        #                 fewer gaps score higher
+        #   consistency = fraction of covered chain positions with no
+        #                 opposing evidence. A position is *contradicting*
+        #                 when both positive and negative premises accrue
+        #                 ≥ CONTRADICTION_THRESHOLD magnitude there.
+        #   parsimony   = 1 / (1 + number of empty layers)
+        CONTRADICTION_THRESHOLD = 0.1  # magnitude below which a signed
+                                       # premise doesn't count as opposition
         n_layers_covered = sum(1 for v in layer_evidence.values() if v > 0)
         n_layers_empty   = len(LAYERS) - n_layers_covered
-        # Aggregate = signed sum (negative premises reduce score).
         aggregate = sum(signed_layer.values()) + sum(signed_edge.values())
         coverage  = n_layers_covered / len(LAYERS)
-        consistency = 1.0
         parsimony = 1.0 / (1.0 + n_layers_empty)
+
+        contradictions = []
+        for pos_key, prems in position_premises.items():
+            pos_sum = sum(w for (_, w, _) in prems if w > 0)
+            neg_sum = sum(-w for (_, w, _) in prems if w < 0)
+            if pos_sum >= CONTRADICTION_THRESHOLD and neg_sum >= CONTRADICTION_THRESHOLD:
+                contradictions.append({
+                    "position":     pos_key,
+                    "positiveSum":  round(pos_sum, 3),
+                    "negativeSum":  round(neg_sum, 3),
+                    "supporting":   [{"premiseId": pr, "weight": round(w, 3),
+                                      "rationale": (r or "")[:160]}
+                                     for (pr, w, r) in prems if w > 0],
+                    "opposing":     [{"premiseId": pr, "weight": round(w, 3),
+                                      "rationale": (r or "")[:160]}
+                                     for (pr, w, r) in prems if w < 0],
+                })
+
+        n_covered_positions = sum(1 for prems in position_premises.values() if prems)
+        consistency = (1.0 - len(contradictions) / n_covered_positions
+                       if n_covered_positions > 0 else 1.0)
+
         score_vector = {
-            "aggregate":   round(aggregate, 3),
-            "coverage":    round(coverage, 3),
-            "consistency": round(consistency, 3),
-            "parsimony":   round(parsimony, 3),
-            "layerScores": {layer: round(v, 3) for layer, v in layer_evidence.items()},
-            "edgeScores":  {f"{lf}->{lt}": round(v, 3) for (lf, lt), v in edge_evidence.items()},
-            "chainLinks":  n_chain_links,
+            "aggregate":     round(aggregate, 3),
+            "coverage":      round(coverage, 3),
+            "consistency":   round(consistency, 3),
+            "parsimony":     round(parsimony, 3),
+            "layerScores":   {layer: round(v, 3) for layer, v in layer_evidence.items()},
+            "edgeScores":    {f"{lf}->{lt}": round(v, 3) for (lf, lt), v in edge_evidence.items()},
+            "chainLinks":    n_chain_links,
+            "contradictions": contradictions,
         }
 
         conn.execute(

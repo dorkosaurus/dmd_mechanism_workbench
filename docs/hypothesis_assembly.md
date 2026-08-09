@@ -546,11 +546,26 @@ and CMap drug signatures are all called out in the rare-disease
 platform deck as priorities. Each would extend the chain into the
 molecular-neighborhood space beyond the direct pathway node.
 
-**Contradiction detection.** The consistency dimension of the score
-vector is a placeholder (always 1.0 in v0). A real implementation
-would flag pairs of premises within a hypothesis that argue in
-opposite directions (e.g., a phenotype label supporting H02 but
-motor labs supporting H01), lowering consistency accordingly.
+**Contradiction detection — now implemented.** The consistency
+dimension of the score vector is no longer a placeholder. Each hypothesis
+tracks per-chain-position positive and negative premise contributions
+separately; a position is flagged as *contradicting* when both the
+positive-weight sum and the negative-weight sum meet or exceed a
+0.1 magnitude threshold. Consistency is then `1 - n_contradicting /
+n_covered_positions`, and the full breakdown (per-position supporting
+vs. opposing premises with rationales) is emitted in
+`scoreVector.contradictions`.
+
+Concretely, this fires for H04 (distal-isoform-loss) in 7 of 10
+patients — the ones with proximal variants that only hit Dp427. At the
+`cellType` node and `protein→cellType` edge, cohort literature
+(Haenggi 2006, Lidov 1995, Pillers 1993) argues *for* distal-isoform
+involvement, while the patient's composition premise argues *against*
+it (distal cell types spared given the variant's isoform-hit pattern).
+Consistency drops to 0.833 and the contradiction is surfaced in the
+chain artifact so the user can see the specific evidence conflict.
+The 3 patients with distal-reaching variants (P5, P258, P266) stay
+clean because both sources agree the distal cells are affected.
 
 **LLM-refined claims.** The mechanism-claim text for each hypothesis
 is currently template-filled. An LLM refinement pass conditioned on

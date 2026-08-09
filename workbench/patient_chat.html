@@ -284,6 +284,35 @@
   .sv-metric-fill { height: 100%; background: var(--good); }
   .sv-hint { color: var(--ink-3); font-size: 10px; font-style: italic;
     margin-left: auto; }
+  .sv-metric-fill.warn { background: var(--warn); }
+  .sv-metric-fill.bad  { background: var(--bad); }
+
+  /* Contradictions panel — shown under the score vector when consistency < 1 */
+  .contradictions-panel { margin: 10px 0; padding: 10px 12px;
+    background: var(--warn-soft); border: 1px solid var(--warn);
+    border-radius: 8px; }
+  .contradictions-panel-h { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--warn); font-weight: 700;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .contradictions-panel-h b { color: var(--ink); }
+  .contra-card { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; }
+  .contra-card:last-child { margin-bottom: 0; }
+  .contra-card-head { display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px; font-size: 11px; color: var(--ink-2); }
+  .contra-position { font-family: "SF Mono", Menlo, monospace;
+    color: var(--ink); font-weight: 700;
+    background: var(--bg); padding: 2px 6px; border-radius: 3px; }
+  .contra-signs { font-family: "SF Mono", Menlo, monospace; font-size: 10px; }
+  .contra-signs .pos { color: var(--good); }
+  .contra-signs .neg { color: var(--bad); }
+  .contra-row { display: flex; align-items: flex-start; gap: 6px;
+    font-size: 11px; line-height: 1.4; margin-bottom: 3px; }
+  .contra-row .marker { font-weight: 700; min-width: 44px; text-align: right;
+    font-family: "SF Mono", Menlo, monospace; }
+  .contra-row.pos .marker { color: var(--good); }
+  .contra-row.neg .marker { color: var(--bad); }
+  .contra-row .rationale { color: var(--ink-2); flex: 1; }
 
   /* Evidence badge on each layered-chain box */
   .lc-evidence-badge { display: inline-block; margin-left: 6px;
@@ -1095,6 +1124,11 @@ function renderChainArtifact(p, hypId, artifactIdx) {
 
   // Score vector strip — the multi-dimensional ranking
   const sv = storedHyp?.scoreVector;
+  const contras = sv?.contradictions || [];
+  const consistencyClass = contras.length === 0 ? '' : (contras.length >= 3 ? 'bad' : 'warn');
+  const consistencyTitle = contras.length === 0
+    ? 'No chain position has both positive AND negative premise weight ≥ 0.1'
+    : `${contras.length} chain position${contras.length === 1 ? '' : 's'} show conflicting evidence`;
   const scoreVectorStrip = sv ? `
     <div class="score-vector">
       <div class="sv-metric">
@@ -1107,10 +1141,10 @@ function renderChainArtifact(p, hypId, artifactIdx) {
         <span class="sv-metric-value">${(sv.coverage * 100).toFixed(0)}%</span>
         <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.coverage * 100}%"></div></div>
       </div>
-      <div class="sv-metric" title="No contradicting premises (placeholder — always 1.0 in v0)">
+      <div class="sv-metric" title="${esc(consistencyTitle)}">
         <span class="sv-metric-label">Consistency</span>
         <span class="sv-metric-value">${(sv.consistency * 100).toFixed(0)}%</span>
-        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.consistency * 100}%"></div></div>
+        <div class="sv-metric-bar"><div class="sv-metric-fill ${consistencyClass}" style="width:${sv.consistency * 100}%"></div></div>
       </div>
       <div class="sv-metric" title="1 / (1 + empty layers) — chains with fewer gaps score higher">
         <span class="sv-metric-label">Parsimony</span>
@@ -1118,6 +1152,39 @@ function renderChainArtifact(p, hypId, artifactIdx) {
         <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.parsimony * 100}%"></div></div>
       </div>
       <span class="sv-hint">${sv.chainLinks} chain links · ranking is vector, not scalar</span>
+    </div>` : '';
+
+  // Contradictions panel — surfaces the specific chain positions where
+  // premises argue in opposite directions (e.g., cohort literature says
+  // distal cells express Dp71, but patient's isoform-arch says they're spared)
+  const contradictionsPanel = contras.length > 0 ? `
+    <div class="contradictions-panel">
+      <div class="contradictions-panel-h">
+        ⚠ Contradicting evidence
+        <b>${contras.length} chain position${contras.length === 1 ? '' : 's'}</b>
+      </div>
+      ${contras.map(c => `
+        <div class="contra-card">
+          <div class="contra-card-head">
+            <span class="contra-position">${esc(c.position)}</span>
+            <span class="contra-signs">
+              <span class="pos">+${c.positiveSum.toFixed(2)}</span>
+              vs
+              <span class="neg">−${c.negativeSum.toFixed(2)}</span>
+            </span>
+          </div>
+          ${(c.supporting || []).map(p => `
+            <div class="contra-row pos">
+              <span class="marker">+${p.weight.toFixed(2)}</span>
+              <span class="rationale">${esc(p.rationale || p.premiseId)}</span>
+            </div>`).join('')}
+          ${(c.opposing || []).map(p => `
+            <div class="contra-row neg">
+              <span class="marker">${p.weight.toFixed(2)}</span>
+              <span class="rationale">${esc(p.rationale || p.premiseId)}</span>
+            </div>`).join('')}
+        </div>
+      `).join('')}
     </div>` : '';
 
   return `<div class="gen-artifact" data-artifact-idx="${artifactIdx}">
@@ -1128,6 +1195,7 @@ function renderChainArtifact(p, hypId, artifactIdx) {
     </div>
     ${provenance}
     ${scoreVectorStrip}
+    ${contradictionsPanel}
     ${peHtml}
     ${lede}
     <div style="overflow-x:auto">${chainHtml}</div>

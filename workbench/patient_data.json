@@ -534,7 +534,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -1703,7 +1703,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 44
+            "chainLinks": 44,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -1740,7 +1741,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -2541,7 +2542,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -2568,7 +2570,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -3126,7 +3128,7 @@
           "scoreVector": {
             "aggregate": 8.6,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -3145,7 +3147,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|2",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|2",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|2",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|2",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": [
             {
@@ -3172,7 +3234,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -3777,7 +3839,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 20
+            "chainLinks": 20,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -4151,7 +4214,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -4966,7 +5029,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -4993,7 +5057,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -6101,7 +6165,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 43
+            "chainLinks": 43,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -6133,7 +6198,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -6736,7 +6801,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 20
+            "chainLinks": 20,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -6763,7 +6829,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -7319,7 +7385,7 @@
           "scoreVector": {
             "aggregate": 8.6,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -7338,7 +7404,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|30",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|30",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|30",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|30",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": []
         }
@@ -7700,7 +7826,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -8568,7 +8694,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 30
+            "chainLinks": 30,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -8600,7 +8727,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -9734,7 +9861,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 45
+            "chainLinks": 45,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -9766,7 +9894,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -10420,7 +10548,8 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 23
+            "chainLinks": 23,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -10452,7 +10581,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -11054,7 +11183,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 20
+            "chainLinks": 20,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -11428,7 +11558,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -12541,7 +12671,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 42
+            "chainLinks": 42,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -12568,7 +12699,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -13367,7 +13498,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -13394,7 +13526,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -13943,7 +14075,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 18
+            "chainLinks": 18,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -13975,7 +14108,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -14531,7 +14664,7 @@
           "scoreVector": {
             "aggregate": 8.6,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -14550,7 +14683,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|57",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|57",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|57",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|57",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": [
             {
@@ -14918,7 +15111,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -16139,7 +16332,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 47
+            "chainLinks": 47,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -16181,7 +16375,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -17034,7 +17228,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 30
+            "chainLinks": 30,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -17066,7 +17261,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -17693,7 +17888,8 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -17720,7 +17916,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -18322,7 +18518,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 20
+            "chainLinks": 20,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -18696,7 +18893,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -19836,7 +20033,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 43
+            "chainLinks": 43,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -19868,7 +20066,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -20667,7 +20865,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -20694,7 +20893,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -21297,7 +21496,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 20
+            "chainLinks": 20,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -21324,7 +21524,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -21880,7 +22080,7 @@
           "scoreVector": {
             "aggregate": 8.6,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -21899,7 +22099,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|11",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|11",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|11",
+                    "weight": -0.5,
+                    "rationale": "3 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|11",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": []
         }
@@ -22262,7 +22522,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -23079,7 +23339,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -23106,7 +23367,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -24216,7 +24477,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 43
+            "chainLinks": 43,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -24248,7 +24510,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -24806,7 +25068,7 @@
           "scoreVector": {
             "aggregate": 8.6,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -24825,7 +25087,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 22,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S2_reported|202",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S2_reported|202",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S2_reported|202",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S2_reported|202",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": [
             {
@@ -24857,7 +25179,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -25435,7 +25757,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 19
+            "chainLinks": 19,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -25804,7 +26127,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -26648,7 +26971,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 28
+            "chainLinks": 28,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -26680,7 +27004,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -27763,7 +28087,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 42
+            "chainLinks": 42,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -27790,7 +28115,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -28375,7 +28700,7 @@
           "scoreVector": {
             "aggregate": 9.2,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -28394,7 +28719,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 23
+            "chainLinks": 23,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S2_reported|225",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S2_reported|225",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S2_reported|225",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S2_reported|225",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": [
             {
@@ -28416,7 +28801,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -28967,7 +29352,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 18
+            "chainLinks": 18,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -29346,7 +29732,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -30163,7 +30549,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -30190,7 +30577,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -31273,7 +31660,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 42
+            "chainLinks": 42,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -31300,7 +31688,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -31885,7 +32273,7 @@
           "scoreVector": {
             "aggregate": 9.2,
             "coverage": 0.857,
-            "consistency": 1.0,
+            "consistency": 0.833,
             "parsimony": 0.5,
             "layerScores": {
               "variant": 1.0,
@@ -31904,7 +32292,67 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 23
+            "chainLinks": 23,
+            "contradictions": [
+              {
+                "position": "node:cellType",
+                "positiveSum": 0.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "hpa|DMD",
+                    "weight": 0.5,
+                    "rationale": "HPA cell-type expression identifies which tissues lose dystrophin"
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|49",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|49",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              },
+              {
+                "position": "edge:protein->cellType",
+                "positiveSum": 1.5,
+                "negativeSum": 0.8,
+                "supporting": [
+                  {
+                    "premiseId": "lit|haenggi_2006",
+                    "weight": 0.5,
+                    "rationale": "Dp71 is expressed in podocytes and glomerular capillaries; loss correlates with albuminuria in mdx variants."
+                  },
+                  {
+                    "premiseId": "lit|lidov_1995",
+                    "weight": 0.5,
+                    "rationale": "Dp140 is the dominant dystrophin isoform in cortical astrocytes; Dp71 supports ubiquitous CNS expression."
+                  },
+                  {
+                    "premiseId": "lit|pillers_1993",
+                    "weight": 0.5,
+                    "rationale": "Dp260 is the retina-specific isoform; Dp71 provides retinal backup expression."
+                  }
+                ],
+                "opposing": [
+                  {
+                    "premiseId": "celltype_impact|S1_novel|49",
+                    "weight": -0.5,
+                    "rationale": "1 distal cell types SPARED — argues against distal-isoform-loss mechanism"
+                  },
+                  {
+                    "premiseId": "celltype_impact|S1_novel|49",
+                    "weight": -0.3,
+                    "rationale": "no evidence of distal-isoform cell-type effects for this patient"
+                  }
+                ]
+              }
+            ]
           },
           "patientEvidence": [
             {
@@ -31926,7 +32374,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -32504,7 +32952,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 19
+            "chainLinks": 19,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -32872,7 +33321,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -33685,7 +34134,8 @@
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 27
+            "chainLinks": 27,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -33712,7 +34162,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -34818,7 +35268,8 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 43
+            "chainLinks": 43,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -34850,7 +35301,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -35514,7 +35965,8 @@
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 24
+            "chainLinks": 24,
+            "contradictions": []
           },
           "patientEvidence": [
             {
@@ -35541,7 +35993,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T22:50:05+00:00"
+            "at": "2026-08-09T23:02:09+00:00"
           },
           "premises": [
             {
@@ -36153,7 +36605,8 @@
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 21
+            "chainLinks": 21,
+            "contradictions": []
           },
           "patientEvidence": [
             {
