@@ -534,7 +534,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -1328,6 +1328,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|2",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#2:c.6540del",
+                "hgvsc": "c.6540del",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp deletion mid-exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "2"
             }
           ],
           "therapeutics": [
@@ -1499,6 +1524,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|2",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -1623,6 +1654,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|2",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|2",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -1644,12 +1681,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 20.2,
+            "aggregate": 20.4,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -1658,7 +1695,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -1666,7 +1703,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 42
+            "chainLinks": 44
           },
           "patientEvidence": [
             {
@@ -1703,7 +1740,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -2262,6 +2299,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|2",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#2:c.6540del",
+                "hgvsc": "c.6540del",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp deletion mid-exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "2"
             }
           ],
           "therapeutics": [],
@@ -2357,6 +2419,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|2",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -2425,6 +2493,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|2",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|2",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -2446,12 +2520,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.3,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -2460,14 +2534,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -2494,7 +2568,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -3098,7 +3172,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -4077,7 +4151,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -4634,6 +4708,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|30",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#30:c.982A>T",
+                "hgvsc": "c.982A>T",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "single-nucleotide change mid-exon; low cryptic-splice signal",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "30"
             }
           ],
           "therapeutics": [
@@ -4745,6 +4844,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|30",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -4813,6 +4918,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|30",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|30",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -4834,12 +4945,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.3,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -4848,14 +4959,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -4882,7 +4993,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -5653,6 +5764,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|30",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#30:c.982A>T",
+                "hgvsc": "c.982A>T",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "single-nucleotide change mid-exon; low cryptic-splice signal",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "30"
             }
           ],
           "therapeutics": [],
@@ -5786,6 +5922,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|30",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -5910,6 +6052,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|30",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|30",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -5931,12 +6079,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.8,
+            "aggregate": 20.0,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -5945,7 +6093,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -5953,7 +6101,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 41
+            "chainLinks": 43
           },
           "patientEvidence": [
             {
@@ -5985,7 +6133,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -6615,7 +6763,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -7552,7 +7700,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -8144,6 +8292,31 @@
               "confidence": 0.85,
               "scope": "patient",
               "scopeKey": "258"
+            },
+            {
+              "premiseId": "absplice|S2_reported|258",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#258:c.9248G>A",
+                "hgvsc": "c.9248G>A",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "nonsense G>A; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "258"
             }
           ],
           "therapeutics": [
@@ -8267,6 +8440,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|258",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -8335,6 +8514,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|258",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "esm3|S2_reported|258",
                   "sourceId": "esm3",
                   "weight": 0.6,
@@ -8362,12 +8547,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 15.5,
+            "aggregate": 15.7,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 1.3,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -8376,14 +8561,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.6,
+              "variant->protein": 2.7,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 28
+            "chainLinks": 30
           },
           "patientEvidence": [
             {
@@ -8415,7 +8600,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -9200,6 +9385,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|258",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#258:c.9248G>A",
+                "hgvsc": "c.9248G>A",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "nonsense G>A; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "258"
             }
           ],
           "therapeutics": [],
@@ -9339,6 +9549,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|258",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -9463,6 +9679,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|258",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "esm3|S2_reported|258",
                   "sourceId": "esm3",
                   "weight": 0.6,
@@ -9490,12 +9712,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 21.0,
+            "aggregate": 21.2,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 1.3,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -9504,7 +9726,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 2.3,
+              "variant->protein": 2.4,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -9512,7 +9734,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 43
+            "chainLinks": 45
           },
           "patientEvidence": [
             {
@@ -9544,7 +9766,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -10230,7 +10452,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -11206,7 +11428,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -11956,6 +12178,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|57",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#57:c.717dup",
+                "hgvsc": "c.717dup",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp duplication in early exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "57"
             }
           ],
           "therapeutics": [
@@ -12115,6 +12362,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|57",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -12239,6 +12492,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|57",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|57",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -12260,12 +12519,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.4,
+            "aggregate": 19.6,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -12274,7 +12533,7 @@
               "phenotype": 1.0
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -12282,7 +12541,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 40
+            "chainLinks": 42
           },
           "patientEvidence": [
             {
@@ -12309,7 +12568,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -12866,6 +13125,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|57",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#57:c.717dup",
+                "hgvsc": "c.717dup",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp duplication in early exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "57"
             }
           ],
           "therapeutics": [],
@@ -12961,6 +13245,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|57",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -13029,6 +13319,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|57",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|57",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -13050,12 +13346,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.3,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -13064,14 +13360,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -13098,7 +13394,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -13679,7 +13975,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -14622,7 +14918,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -15450,6 +15746,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|5",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#5:c.10654dup",
+                "hgvsc": "c.10654dup",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp duplication in Dp71-shared region; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "5"
             }
           ],
           "therapeutics": [
@@ -15633,6 +15954,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|5",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -15757,6 +16084,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|5",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "esm3|S1_novel|5",
                   "sourceId": "esm3",
                   "weight": 0.6,
@@ -15784,12 +16117,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 21.8,
+            "aggregate": 22.0,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 1.3,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -15798,7 +16131,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 2.3,
+              "variant->protein": 2.4,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -15806,7 +16139,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 45
+            "chainLinks": 47
           },
           "patientEvidence": [
             {
@@ -15848,7 +16181,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -16441,6 +16774,31 @@
               "confidence": 0.85,
               "scope": "patient",
               "scopeKey": "5"
+            },
+            {
+              "premiseId": "absplice|S1_novel|5",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#5:c.10654dup",
+                "hgvsc": "c.10654dup",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp duplication in Dp71-shared region; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "5"
             }
           ],
           "therapeutics": [],
@@ -16548,6 +16906,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|5",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -16616,6 +16980,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|5",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "esm3|S1_novel|5",
                   "sourceId": "esm3",
                   "weight": 0.6,
@@ -16643,12 +17013,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 15.5,
+            "aggregate": 15.7,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 1.3,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -16657,14 +17027,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.6,
+              "variant->protein": 2.7,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 28
+            "chainLinks": 30
           },
           "patientEvidence": [
             {
@@ -16696,7 +17066,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -17350,7 +17720,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -18326,7 +18696,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -19097,6 +19467,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|11",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#11:c.2510del",
+                "hgvsc": "c.2510del",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp deletion mid-exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "11"
             }
           ],
           "therapeutics": [
@@ -19262,6 +19657,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|11",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -19386,6 +19787,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|11",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|11",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -19407,12 +19814,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.8,
+            "aggregate": 20.0,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -19421,7 +19828,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -19429,7 +19836,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 41
+            "chainLinks": 43
           },
           "patientEvidence": [
             {
@@ -19461,7 +19868,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -20018,6 +20425,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|11",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S1_novel#11:c.2510del",
+                "hgvsc": "c.2510del",
+                "category": "frameshift_exonic",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.03,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "1bp deletion mid-exon; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "11"
             }
           ],
           "therapeutics": [],
@@ -20113,6 +20545,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|11",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -20181,6 +20619,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|11",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.03 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|11",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -20202,12 +20646,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.3,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -20216,14 +20660,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -20250,7 +20694,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -20880,7 +21324,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -21818,7 +22262,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -22377,6 +22821,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|202",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#202:c.6577C>T",
+                "hgvsc": "c.6577C>T",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "CGA>TGA nonsense; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "202"
             }
           ],
           "therapeutics": [
@@ -22488,6 +22957,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|202",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -22556,6 +23031,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|202",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|202",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -22577,12 +23058,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.3,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -22591,14 +23072,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -22625,7 +23106,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -23398,6 +23879,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|202",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#202:c.6577C>T",
+                "hgvsc": "c.6577C>T",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "CGA>TGA nonsense; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "202"
             }
           ],
           "therapeutics": [],
@@ -23531,6 +24037,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|202",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -23655,6 +24167,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|202",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|202",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -23676,12 +24194,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.8,
+            "aggregate": 20.0,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -23690,7 +24208,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -23698,7 +24216,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 41
+            "chainLinks": 43
           },
           "patientEvidence": [
             {
@@ -23730,7 +24248,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -24339,7 +24857,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -25286,7 +25804,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -25866,6 +26384,31 @@
               "confidence": 0.85,
               "scope": "patient",
               "scopeKey": "225"
+            },
+            {
+              "premiseId": "absplice|S2_reported|225",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#225:c.7817G>A",
+                "hgvsc": "c.7817G>A",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "CGA>CAA missense; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "225"
             }
           ],
           "therapeutics": [
@@ -25983,6 +26526,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|225",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -26051,6 +26600,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|225",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|225",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -26072,12 +26627,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.3,
+            "aggregate": 14.5,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.6,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -26086,14 +26641,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.1,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 26
+            "chainLinks": 28
           },
           "patientEvidence": [
             {
@@ -26125,7 +26680,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -26877,6 +27432,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|225",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story",
+              "evidence": {
+                "variant_key": "S2_reported#225:c.7817G>A",
+                "hgvsc": "c.7817G>A",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.02,
+                  "Heart_Left_Ventricle": 0.02,
+                  "Brain_Cortex": 0.02,
+                  "Retina_proxy": 0.02
+                },
+                "max_score": 0.04,
+                "max_tissue": "Muscle_Skeletal",
+                "notes": "CGA>CAA missense; not near a splice boundary",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "225"
             }
           ],
           "therapeutics": [],
@@ -27004,6 +27584,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|225",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -27128,6 +27714,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|225",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.04 — negligible splice signal; exonic consequence is the whole story"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|225",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -27149,12 +27741,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.4,
+            "aggregate": 19.6,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.1,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -27163,7 +27755,7 @@
               "phenotype": 1.0
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -27171,7 +27763,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 40
+            "chainLinks": 42
           },
           "patientEvidence": [
             {
@@ -27198,7 +27790,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -27824,7 +28416,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -28754,7 +29346,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -29313,6 +29905,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|49",
+              "sourceId": "absplice",
+              "weight": 0.2,
+              "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect",
+              "evidence": {
+                "variant_key": "S1_novel#49:c.7745C>G",
+                "hgvsc": "c.7745C>G",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.03,
+                  "Heart_Left_Ventricle": 0.03,
+                  "Brain_Cortex": 0.03,
+                  "Retina_proxy": 0.03
+                },
+                "max_score": 0.05,
+                "max_tissue": "Nerve_Tibial",
+                "notes": "single-nucleotide change; moderate SRE-disruption prior",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "49"
             }
           ],
           "therapeutics": [
@@ -29424,6 +30041,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|49",
+                  "sourceId": "absplice",
+                  "weight": 0.2,
+                  "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -29492,6 +30115,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|49",
+                  "sourceId": "absplice",
+                  "weight": 0.2,
+                  "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|49",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -29513,12 +30142,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 14.5,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 1.7,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -29527,14 +30156,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.2,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -29561,7 +30190,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -30313,6 +30942,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S1_novel|49",
+              "sourceId": "absplice",
+              "weight": 0.2,
+              "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect",
+              "evidence": {
+                "variant_key": "S1_novel#49:c.7745C>G",
+                "hgvsc": "c.7745C>G",
+                "category": "exonic_nonsense_or_missense",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.03,
+                  "Heart_Left_Ventricle": 0.03,
+                  "Brain_Cortex": 0.03,
+                  "Retina_proxy": 0.03
+                },
+                "max_score": 0.05,
+                "max_tissue": "Nerve_Tibial",
+                "notes": "single-nucleotide change; moderate SRE-disruption prior",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "49"
             }
           ],
           "therapeutics": [],
@@ -30440,6 +31094,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S1_novel|49",
+                  "sourceId": "absplice",
+                  "weight": 0.2,
+                  "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -30564,6 +31224,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S1_novel|49",
+                  "sourceId": "absplice",
+                  "weight": 0.2,
+                  "rationale": "AbSplice 0.05 (exonic_nonsense_or_missense) — moderate secondary splicing effect"
+                },
+                {
                   "premiseId": "iso_arch|S1_novel|49",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -30585,12 +31251,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.4,
+            "aggregate": 19.8,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.2,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -30599,7 +31265,7 @@
               "phenotype": 1.0
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.9,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -30607,7 +31273,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 40
+            "chainLinks": 42
           },
           "patientEvidence": [
             {
@@ -30634,7 +31300,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -31260,7 +31926,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -32206,7 +32872,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -32281,6 +32947,31 @@
               "confidence": 0.9,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|266",
+              "sourceId": "absplice",
+              "weight": 0.7,
+              "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism",
+              "evidence": {
+                "variant_key": "S2_reported#266:c.9361+1G>C",
+                "hgvsc": "c.9361+1G>C",
+                "category": "canonical_splice_donor_+1",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.86,
+                  "Heart_Left_Ventricle": 0.87,
+                  "Brain_Cortex": 0.85,
+                  "Retina_proxy": 0.83
+                },
+                "max_score": 0.88,
+                "max_tissue": "Heart_Atrial_Appendage",
+                "notes": "G>C at donor +1 abolishes U1 recognition; canonical exon 65 skipping expected",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "266"
             },
             {
               "premiseId": "iso_arch|S2_reported|266",
@@ -32872,6 +33563,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.7,
+                  "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -32940,6 +33637,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.7,
+                  "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|266",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -32961,12 +33664,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 14.1,
+            "aggregate": 15.5,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.5,
+              "variant": 2.2,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 1.1,
@@ -32975,14 +33678,14 @@
               "phenotype": 1.5
             },
             "edgeScores": {
-              "variant->protein": 2.0,
+              "variant->protein": 2.7,
               "cellType->tissue": 1.0,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.6,
               "cellType->phenotype": 0.5,
               "subcellular->cellType": 0.5
             },
-            "chainLinks": 25
+            "chainLinks": 27
           },
           "patientEvidence": [
             {
@@ -33009,7 +33712,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -33027,6 +33730,31 @@
                 "acmg": "P"
               },
               "confidence": 1.0,
+              "scope": "patient",
+              "scopeKey": "266"
+            },
+            {
+              "premiseId": "absplice|S2_reported|266",
+              "sourceId": "absplice",
+              "weight": 0.7,
+              "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism",
+              "evidence": {
+                "variant_key": "S2_reported#266:c.9361+1G>C",
+                "hgvsc": "c.9361+1G>C",
+                "category": "canonical_splice_donor_+1",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.86,
+                  "Heart_Left_Ventricle": 0.87,
+                  "Brain_Cortex": 0.85,
+                  "Retina_proxy": 0.83
+                },
+                "max_score": 0.88,
+                "max_tissue": "Heart_Atrial_Appendage",
+                "notes": "G>C at donor +1 abolishes U1 recognition; canonical exon 65 skipping expected",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
               "scope": "patient",
               "scopeKey": "266"
             },
@@ -33911,6 +34639,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.7,
+                  "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism"
+                },
+                {
                   "premiseId": "lit|aartsma_rus_2006",
                   "sourceId": "literature",
                   "weight": 0.5,
@@ -34035,6 +34769,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.7,
+                  "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|266",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -34056,12 +34796,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 19.8,
+            "aggregate": 21.2,
             "coverage": 1.0,
             "consistency": 1.0,
             "parsimony": 1.0,
             "layerScores": {
-              "variant": 2.0,
+              "variant": 2.7,
               "protein": 0.7,
               "pathway": 0.4,
               "subcellular": 2.6,
@@ -34070,7 +34810,7 @@
               "phenotype": 1.4
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 2.4,
               "cellType->tissue": 2.0,
               "pathway->subcellular": 1.4,
               "protein->subcellular": 1.6,
@@ -34078,7 +34818,7 @@
               "subcellular->pathway": 1.0,
               "subcellular->cellType": 1.0
             },
-            "chainLinks": 41
+            "chainLinks": 43
           },
           "patientEvidence": [
             {
@@ -34110,7 +34850,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -34550,6 +35290,31 @@
               "confidence": 0.95,
               "scope": "cohort",
               "scopeKey": "DMD"
+            },
+            {
+              "premiseId": "absplice|S2_reported|266",
+              "sourceId": "absplice",
+              "weight": 0.1,
+              "rationale": "AbSplice 0.88 — splice disruption affects full-length transcript; distal isoforms less relevant",
+              "evidence": {
+                "variant_key": "S2_reported#266:c.9361+1G>C",
+                "hgvsc": "c.9361+1G>C",
+                "category": "canonical_splice_donor_+1",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.86,
+                  "Heart_Left_Ventricle": 0.87,
+                  "Brain_Cortex": 0.85,
+                  "Retina_proxy": 0.83
+                },
+                "max_score": 0.88,
+                "max_tissue": "Heart_Atrial_Appendage",
+                "notes": "G>C at donor +1 abolishes U1 recognition; canonical exon 65 skipping expected",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "266"
             }
           ],
           "therapeutics": [],
@@ -34614,6 +35379,12 @@
                 }
               ],
               "variant": [
+                {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.88 — splice disruption affects full-length transcript; distal isoforms less relevant"
+                },
                 {
                   "premiseId": "zhang|S2_reported|266",
                   "sourceId": "zhang_2024",
@@ -34695,6 +35466,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.1,
+                  "rationale": "AbSplice 0.88 — splice disruption affects full-length transcript; distal isoforms less relevant"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|266",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -34716,12 +35493,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 13.0,
+            "aggregate": 13.2,
             "coverage": 0.857,
             "consistency": 1.0,
             "parsimony": 0.5,
             "layerScores": {
-              "variant": 1.0,
+              "variant": 1.1,
               "protein": 0.7,
               "pathway": 0.0,
               "subcellular": 0.2,
@@ -34730,14 +35507,14 @@
               "phenotype": 1.0
             },
             "edgeScores": {
-              "variant->protein": 1.7,
+              "variant->protein": 1.8,
               "cellType->tissue": 1.2,
               "protein->subcellular": 0.2,
               "protein->cellType": 2.3,
               "protein->phenotype": 0.5,
               "cellType->phenotype": 1.0
             },
-            "chainLinks": 22
+            "chainLinks": 24
           },
           "patientEvidence": [
             {
@@ -34764,7 +35541,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T19:20:20+00:00"
+            "at": "2026-08-09T22:50:05+00:00"
           },
           "premises": [
             {
@@ -35013,6 +35790,31 @@
               "scopeKey": "DMD"
             },
             {
+              "premiseId": "absplice|S2_reported|266",
+              "sourceId": "absplice",
+              "weight": 0.3,
+              "rationale": "AbSplice 0.88 — cryptic-acceptor use could yield a partial in-frame product",
+              "evidence": {
+                "variant_key": "S2_reported#266:c.9361+1G>C",
+                "hgvsc": "c.9361+1G>C",
+                "category": "canonical_splice_donor_+1",
+                "tissue_scores": {
+                  "Muscle_Skeletal": 0.86,
+                  "Heart_Left_Ventricle": 0.87,
+                  "Brain_Cortex": 0.85,
+                  "Retina_proxy": 0.83
+                },
+                "max_score": 0.88,
+                "max_tissue": "Heart_Atrial_Appendage",
+                "notes": "G>C at donor +1 abolishes U1 recognition; canonical exon 65 skipping expected",
+                "confidence": "estimated",
+                "compute": "off-box (AbSplice v1.0.4 estimates pending)"
+              },
+              "confidence": 0.55,
+              "scope": "patient",
+              "scopeKey": "266"
+            },
+            {
               "premiseId": "celltype_impact|S2_reported|266",
               "sourceId": "patient_celltype_impact",
               "weight": 0.3,
@@ -35247,6 +36049,12 @@
               ],
               "variant": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.3,
+                  "rationale": "AbSplice 0.88 — cryptic-acceptor use could yield a partial in-frame product"
+                },
+                {
                   "premiseId": "zhang|S2_reported|266",
                   "sourceId": "zhang_2024",
                   "weight": 1.0,
@@ -35303,6 +36111,12 @@
               ],
               "variant->protein": [
                 {
+                  "premiseId": "absplice|S2_reported|266",
+                  "sourceId": "absplice",
+                  "weight": 0.3,
+                  "rationale": "AbSplice 0.88 — cryptic-acceptor use could yield a partial in-frame product"
+                },
+                {
                   "premiseId": "iso_arch|S2_reported|266",
                   "sourceId": "isoform_arch",
                   "weight": 0.7,
@@ -35318,12 +36132,12 @@
             }
           },
           "scoreVector": {
-            "aggregate": 10.0,
+            "aggregate": 10.6,
             "coverage": 0.714,
             "consistency": 1.0,
             "parsimony": 0.333,
             "layerScores": {
-              "variant": 1.0,
+              "variant": 1.3,
               "protein": 1.2,
               "pathway": 0.0,
               "subcellular": 1.6,
@@ -35332,14 +36146,14 @@
               "phenotype": 1.8
             },
             "edgeScores": {
-              "variant->protein": 1.2,
+              "variant->protein": 1.5,
               "protein->subcellular": 1.1,
               "protein->cellType": 0.3,
               "subcellular->pathway": 0.5,
               "pathway->cellType": 0.5,
               "cellType->phenotype": 0.5
             },
-            "chainLinks": 19
+            "chainLinks": 21
           },
           "patientEvidence": [
             {

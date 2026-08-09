@@ -154,6 +154,7 @@ PREMISE_SOURCES = [
     # B: literature as first-class premise (migrated from hypothesis_chain_edge_evidence)
     ("literature",              "data",  "curated_2026-08", "Peer-reviewed citations anchoring specific chain-edge and chain-node claims (Monaco 1988, Popp & Maquat 2013, Ervasti & Campbell 1993, Pillers 1993, ...)", None),
     ("uniprot_subcellular",     "data",  "UniProt REST",    "UniProt-curated subcellular localization (sarcolemma, cytoskeleton, postsynaptic membrane for DMD P11532)", "https://www.uniprot.org/uniprotkb/P11532"),
+    ("absplice",                "model", "absplice_v1.0.4", "AbSplice-DNA per-tissue aberrant-splicing probability (Wagner et al. Nat Genet 2023). Distinguishes canonical splice-site variants from exonic ones — flags cryptic-splice risk that isoform_arch and clinvar_nmd cannot see.", "https://github.com/gagneurlab/absplice"),
 ]
 
 # Cell-type → required-isoform dependency map (mirrors hydrate_patient_view.CELL_TO_ISOFORMS).
@@ -347,6 +348,76 @@ def emit_uniprot_subcellular_premise(conn, uniprot_id: str = "P11532") -> str:
         "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
         (premise_id, "uniprot_subcellular", "cohort", "DMD",
          json.dumps(ev), 0.95, _prov(str(cache.relative_to(REPO)))),
+    )
+    return premise_id
+
+
+# Module-level cache of the curated AbSplice TSV keyed on variant_key.
+_ABSPLICE_TSV = REPO / "data" / "raw" / "absplice_dmd_variants.tsv"
+_ABSPLICE_CACHE: dict[str, dict] | None = None
+
+
+def _load_absplice_table() -> dict[str, dict]:
+    global _ABSPLICE_CACHE
+    if _ABSPLICE_CACHE is not None:
+        return _ABSPLICE_CACHE
+    rows: dict[str, dict] = {}
+    if not _ABSPLICE_TSV.exists():
+        _ABSPLICE_CACHE = rows
+        return rows
+    with _ABSPLICE_TSV.open() as f:
+        header: list[str] | None = None
+        for line in f:
+            line = line.rstrip("\n")
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("\t")
+            if header is None:
+                header = parts
+                continue
+            r = dict(zip(header, parts))
+            for k in ("muscle_skeletal", "heart_lv", "brain_cortex", "retina_proxy", "max_score"):
+                if k in r and r[k] != "":
+                    try: r[k] = float(r[k])
+                    except ValueError: pass
+            rows[r["variant_key"]] = r
+    _ABSPLICE_CACHE = rows
+    return rows
+
+
+def emit_absplice_premise(conn, cohort: str, pid: str, variant_key: str) -> str | None:
+    """Patient-scope AbSplice premise: per-tissue aberrant-splicing probability.
+
+    Distinguishes canonical splice-site variants (top score ~0.85) from
+    exonic ones (~0.02) — a signal isoform_arch and clinvar_nmd don't see.
+    Skips patients whose variant isn't in the curated table."""
+    table = _load_absplice_table()
+    row = table.get(variant_key)
+    if not row: return None
+    ev = {
+        "variant_key":      variant_key,
+        "hgvsc":            row.get("hgvsc"),
+        "category":         row.get("category"),
+        "tissue_scores": {
+            "Muscle_Skeletal":      row.get("muscle_skeletal"),
+            "Heart_Left_Ventricle": row.get("heart_lv"),
+            "Brain_Cortex":         row.get("brain_cortex"),
+            "Retina_proxy":         row.get("retina_proxy"),
+        },
+        "max_score":        row.get("max_score"),
+        "max_tissue":       row.get("max_tissue"),
+        "notes":            row.get("notes"),
+        "confidence":       row.get("confidence"),
+        "compute":          "off-box (AbSplice v1.0.4 estimates pending)",
+    }
+    # Baseline confidence lower when scores are estimates rather than an
+    # actual model run.
+    conf = 0.55 if row.get("confidence") == "estimated" else 0.85
+    premise_id = _pid("absplice", cohort, pid)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "absplice", "patient", pid, json.dumps(ev), conf,
+         _prov(str(_ABSPLICE_TSV.relative_to(REPO)))),
     )
     return premise_id
 
@@ -662,6 +733,13 @@ def premise_chain_positions(source_id: str, evidence: dict) -> list[tuple[str, s
         # protein→subcellular edge (where does the protein normally sit).
         return [("node", "subcellular", "subcellular"),
                 ("edge", "protein", "subcellular")]
+    if source_id == "absplice":
+        # AbSplice speaks to the variant→protein transition: cryptic /
+        # canonical splice disruption changes the transcript, hence the
+        # protein produced. Also anchors the variant node itself
+        # (variant-level classification signal).
+        return [("node", "variant", "variant"),
+                ("edge", "variant", "protein")]
     # `literature` premises carry their per-hypothesis chain positions
     # via literature_links_for_template — no source-level default.
     return []
@@ -719,6 +797,40 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
         elif hyp_id == "04":
             out.append((us_pid, 0.2,
                 "UniProt: primary localization is sarcolemma; distal isoforms (Dp71 in retina/CNS/kidney) have separate localization patterns"))
+
+    # AbSplice: per-tissue aberrant-splicing probability.
+    # Weight scales with max_score across tissues:
+    #   > 0.5  -> strong splice-mechanism signal; boosts H01/H03 (extra NMD
+    #            trigger from cryptic/exon-skipping) and H02 (partial
+    #            in-frame product possible from cryptic acceptor)
+    #   0.05-0.5 -> moderate secondary effect; small positive for H01/H03
+    #   < 0.05 -> negligible; no weight contribution
+    absp_pid = patient_premises.get("absplice")
+    absp_ev  = patient_premises.get("absplice_ev", {})
+    if absp_pid and absp_ev:
+        max_score  = absp_ev.get("max_score") or 0.0
+        max_tissue = absp_ev.get("max_tissue") or "?"
+        category   = absp_ev.get("category") or "?"
+        if max_score >= 0.5:
+            if hyp_id in ("01", "03"):
+                out.append((absp_pid, 0.7,
+                    f"AbSplice {max_score:.2f} in {max_tissue} ({category}) — aberrant splicing compounds the NMD/DGC-loss mechanism"))
+            elif hyp_id == "02":
+                out.append((absp_pid, 0.3,
+                    f"AbSplice {max_score:.2f} — cryptic-acceptor use could yield a partial in-frame product"))
+            elif hyp_id == "04":
+                out.append((absp_pid, 0.1,
+                    f"AbSplice {max_score:.2f} — splice disruption affects full-length transcript; distal isoforms less relevant"))
+        elif max_score >= 0.05:
+            if hyp_id in ("01", "03"):
+                out.append((absp_pid, 0.2,
+                    f"AbSplice {max_score:.2f} ({category}) — moderate secondary splicing effect"))
+        else:
+            # Low score is itself evidence: no splice mechanism, so the
+            # exonic-consequence interpretation stands unchallenged.
+            if hyp_id in ("01", "03"):
+                out.append((absp_pid, 0.1,
+                    f"AbSplice {max_score:.2f} — negligible splice signal; exonic consequence is the whole story"))
 
     # Composition premises: cell-type & tissue impact.
     # Weight signs matter — spared distal cell types actively argue against H04.
@@ -812,6 +924,7 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     lab_pids  = emit_lab_premises(conn, cohort, pid)
     ct_pid    = emit_celltype_impact_premise(conn, cohort, pid, exon_n)
     tis_pid   = emit_tissue_impact_premise(conn, cohort, pid, exon_n)
+    absp_pid  = emit_absplice_premise(conn, cohort, pid, variant_key)
 
     # Load evidence blobs for the composition premises so premise-weighting
     # can inspect their content (which cells hit/spared, which tissues, etc.).
@@ -825,6 +938,7 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         "zhang": zhang_pid, "iso": iso_pid, "esm3": esm3_pid, "labs": lab_pids,
         "celltype_impact": ct_pid, "celltype_impact_ev": _load_ev(ct_pid),
         "tissue_impact":   tis_pid, "tissue_impact_ev":   _load_ev(tis_pid),
+        "absplice":        absp_pid, "absplice_ev":       _load_ev(absp_pid),
     }
     cohort_premises = {
         "nmd_cohort":          _pid("nmd_cohort", "DMD"),

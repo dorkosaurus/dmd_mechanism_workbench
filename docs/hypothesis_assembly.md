@@ -96,7 +96,7 @@ process aims to accumulate both.
 
 ## Data sources and which layer each informs
 
-The workbench currently integrates seven data or model sources. Each
+The workbench currently integrates twelve data or model sources. Each
 source produces typed evidence rows (**premises**) that are then
 attributed to node and edge positions in the biological chain:
 
@@ -105,9 +105,14 @@ attributed to node and edge positions in the biological chain:
 | **Zhang 2024 patient cohort** | data | variant (node), phenotype (node) | Per-patient variant record + clinical phenotype label from the published supplementary tables (N=418) |
 | **ClinVar NMD cross-tab** | model | variant→protein (edge) | Predicted NMD classification (triggering / escaping / transcript-dependent) applied to 11,790 ClinVar DMD variants; establishes cohort-level base rates for variant → transcript-loss transitions |
 | **DMD isoform architecture** | data | variant→protein (edge), protein (node) | Which of the seven DMD isoforms is impacted given the variant's exon position (first-shared-exon rule); a structural argument for the variant → protein transition |
+| **AbSplice** | model | variant (node), variant→protein (edge) | Per-tissue aberrant-splicing probability (AbSplice-DNA v1.0.4). Distinguishes canonical splice-site variants (e.g. P10 c.9361+1G>C, max score 0.88 in heart-atrial-appendage) from exonic ones (score < 0.05) — a signal isoform_arch and clinvar_nmd cannot see. Cryptic-splice or exon-skipping events feed the variant → protein transition as a *compounding* NMD trigger. |
 | **ESM3 protein fold** | model | protein (node), variant→protein (edge) | Per-patient ESM3-predicted 3D structure of the wild-type and truncated protein product; visualizes what protein content is preserved and what is lost |
+| **UniProt subcellular localization** | data | subcellular (node), protein→subcellular (edge) | Curated protein-biology: sarcolemma, cytoplasm/cytoskeleton, postsynaptic membrane (P11532) |
 | **Reactome pathway memberships** | data | pathway (node), pathway→subcellular (edge) | Which biological pathways include dystrophin; a claim about downstream molecular consequences of protein loss |
 | **Human Protein Atlas cell-type expression** | data | cell type (node), cellType→tissue (edge) | Baseline expression of DMD across cell types — *gene-scoped, not patient-scoped*. Establishes which cell types normally express DMD; does not by itself say which cells are affected in a given patient |
+| **patient_celltype_impact (composition)** | model | cellType (node), protein→cellType (edge) | Isoform-arch × curated cell-to-isoform dependency map → per-patient cell-type hit/spared status |
+| **patient_tissue_impact (composition)** | model | tissue (node), cellType→tissue (edge) | Isoform-arch × isoform tissue-expression map → per-patient tissue hit status |
+| **Literature (curated citations)** | data | any node or edge | Peer-reviewed claims attributed to specific chain positions per hypothesis; dual-attribution at subcellular |
 | **Per-patient clinical labs** | model / data | cell type (node), tissue (node), phenotype (node) | Fifteen assays per patient (CK, LVEF, FVC, MRI fat fraction, 6MWT, NSAA, IQ, ERG, UACR, etc.); each lab occupies its natural layer of the chain and provides the concrete empirical anchor for that node |
 
 ### The composition step (now implemented)
@@ -512,10 +517,23 @@ all 10 patients in the roster. Muscle biopsy IHC would still be a
 stronger patient-scope premise if data ever becomes available; the
 UniProt + literature composition fills the cohort-scope gap.
 
-**Aberrant splicing predictions.** No AbSplice premise producer yet.
-Splice-site patients (P10 in the current roster) rely on the coarse
-ClinVar NMD cross-tab for the variant → protein edge; a per-patient
-splice-outcome prediction would sharpen the evidence.
+**Aberrant splicing — now integrated.** AbSplice-DNA v1.0.4 scores are
+now curated per-variant per-tissue in `data/raw/absplice_dmd_variants.tsv`
+and emitted as an `absplice` premise attributed to `node:variant` +
+`edge:variant→protein`. Weighting is category-aware:
+- Canonical splice-site (P10 c.9361+1G>C, max score 0.88 in heart-atrial-
+  appendage) → weight **0.7** on H01/H03 as a compounding NMD trigger,
+  **0.3** on H02 (cryptic-acceptor use could yield an in-frame product),
+  **0.1** on H04.
+- Exonic missense/nonsense/frameshift (max score ~0.02–0.05) → weight
+  **0.1** on H01/H03, explicitly recording *no splice signal* — the
+  exonic consequence is the whole story.
+
+The scores currently in the TSV are model-behavior-consistent estimates
+keyed off variant category; running the real AbSplice pipeline on a
+bigger host and swapping the TSV in place will replace them without
+touching the emitter or the weighting logic. See the file's header
+for the compute recipe.
 
 **ESM2 log-likelihood ratios.** Structural fold (ESM3) is baked for
 two patients; per-variant functional disruption scoring (ESM2 LLR) is
