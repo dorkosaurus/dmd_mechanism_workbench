@@ -1666,56 +1666,104 @@ function buildExamples(p) {
     pushIso(i.id, i.hit);
   }
 
+  // Question panel structure follows the rare-disease-platform deck's
+  // 4-pillar mechanism-mapping framework (Q2 2026 deck, pages 4/8/11/20/28)
+  // adapted from ALMS1 to DMD. Tags encode artifact availability:
+  //   ✓ = rich artifact wired
+  //   ○ = plain chat only (no widget yet)
+  //   ◇ = not yet integrated (roadmap)
   return [
-    { category: 'Patient', items: [
-      { tag: 'chat', question: 'What labs are abnormal?' },
+    { category: '★ Ultimate question', items: [
+      { tag: '✓ chain', question: 'How does this patient\'s variant explain their clinical phenotype?' },
     ]},
-    { category: 'Variant', items: [
-      { tag: 'chat',                    question: 'What is this patient\'s variant?' },
-      { tag: 'chat + chain',            question: 'Why is this the top hypothesis?' },
-      { tag: 'widget · variantLollipop',question: 'Where do variants cluster on the protein?' },
-      { tag: 'widget · stackedBar',     question: 'What variant classes drive DMD?' },
+
+    // ---- Pillar 1: Literature ------------------------------------
+    { category: 'P1 · Literature', items: [
+      { tag: '✓ chat',       question: 'What is this patient\'s variant and where was it first published?' },
+      { tag: '✓ chat',       question: 'What has the literature reported about this variant class?' },
+      { tag: '✓ widget',     question: 'Where do DMD variants cluster on the protein?' },
+      { tag: '✓ widget',     question: 'What variant classes drive DMD in the cohort?' },
     ]},
-    { category: 'Gene', items: [
-      { tag: 'widget · exonArchitecturePanel', question: 'Show me the exon architecture of DMD' },
-      { tag: 'widget · geneHeader',            question: 'Give me a gene overview' },
+
+    // ---- Pillar 2: Transcript ------------------------------------
+    { category: 'P2 · Transcript', items: [
+      { tag: '✓ chain',      question: 'Does this variant trigger NMD?' },
+      { tag: '✓ marimekko',  question: 'How do NMD categories break down across ACMG classes?' },
+      { tag: '✓ chain',      question: 'Does this variant cause aberrant splicing (AbSplice)?' },
+      { tag: '○ chat',       question: 'Is there altered expression at the transcript level?' },
+      { tag: '◇ roadmap',    question: 'Is there allele-specific expression evidence?' },
+      { tag: '✓ chain',      question: 'Which DMD isoform is affected?' },
+      { tag: '✓ widget',     question: 'Show me the exon architecture of DMD' },
+      { tag: '✓ widget',     question: 'How does isoform expression vary across cell types?' },
     ]},
-    { category: 'Protein (isoform)', items: isoItems.concat([
-      { tag: 'widget · heatmap', question: 'How does isoform expression vary across cell types?' },
-      { tag: 'ESM3 · 3D structure', question: 'Show the 3D structure with this patient\'s variant' },
+
+    // Tie-in from Pillar 2 (deck pg 15): NMD ↔ symptom statistical relationships
+    { category: 'P2 → Symptoms', items: [
+      { tag: '◇ roadmap',    question: 'Are NMD-triggering variants associated with cardio symptoms in the cohort?' },
+      { tag: '◇ roadmap',    question: 'Does NMD status predict syndromic severity, controlling for age?' },
+    ]},
+
+    // ---- Cell-type expression (deck pg 16-18) --------------------
+    { category: 'Cell types', items: [
+      { tag: '✓ widget',     question: 'Where is DMD most highly expressed at cell-type resolution?' },
+      { tag: '✓ chain',      question: 'Which cell types are affected in this patient?' },
+      { tag: '✓ chain',      question: 'Which tissues are spared?' },
+      { tag: '○ chat',       question: 'Does the cell-type ranking match DMD symptoms (muscle, heart, brain, retina)?' },
+    ]},
+
+    // Patient-specific isoform questions (dynamically generated)
+    { category: 'Isoform focus', items: isoItems.concat([
+      { tag: '✓ ESM3',       question: 'Show the 3D structure with this patient\'s variant' },
     ]) },
-    { category: 'Cell type', items: [
-      { tag: 'chat',              question: 'Which cell types are affected?' },
-      { tag: 'widget · hbarList', question: 'Where is DMD expressed at cell-type resolution?' },
+
+    // ---- Pillar 3: Protein ---------------------------------------
+    { category: 'P3 · Protein', items: [
+      { tag: '✓ chain',      question: 'Is dystrophin protein abundance reduced in this patient?' },
+      { tag: '✓ ESM3',       question: 'Does the variant cause misfolding of the truncated protein?' },
+      { tag: '◇ roadmap',    question: 'Is there evidence for ER retention?' },
+      { tag: '✓ chain',      question: 'Is degradation the primary loss mechanism?' },
+      { tag: '⚠ partial',    question: 'What downstream molecular interactions are altered (Reactome)?' },
     ]},
-    { category: 'Tissue type', items: [
-      { tag: 'chat', question: 'Which tissues are spared?' },
+
+    // Tie-in from Pillar 3 (deck pg 26): LLR ↔ symptom statistical relationships
+    { category: 'P3 → Symptoms', items: [
+      { tag: '◇ roadmap',    question: 'Does ESM2 LLR severity predict individual symptoms?' },
+      { tag: '◇ roadmap',    question: 'Does LLR severity predict syndromic score, controlling for age?' },
+      { tag: '◇ roadmap',    question: 'Can UK Biobank proteomics confirm reduced dystrophin abundance?' },
     ]},
-    { category: 'Phenotype', items: [
-      { tag: 'chat',                    question: 'What is this patient\'s phenotype and prognosis?' },
-      { tag: 'widget · donutBreakdown', question: 'What is the cohort phenotype distribution?' },
+
+    // ---- Pillar 4: Downstream ------------------------------------
+    { category: 'P4 · Downstream', items: [
+      { tag: '◇ roadmap',    question: 'What are DMD\'s molecular interactors and pathways (Open Targets)?' },
+      { tag: '◇ roadmap',    question: 'What genes co-express with DMD (ARCHS4)?' },
+      { tag: '◇ roadmap',    question: 'Which protein complexes and direct interactors are disrupted (STRING)?' },
+      { tag: '◇ roadmap',    question: 'What is the cellular perturbation response to DMD loss (Geneformer)?' },
+      { tag: '◇ roadmap',    question: 'Which drugs might reverse the DMD-loss signature (CMap)?' },
     ]},
-    { category: 'Mechanism (hypothesis)', items: [
-      { tag: 'chat + chain',                  question: 'Show me the reasoning chain' },
-      { tag: 'chat + chain',                  question: 'Explain the mechanism' },
-      { tag: 'chat + chain',                  question: 'What supports H01?' },
-      { tag: 'chat + chain',                  question: 'What supports H02?' },
-      { tag: 'chat + chain',                  question: 'What supports H03?' },
-      { tag: 'chat + chain',                  question: 'What supports H04?' },
-      { tag: 'chat',                          question: 'Compare the hypotheses' },
-      { tag: 'widget · edgeEvidenceBar',      question: 'What evidence supports the genotype-to-protein step?' },
-      { tag: 'widget · hypothesisDetail',     question: 'Give me the full hypothesis detail pack' },
-      { tag: 'marimekko · NMD × ACMG',        question: 'How do NMD categories break down across ACMG classes?' },
+
+    // ---- Mechanism synthesis (workbench-unique) ------------------
+    { category: '✦ Mechanism synthesis', items: [
+      { tag: '✓ chain',      question: 'Show me the reasoning chain' },
+      { tag: '✓ chain',      question: 'What supports H01 (sarcolemmal fragility)?' },
+      { tag: '✓ chain',      question: 'What supports H02 (partial in-frame rescue)?' },
+      { tag: '✓ chain',      question: 'What supports H03 (NMD-mediated loss)?' },
+      { tag: '✓ chain',      question: 'What supports H04 (distal isoform loss)?' },
+      { tag: '✓ chat',       question: 'What was considered but discarded for the top hypothesis?' },
+      { tag: '✓ chat',       question: 'What testable predictions follow from the top mechanism?' },
+      { tag: '✓ chat',       question: 'Where do the premises contradict each other?' },
     ]},
-    { category: 'Therapy (closes the loop)', items: [
-      { tag: 'chat + chain', question: 'What therapies apply?' },
-      { tag: 'chat + chain', question: 'What AAV options exist?' },
+
+    // ---- Patient clinical context --------------------------------
+    { category: 'Patient labs', items: [
+      { tag: '✓ chat',       question: 'What labs are abnormal for this patient?' },
+      { tag: '✓ chat',       question: 'What is this patient\'s phenotype and prognosis?' },
+      { tag: '✓ widget',     question: 'What is the cohort phenotype distribution?' },
     ]},
-    { category: 'Cross-axis views', items: [
-      { tag: 'widget · linkedHeatmap', question: 'Link variants to cell types and pathways' },
-    ]},
-    { category: 'Cohort context', items: [
-      { tag: 'chat', question: 'Compare to a typical DMD patient' },
+
+    // ---- Therapy (closes the loop) -------------------------------
+    { category: 'Therapy', items: [
+      { tag: '✓ chain',      question: 'What therapies apply given the mechanism?' },
+      { tag: '✓ chain',      question: 'What AAV options exist for this patient?' },
     ]},
   ];
 }
