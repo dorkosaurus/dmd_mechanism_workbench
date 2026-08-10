@@ -534,7 +534,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -1706,6 +1706,86 @@
             "chainLinks": 44,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P1's c.6540del at exon 45 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|2",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|2",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P1's c.6540del at exon 45 (Zhang 2024) causes a frameshift producing a truncated dystrophin that lacks the C-terminal DGC-anchoring domain (UniProt sarcolemmal localization). This disrupts the Reactome DGC-formation pathway, generating sarcolemmal fragility across 4 muscle-lineage cell types—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact)—in skeletal and cardiac muscle (tissue_impact). Clinically, this is corroborated by elevated CK, increased MRI fat fraction in vastus lateralis, reduced FVC%, and impaired m6MWT (labs). AbSplice 0.03 confirms splice disruption is negligible; the frameshift is the sole driver.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "02",
+                  "why_lower": "Phenotype is DMD not BMD (Zhang 2024), and 4 muscle cell types are fully affected (celltype_impact), excluding partial-rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD is a downstream amplifier; iso_arch shows truncated protein is the primary event, making NMD secondary to H01."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 1 distal cell type spared, and exon 45 position disrupts full-length Dp427m, not selectively distal isoforms."
+                }
+              ],
+              "testable_predictions": [
+                "Muscle biopsy immunofluorescence for dystrophin: expect absent sarcolemmal staining in skeletal muscle fibers.",
+                "Cardiac MRI with late gadolinium enhancement: expect fibrosis pattern consistent with Cardiomyocyte sarcolemmal fragility.",
+                "RT-PCR on skeletal muscle RNA targeting exon 45 region: expect out-of-frame transcript confirming frameshift consequence."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.6540del",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -1741,7 +1821,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -2545,6 +2625,86 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P1's c.6540del at exon 45 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|2",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|2",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P1's c.6540del at exon 45 (Zhang 2024) introduces a frameshift generating a premature termination codon upstream of a downstream exon-exon junction in the Dp427m transcript, triggering nonsense-mediated decay. This is supported by the ClinVar 11,790-variant NMD×ACMG cross-tab (nmd_cohort|DMD) demonstrating that frameshift variants routinely elicit NMD at cohort scale. Near-total dystrophin protein loss across 4 muscle-lineage cell types (celltype_impact) in skeletal and cardiac muscle (tissue_impact) explains elevated CK and MRI fat fraction in vastus lateralis (labs). AbSplice 0.03 confirms exonic frameshift—not splice disruption—as the NMD trigger.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "H01 posits truncated protein reaches sarcolemma; NMD evidence from nmd_cohort|DMD suggests transcript is degraded before translation completes."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Spared isoforms Dp116 and Dp71 (iso_arch) are insufficient to rescue DMD phenotype confirmed by Zhang 2024."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 1 distal cell type spared, undermining selective distal-isoform ablation as primary mechanism."
+                }
+              ],
+              "testable_predictions": [
+                "qRT-PCR on P1 muscle RNA: expect markedly reduced Dp427m transcript abundance consistent with NMD degradation.",
+                "Cycloheximide NMD-rescue experiment in patient-derived myotubes: expect partial transcript restoration upon translation inhibition.",
+                "Western blot of P1 skeletal muscle lysate: expect near-absent full-length dystrophin band confirming protein loss."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.6540del",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -2570,7 +2730,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -3209,6 +3369,90 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P1's c.6540del at exon 45 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 1 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|2",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|2",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S1_novel|2",
+                  "rationale": "3 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P1's c.6540del at exon 45 (Zhang 2024) lies upstream of the Dp140, Dp116, and Dp71 promoters, and per iso_arch disrupts 3 distal tissue systems—CNS, kidney, and retina (tissue_impact)—potentially causing dysfunction beyond muscle. Literature supports Dp71 in podocytes (Haenggi 2006), Dp140 in cortical astrocytes (Lidov 1995), and Dp260/Dp71 in retina (Pillers 1993). However, celltype_impact indicates 1 distal cell type is spared, and the dominant clinical presentation is DMD muscle disease, making this a secondary rather than primary mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "H01 accounts for all 4 muscle-lineage cell types (celltype_impact) and core sarcolemmal fragility; H04 is supplementary."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Phenotype is confirmed DMD (Zhang 2024) with full muscle cell-type impact, excluding BMD-like partial rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism (nmd_cohort|DMD) targets the full-length transcript, not selectively distal isoforms relevant to H04."
+                }
+              ],
+              "testable_predictions": [
+                "Retinal electroretinography in P1: expect abnormal b-wave amplitude reflecting distal isoform loss in retina.",
+                "Urine albumin-to-creatinine ratio measurement: expect elevated albuminuria consistent with Dp71 loss in podocytes.",
+                "Brain MRI with cognitive assessment: expect white-matter signal changes reflecting Dp140 loss in cortical astrocytes."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [
+                  "Haenggi 2006",
+                  "Lidov 1995",
+                  "Pillers 1993"
+                ],
+                "unverified_numbers": [],
+                "total_mentions": 15
+              }
+            },
+            "context": {
+              "hgvsc": "c.6540del",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "IQ",
@@ -3234,7 +3478,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -3842,6 +4086,86 @@
             "chainLinks": 20,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P1's c.6540del at exon 45 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|2",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|2",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P1's c.6540del at exon 45 (Zhang 2024) produces an out-of-frame transcript; however, per iso_arch, the shorter isoforms Dp116 and Dp71 are spared, raising the theoretical possibility of partial in-frame rescue yielding a BMD-like presentation. Motor function labs—m6MWT and NSAA (labs)—offer weak support for residual function. Nonetheless, the confirmed DMD phenotype (Zhang 2024) and 4 fully affected muscle-lineage cell types (celltype_impact) strongly contradict clinically meaningful rescue; this hypothesis ranks last.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "H01 directly explains sarcolemmal fragility across all 4 muscle cell types (celltype_impact) without requiring speculative rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD evidence (nmd_cohort|DMD) supports near-total protein loss, incompatible with partial-function BMD-like rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 1 distal cell type spared, and tissue_impact confirms distal organ involvement exceeding what partial rescue would prevent."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of P1 muscle biopsy: expect absent full-length and any internally initiated dystrophin bands, excluding rescue.",
+                "Exon-skipping feasibility analysis of exons flanking 45: expect out-of-frame skip product, confirming no natural rescue.",
+                "Longitudinal motor assessment (NSAA, m6MWT) over 12 months: expect progressive decline inconsistent with BMD-like stabilization."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 6
+              }
+            },
+            "context": {
+              "hgvsc": "c.6540del",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -4214,7 +4538,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -5032,6 +5356,88 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P2's c.982A>T at exon 10 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|30",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|30",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P2's c.982A>T nonsense variant in exon 10 introduces a premature termination codon well upstream of the last exon-exon junction, triggering nonsense-mediated decay of the Dp427m transcript (nmd_cohort|DMD; zhang|S1_novel|30). Near-total dystrophin loss abolishes sarcolemmal anchoring (uniprot_subcellular|DMD), disrupting the DGC across all 4 affected muscle-lineage cell types (celltype_impact|S1_novel|30) in skeletal and cardiac muscle (tissue_impact|S1_novel|30), consistent with elevated CK (labs|S1_novel|30|CK) and increased MRI fat fraction in vastus lateralis (labs|S1_novel|30|MRI_ff_VL). AbSplice 0.04 (absplice|S1_novel|30) excludes a competing splice mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Rank 2 assumes stable truncated protein, but nmd_cohort|DMD supports transcript degradation before translation completes."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S1_novel|30 shows Dp427m is hit; confirmed DMD phenotype (zhang|S1_novel|30) contradicts BMD-like partial rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|30 documents 3 distal cell types SPARED, directly contradicting selective distal-isoform ablation."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR of patient myoblasts: expect absent or severely reduced Dp427m transcript confirming NMD.",
+                "Western blot of muscle biopsy: expect near-total dystrophin protein loss vs. healthy control.",
+                "Cycloheximide NMD rescue in patient myoblasts: expect Dp427m transcript restoration upon translation inhibition."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.982A>T",
+              "exon_n": 10,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -5057,7 +5463,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -6168,6 +6574,88 @@
             "chainLinks": 43,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P2's c.982A>T at exon 10 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|30",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|30",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P2's c.982A>T nonsense variant in exon 10 (zhang|S1_novel|30) could produce an out-of-frame, truncated dystrophin lacking the C-terminal DGC anchor (uniprot_subcellular|DMD), if the transcript escapes NMD. Loss of sarcolemmal integrity across 4 muscle-lineage cell types—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact|S1_novel|30)—in skeletal and cardiac muscle (tissue_impact|S1_novel|30) would explain elevated CK (labs|S1_novel|30|CK), increased MRI fat fraction VL (labs|S1_novel|30|MRI_ff_VL), and reduced 6MWT (labs|S1_novel|30|m6MWT). AbSplice 0.04 (absplice|S1_novel|30) confirms no splice rescue.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD cohort data favors NMD-mediated transcript loss over stable truncated-protein production at this exon position."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Confirmed DMD phenotype (zhang|S1_novel|30) and iso_arch|S1_novel|30 isoform hit pattern are inconsistent with BMD-like partial rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|30 shows 3 distal cell types spared, undermining selective distal-isoform loss as the dominant mechanism."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of patient muscle biopsy: expect absent or severely truncated dystrophin band relative to control.",
+                "Immunofluorescence of muscle section: expect absent sarcolemmal dystrophin staining in all fiber types.",
+                "DGC co-immunoprecipitation assay: expect loss of beta-dystroglycan interaction confirming DGC disruption."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.982A>T",
+              "exon_n": 10,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -6198,7 +6686,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -6804,6 +7292,88 @@
             "chainLinks": 20,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P2's c.982A>T at exon 10 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp260, Dp140, Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|30",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|30",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P2's c.982A>T in exon 10 (zhang|S1_novel|30) might permit in-frame rescue—via exon skipping or ribosomal read-through—preserving downstream isoforms Dp260, Dp140, Dp116, and Dp71 (iso_arch|S1_novel|30). Residual sarcolemmal dystrophin (uniprot_subcellular|DMD) across the 4 affected muscle-lineage cell types (celltype_impact|S1_novel|30) could yield a slower BMD-like course, with retained motor scores (labs|S1_novel|30|m6MWT; labs|S1_novel|30|NSAA) providing weak support. However, the confirmed DMD phenotype (zhang|S1_novel|30) substantially argues against this interpretation.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD strongly supports NMD-driven near-total loss, incompatible with partial-function rescue at cohort scale."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "labs|S1_novel|30|CK and labs|S1_novel|30|MRI_ff_VL severity better match rank-1 NMD-mediated total loss than truncated-protein model."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|30 documents 3 distal cell types SPARED, contradicting selective distal-isoform ablation hypothesis."
+                }
+              ],
+              "testable_predictions": [
+                "Antisense exon-skipping assay in patient myoblasts: assess whether in-frame rescue transcript is detectable by RT-PCR.",
+                "Dp260/Dp140 isoform-specific Western blot of patient muscle: expect absent bands if no partial rescue occurs.",
+                "Gentamicin read-through assay in patient myoblasts: quantify any near-cognate suppression of the PTC by luciferase reporter."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.982A>T",
+              "exon_n": 10,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -6829,7 +7399,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -7466,6 +8036,88 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P2's c.982A>T at exon 10 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 3 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|30",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|30",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S1_novel|30",
+                  "rationale": "1 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P2's c.982A>T in exon 10 (zhang|S1_novel|30) theoretically spares distal isoforms Dp260, Dp140, Dp116, and Dp71 (iso_arch|S1_novel|30), which could preserve CNS, retinal, and renal dystrophin (hpa|DMD; uniprot_subcellular|DMD). However, celltype_impact|S1_novel|30 explicitly documents 3 distal cell types as SPARED rather than lost, directly contradicting a selective distal-isoform ablation mechanism. Tissue impact is dominated by skeletal and cardiac muscle (tissue_impact|S1_novel|30), not CNS/kidney/retina, making H04 the lowest-ranked explanation for P2's presentation.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD and zhang|S1_novel|30 confirm proximal exon 10 PTC drives NMD of Dp427m, not distal-isoform effects."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "tissue_impact|S1_novel|30 shows muscle-predominant injury; truncated-protein model better fits muscle labs than distal-isoform loss."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S1_novel|30 spared-isoform pattern and confirmed DMD phenotype (zhang|S1_novel|30) refute BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "ERG testing in P2: expect normal waveform if Dp260/Dp71 retinal isoforms are truly spared at exon 10.",
+                "Cognitive/neuropsychological assessment: expect preserved scores if Dp140/Dp71 CNS isoforms escape the variant.",
+                "Urine albumin-to-creatinine ratio: expect normal if Dp71 podocyte expression is unaffected by exon 10 nonsense."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.982A>T",
+              "exon_n": 10,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": []
         }
       ]
@@ -7826,7 +8478,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -8697,6 +9349,87 @@
             "chainLinks": 30,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P3's c.9248G>A at exon 63 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|258",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|258",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P3's c.9248G>A nonsense variant in exon 63 introduces a premature termination codon well upstream of the final exon-exon junction, placing the PTC in the canonical NMD-surveillance window and triggering degradation of the Dp427m transcript. The nmd_cohort|DMD ClinVar cross-tab confirms NMD as the dominant mechanism for nonsense DMD variants at cohort scale. Consequently, skeletal and cardiac muscle (tissue_impact) lose sarcolemmal dystrophin (UniProt peripheral membrane, cytoplasmic face), disrupting DGC anchoring across 4 muscle-lineage cell types (celltype_impact). Elevated CK (labs|CK) and increased MRI fat fraction in vastus lateralis (labs|MRI_ff_VL) are consistent with near-total protein loss; AbSplice 0.04 confirms the splicing contribution is negligible.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein hypothesis requires ribosomal read-through past the PTC; nmd_cohort|DMD cohort data favor transcript degradation over stable truncation."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform hypothesis is secondary; exon 63 position ablates Dp427m first, making muscle NMD the primary event per iso_arch|S2_reported|258."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "BMD partial-rescue requires in-frame product; a nonsense variant with AbSplice 0.04 leaves no viable in-frame rescue mechanism."
+                }
+              ],
+              "testable_predictions": [
+                "RT-qPCR of patient muscle RNA: expect >80% reduction in Dp427m transcript versus healthy control.",
+                "Western blot of muscle biopsy: expect near-absent full-length dystrophin band at ~427 kDa.",
+                "Cycloheximide chase in patient-derived myotubes: expect Dp427m mRNA stabilisation confirming NMD dependence."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.9248G>A",
+              "exon_n": 63,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -8727,7 +9460,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -9864,6 +10597,87 @@
             "chainLinks": 45,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P3's c.9248G>A at exon 63 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|258",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|258",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "esm3|S2_reported|258",
+                  "rationale": "ESM3 fold of WT + truncated dystrophin visualizes the DGC-anchor loss"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P3's c.9248G>A at exon 63 produces a truncated dystrophin lacking the C-terminal DGC-anchor domain, visualised by ESM3 fold of the truncated protein (esm3|S2_reported|258). UniProt localisation confirms dystrophin sits at the sarcolemmal cytoplasmic face; loss of the C-terminus disrupts DGC formation (Reactome DGC-formation pathway). Four muscle-lineage cell types are affected (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells; celltype_impact). Elevated CK (labs|CK), increased MRI fat fraction VL (labs|MRI_ff_VL), and reduced 6MWT (labs|m6MWT) are all consistent with sarcolemmal fragility. AbSplice 0.04 excludes a splice-based modifier.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD hypothesis better explains near-total protein loss; nmd_cohort|DMD cohort data rank transcript degradation above stable truncation for nonsense variants."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform focus is subordinate; iso_arch|S2_reported|258 shows Dp427m is the dominant isoform hit, making muscle the primary target."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "BMD partial-rescue is contradicted by confirmed DMD phenotype (zhang|S2_reported|258) and absence of in-frame rescue signal."
+                }
+              ],
+              "testable_predictions": [
+                "Immunofluorescence of muscle biopsy: expect absent sarcolemmal dystrophin staining in all fibre types.",
+                "Western blot with C-terminal anti-dystrophin antibody: expect no band or truncated band below 427 kDa.",
+                "Co-immunoprecipitation of beta-dystroglycan from muscle lysate: expect disrupted DGC complex pull-down."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.9248G>A",
+              "exon_n": 63,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -9894,7 +10708,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -10551,6 +11365,87 @@
             "chainLinks": 23,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P3's c.9248G>A at exon 63 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition supports: 3 distal cell types hit (Rod photoreceptor cells, Cone photoreceptor cells, Adipocytes).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|258",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "celltype_impact|S2_reported|258",
+                  "rationale": "3 distal (retinal/adipose) cell types affected — supports distal-isoform-loss mechanism"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|258",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P3's c.9248G>A at exon 63 falls within the coding region shared by distal isoforms Dp140, Dp116, and Dp71, as projected by iso_arch|S2_reported|258. Beyond muscle, three distal cell types are affected: Rod photoreceptor cells, Cone photoreceptor cells, and Adipocytes (celltype_impact). Labs corroborate multi-system involvement: reduced ERG b-wave (labs|ERG_bwave) implicates retinal Dp71 loss; elevated UACR (labs|UACR) points to renal glomerular dysfunction; and reduced IQ (labs|IQ) is consistent with CNS Dp71 deficiency. HPA expression data confirm dystrophin presence in these distal tissues.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD of Dp427m is the higher-ranked primary event; distal isoform loss is a secondary consequence per iso_arch|S2_reported|258 exon position."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility truncation hypothesis does not account for ERG b-wave and UACR abnormalities highlighted in celltype_impact|S2_reported|258."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "BMD partial-rescue premise is unsupported; zhang|S2_reported|258 records a DMD phenotype, not attenuated Becker presentation."
+                }
+              ],
+              "testable_predictions": [
+                "ERG full-field testing: expect reduced b-wave amplitude confirming retinal Dp71 loss.",
+                "Immunohistochemistry of renal biopsy: expect absent Dp71 staining in glomerular podocytes.",
+                "RT-qPCR of iPSC-derived retinal organoids: expect selective loss of Dp71 transcript at exon 63 junction."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 5
+              }
+            },
+            "context": {
+              "hgvsc": "c.9248G>A",
+              "exon_n": 63,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "ERG_bwave",
@@ -10581,7 +11476,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -11186,6 +12081,87 @@
             "chainLinks": 20,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P3's c.9248G>A at exon 63 may retain partial function via in-frame rescue → BMD-like presentation with slower progression.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|258",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|258",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P3's c.9248G>A at exon 63 could theoretically permit in-frame rescue via alternative splicing or exon skipping, yielding a truncated but partially functional dystrophin analogous to a BMD isoform. UniProt sarcolemmal localisation and iso_arch|S2_reported|258 isoform projections allow for a residual C-terminal-spared product. Partial motor function retention (labs|m6MWT, labs|NSAA) provides weak clinical support. However, the confirmed DMD phenotype (zhang|S2_reported|258), absence of any splice-rescue signal (AbSplice 0.04), and the nonsense consequence type collectively render this the least supported hypothesis.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD is strongly supported by nmd_cohort|DMD cohort data; transcript degradation is far more probable than read-through for a nonsense variant."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein sarcolemmal-fragility mechanism is better supported by elevated CK and MRI_ff_VL than partial-rescue BMD mimic."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform multi-tissue hypothesis is corroborated by ERG_bwave and UACR labs, providing more premise support than BMD-rescue scenario."
+                }
+              ],
+              "testable_predictions": [
+                "Minigene splicing assay in HEK293 cells: expect no evidence of cryptic exon skipping around exon 63.",
+                "Western blot of muscle biopsy with mid-rod antibody: expect absent band, ruling out partial in-frame product.",
+                "Allele-specific RT-PCR: expect no alternatively spliced transcript bypassing the c.9248G>A PTC."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.9248G>A",
+              "exon_n": 63,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -11558,7 +12534,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -12674,6 +13650,88 @@
             "chainLinks": 42,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P4's c.717dup at exon 8 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|57",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|57",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P4's c.717dup at exon 8 (Zhang 2024) causes a frameshift producing an out-of-frame transcript with a premature stop codon, truncating dystrophin and ablating its sarcolemmal C-terminal DGC anchor (UniProt sarcolemma/cytoplasmic-face localization). Affected cell types include Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact 4 muscle-lineage types), with skeletal and cardiac muscle tissues both implicated (tissue_impact). Elevated CK (labs CK) and increased fat fraction in vastus lateralis (labs MRI_ff_VL) corroborate sarcolemmal fragility. AbSplice 0.03 excludes a competing splice mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch shows Dp260/Dp140/Dp116/Dp71 spared, but confirmed DMD phenotype (Zhang 2024) contradicts BMD-like partial rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD (nmd_cohort) is a valid secondary consequence but downstream of frameshift; protein truncation mechanism ranked first."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, directly contradicting selective distal-isoform ablation as primary driver."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of skeletal muscle biopsy: expect absent full-length dystrophin band at ~427 kDa.",
+                "Immunofluorescence of sarcolemma in muscle sections: expect loss of dystrophin and beta-dystroglycan co-staining.",
+                "RT-PCR of Dp427m transcript from muscle RNA: expect frameshift-containing or NMD-degraded product at exon 8."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.717dup",
+              "exon_n": 8,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -12699,7 +13757,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -13501,6 +14559,88 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P4's c.717dup at exon 8 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|57",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|57",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P4's c.717dup at exon 8 (Zhang 2024) introduces a frameshift generating a PTC well upstream of the terminal exon-exon junction in the Dp427m isoform (iso_arch), triggering nonsense-mediated decay and near-total dystrophin protein loss. This is consistent with the NMD cross-cohort signal (nmd_cohort ClinVar 11,790-variant dataset) and supported by 4 muscle-lineage cell types affected (celltype_impact: Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells). Elevated CK (labs CK) and MRI fat fraction in vastus lateralis (labs MRI_ff_VL) reflect near-complete dystrophin absence. AbSplice 0.03 confirms exonic, not splice, pathogenicity.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein mechanism (uniprot_subcellular) ranks higher as primary event; NMD is a secondary consequence of the same frameshift."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Confirmed DMD phenotype (Zhang 2024) and 4 muscle-lineage cell types affected (celltype_impact) contradict partial BMD-like in-frame rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, undermining distal-isoform-selective loss as primary mechanism."
+                }
+              ],
+              "testable_predictions": [
+                "qRT-PCR of Dp427m in muscle RNA: expect >90% reduction versus wild-type controls indicating NMD.",
+                "Cycloheximide chase in patient-derived myotubes: expect Dp427m transcript rescue upon NMD inhibition.",
+                "Western blot of muscle lysate: expect absent or near-absent dystrophin protein confirming transcript degradation."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.717dup",
+              "exon_n": 8,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -13526,7 +14666,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -14078,6 +15218,88 @@
             "chainLinks": 18,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P4's c.717dup at exon 8 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp260, Dp140, Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|57",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|57",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P4's c.717dup at exon 8 (Zhang 2024) disrupts only the proximal Dp427m isoform; downstream isoforms Dp260, Dp140, Dp116, and Dp71 are spared per iso_arch exon-position projection. Theoretically, residual dystrophin from these isoforms could produce a BMD-like phenotype with slower progression. However, the confirmed DMD phenotype (Zhang 2024), 4 muscle-lineage cell types affected (celltype_impact), and abnormal CK and MRI fat fraction in vastus lateralis (labs MRI_ff_VL) argue strongly against functionally significant partial rescue in skeletal and cardiac muscle.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Confirmed DMD phenotype (Zhang 2024) and DGC-anchor loss (uniprot_subcellular) directly support truncation over partial rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism (nmd_cohort) predicts near-total protein loss, inconsistent with partial-function BMD-like scenario."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, making distal-isoform dysfunction implausible for this patient."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot with Dp71-specific antibody in muscle lysate: expect absent Dp71 rescue band despite iso_arch sparing prediction.",
+                "Exon-skipping RT-PCR panel across exons 1–8: expect no in-frame skip product restoring ORF.",
+                "Functional dystrophin immunofluorescence in cardiac biopsy: expect absent signal confirming no partial-function rescue."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 9
+              }
+            },
+            "context": {
+              "hgvsc": "c.717dup",
+              "exon_n": 8,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "LVEF",
@@ -14108,7 +15330,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -14745,6 +15967,92 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P4's c.717dup at exon 8 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 3 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|57",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|57",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S1_novel|57",
+                  "rationale": "1 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P4's c.717dup at exon 8 (Zhang 2024) falls upstream of the Dp260, Dp140, Dp116, and Dp71 promoters (iso_arch), so distal isoforms should theoretically be spared. However, celltype_impact shows 3 distal cell types are SPARED rather than affected, directly contradicting selective distal-isoform loss as the primary mechanism. Only 1 distal tissue system is implicated (tissue_impact). HPA expression data confirm dystrophin is relevant in these tissues, but the patient's cell-type profile does not support this hypothesis. Haenggi 2006, Lidov 1995, and Pillers 1993 literature context is not corroborated by this patient's composition data.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility mechanism (uniprot_subcellular) with 4 muscle-lineage cell types (celltype_impact) provides stronger direct support than distal-isoform loss."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD at Dp427m (nmd_cohort) has broader cohort-level support and is not contradicted by celltype_impact data."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Confirmed DMD phenotype (Zhang 2024) makes partial BMD-like rescue more plausible than tissue-specific distal-isoform dysfunction."
+                }
+              ],
+              "testable_predictions": [
+                "Dp71 immunofluorescence in renal podocytes from patient biopsy: expect preserved Dp71 signal given iso_arch sparing.",
+                "ERG electroretinography: expect normal waveform if Dp260 retinal isoform is genuinely spared at exon 8.",
+                "Dp140 RT-PCR from brain-derived RNA or CSF exosomes: expect intact transcript confirming distal-isoform sparing."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [
+                  "Haenggi 2006",
+                  "Lidov 1995",
+                  "Pillers 1993"
+                ],
+                "unverified_numbers": [],
+                "total_mentions": 12
+              }
+            },
+            "context": {
+              "hgvsc": "c.717dup",
+              "exon_n": 8,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "LVEF",
@@ -15111,7 +16419,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -16335,6 +17643,87 @@
             "chainLinks": 47,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P5's c.10654dup at exon 75 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|5",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|5",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "esm3|S1_novel|5",
+                  "rationale": "ESM3 fold of WT + truncated dystrophin visualizes the DGC-anchor loss"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P5's c.10654dup in exon 75 causes a frameshift producing a premature stop codon, truncating dystrophin and eliminating the C-terminal DGC-anchor domain confirmed by ESM3 fold modeling (esm3|S1_novel|5). UniProt localizes dystrophin to the sarcolemmal cytoplasmic face; loss disrupts Reactome DGC-formation pathway, causing sarcolemmal fragility across 4 muscle-lineage cell types (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells; celltype_impact|S1_novel|5). This mechanism aligns with elevated CK, increased MRI fat-fraction in vastus lateralis, reduced LVEF, reduced FVC%, and reduced 6MWT (labs|S1_novel|5).",
+              "considered_but_discarded": [
+                {
+                  "other_id": "02",
+                  "why_lower": "Zhang 2024 records overt DMD phenotype, contradicting BMD-like partial-rescue suggested by iso_arch|S1_novel|5."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD amplifies protein loss but is a secondary consequence; sarcolemmal-fragility mechanism is the proximal pathophysiological event per reactome|DMD."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Exon 75 position ablates full-length Dp427m primarily; iso_arch|S1_novel|5 does not support selective sparing of proximal isoforms leaving only distal ones affected."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of patient muscle biopsy: expect absent or near-absent full-length dystrophin band at 427 kDa.",
+                "Immunofluorescence of sarcolemma in skeletal muscle: expect absent dystrophin staining in Myonuclei-associated fibers.",
+                "Echocardiographic serial assessment in Cardiomyocytes-derived iPSC model: expect reduced contractility versus WT controls."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 0
+              }
+            },
+            "context": {
+              "hgvsc": "c.10654dup",
+              "exon_n": 75,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -16375,7 +17764,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -17231,6 +18620,87 @@
             "chainLinks": 30,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P5's c.10654dup at exon 75 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|5",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|5",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P5's c.10654dup in exon 75 generates a PTC upstream of a downstream exon-exon junction, triggering NMD of the Dp427m transcript. The nmd_cohort|DMD ClinVar cross-tab of 11,790 variants supports NMD as a cohort-scale mechanism for frameshift DMD alleles. ESM3 modeling (esm3|S1_novel|5) confirms no stable truncated protein would survive. Elevated CK and increased MRI fat-fraction in vastus lateralis (labs|S1_novel|5|CK, labs|S1_novel|5|MRI_ff_VL) are consistent with near-total protein loss across 4 muscle-lineage cell types (celltype_impact|S1_novel|5). AbSplice 0.03 (absplice|S1_novel|5) confirms splice-rescue is negligible.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility hypothesis ranks higher as proximate mechanism; NMD is a mRNA-level amplifier per reactome|DMD rather than independent driver."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S1_novel|5 confirms DMD not BMD phenotype, making partial in-frame rescue incompatible with observed severity."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "iso_arch|S1_novel|5 projection places exon 75 within Dp427m; selective distal-isoform loss without proximal loss is not supported."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR of patient muscle RNA: expect markedly reduced or absent Dp427m transcript relative to housekeeping controls.",
+                "Cycloheximide NMD-inhibition assay in patient myotubes: expect partial transcript rescue, confirming NMD dependence.",
+                "Dystrophin ELISA on muscle lysate: expect protein quantity below detection threshold consistent with NMD-driven loss."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.10654dup",
+              "exon_n": 75,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -17261,7 +18731,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -17891,6 +19361,87 @@
             "chainLinks": 22,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P5's c.10654dup at exon 75 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition supports: 3 distal cell types hit (Rod photoreceptor cells, Cone photoreceptor cells, Adipocytes).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|5",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "celltype_impact|S1_novel|5",
+                  "rationale": "3 distal (retinal/adipose) cell types affected — supports distal-isoform-loss mechanism"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|5",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P5's c.10654dup in exon 75 falls within shared exonic sequence of distal isoforms Dp140, Dp116, and Dp71 per iso_arch|S1_novel|5, potentially disrupting retinal, CNS, and renal function beyond muscle. The celltype_impact|S1_novel|5 data identify Rod photoreceptor cells, Cone photoreceptor cells, and Adipocytes as affected. Abnormal UACR and IQ (labs|S1_novel|5|UACR, labs|S1_novel|5|IQ) support distal-tissue involvement. HPA expression data (hpa|DMD) confirm dystrophin expression in these non-muscle cell types. UniProt notes Dp71 carries separate subcellular localization patterns in retina and CNS.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility mechanism is primary; tissue_impact|S1_novel|5 shows skeletal and cardiac muscle as dominant affected tissues."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S1_novel|5 overt DMD phenotype contradicts the mild BMD-like partial-rescue scenario required by hypothesis 02."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD hypothesis addresses transcript-level mechanism; distal-isoform hypothesis is distinct tissue-compartment claim supported by labs|S1_novel|5|UACR."
+                }
+              ],
+              "testable_predictions": [
+                "ERG testing of P5: expect reduced b-wave amplitude consistent with Rod and Cone photoreceptor cell dystrophin loss.",
+                "Urine albumin-to-creatinine ratio longitudinal tracking: expect progressive UACR elevation reflecting Dp71 loss in kidney.",
+                "Immunostaining of patient iPSC-derived retinal organoids for Dp71: expect absent signal versus healthy control organoids."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.10654dup",
+              "exon_n": 75,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "IQ",
@@ -17916,7 +19467,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -18521,6 +20072,87 @@
             "chainLinks": 20,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P5's c.10654dup at exon 75 may retain partial function via in-frame rescue → BMD-like presentation with slower progression.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|5",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|5",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P5's c.10654dup in exon 75 is hypothesized to permit in-frame rescue via alternative splicing or exon skipping, yielding a truncated but partially functional dystrophin analogous to BMD, with relative motor function retention suggested by m6MWT and NSAA values (labs|S1_novel|5|m6MWT, labs|S1_novel|5|NSAA). Iso_arch|S1_novel|5 projection and UniProt sarcolemmal localization data are cited as consistent with residual DGC anchoring. However, zhang|S1_novel|5 records an overt DMD—not BMD—phenotype, and AbSplice 0.03 (absplice|S1_novel|5) provides negligible support for splice-based rescue.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "celltype_impact|S1_novel|5 shows 4 fully ablated muscle-lineage cell types, incompatible with partial-function BMD rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD cross-tab of 11,790 variants strongly favors complete transcript degradation over partial rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "labs|S1_novel|5|UACR and labs|S1_novel|5|IQ point to multi-tissue dystrophin loss, not residual partial function."
+                }
+              ],
+              "testable_predictions": [
+                "Minigene splicing assay spanning exon 75 duplication: expect no in-frame alternative splice product rescued.",
+                "Western blot of patient myotube lysate: expect no truncated BMD-sized dystrophin band above background.",
+                "Exon-skipping efficiency assay with antisense oligonucleotides targeting exon 75: quantify any endogenous spontaneous skipping rate."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.10654dup",
+              "exon_n": 75,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -18893,7 +20525,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -20036,6 +21668,88 @@
             "chainLinks": 43,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P6's c.2510del at exon 20 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|11",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|11",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P6's c.2510del in exon 20 (Zhang 2024) causes a frameshift in Dp427m, the full-length muscle isoform, producing a premature stop codon and a truncated dystrophin lacking the C-terminal domain required for sarcolemmal DGC anchoring (UniProt sarcolemma localization). Four muscle-lineage cell types are affected—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact)—with skeletal and cardiac muscle tissues both implicated (tissue_impact). Elevated CK (labs|CK), increased MRI fat fraction in vastus lateralis (labs|MRI_ff_VL), and reduced 6MWT (labs|m6MWT) are all consistent with progressive sarcolemmal fragility. AbSplice 0.03 confirms the consequence is purely exonic.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch shows Dp260, Dp140, Dp116, Dp71 spared, but confirmed DMD phenotype (Zhang 2024) contradicts BMD-like partial rescue."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism (nmd_cohort|DMD) is a downstream amplifier, not the primary structural loss event ranked here."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, directly contradicting selective distal-isoform ablation as the dominant mechanism."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of P6 muscle biopsy: expect absent or near-absent full-length dystrophin band at ~427 kDa.",
+                "Immunofluorescence for sarcolemmal dystrophin in myofibers: expect loss in Myonuclei-containing fibers.",
+                "RT-PCR of Dp427m transcript from muscle RNA: expect frameshift-containing or NMD-degraded product confirming exon 20 deletion."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.2510del",
+              "exon_n": 20,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -20066,7 +21780,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -20868,6 +22582,88 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P6's c.2510del at exon 20 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|11",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|11",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P6's c.2510del in exon 20 (Zhang 2024) introduces a frameshift generating a premature termination codon well upstream of the final exon-exon junction in Dp427m, fulfilling the canonical NMD >50–55 nt rule. NMD surveillance thus degrades the mutant transcript, yielding near-total protein loss consistent with the severe DMD phenotype. The ClinVar 11,790-variant NMD × ACMG cross-tab (nmd_cohort|DMD) supports this at cohort scale. Elevated CK (labs|CK) and MRI fat fraction in vastus lateralis (labs|MRI_ff_VL) align with complete dystrophin absence. AbSplice 0.03 excludes a competing splice mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility via truncated protein is rank-1; NMD is a secondary mRNA-level consequence of the same frameshift event."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Confirmed DMD phenotype (Zhang 2024) and frameshift context negate BMD-like partial rescue despite spared distal isoforms (iso_arch)."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, undermining selective distal-isoform loss as a meaningful contributor here."
+                }
+              ],
+              "testable_predictions": [
+                "qRT-PCR of Dp427m in P6 muscle RNA: expect markedly reduced transcript abundance versus healthy control.",
+                "Cycloheximide treatment of P6-derived myotubes: expect partial rescue of mutant transcript confirming NMD dependence.",
+                "Western blot with N-terminal dystrophin antibody: expect near-absent protein confirming NMD-mediated transcript clearance."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 4
+              }
+            },
+            "context": {
+              "hgvsc": "c.2510del",
+              "exon_n": 20,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -20893,7 +22689,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -21499,6 +23295,88 @@
             "chainLinks": 20,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P6's c.2510del at exon 20 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp260, Dp140, Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|11",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|11",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P6's c.2510del in exon 20 (Zhang 2024) could theoretically permit in-frame exon-skipping rescue, sparing distal isoforms Dp260, Dp140, Dp116, and Dp71 (iso_arch). Partial dystrophin retention at the sarcolemma (UniProt) might then yield a BMD-like, slower-progressing phenotype. Four muscle-lineage cell types remain affected (celltype_impact), and m6MWT (labs|m6MWT) and NSAA (labs|NSAA) scores could reflect residual motor function. However, the confirmed DMD diagnosis (Zhang 2024) and severity of muscle involvement argue strongly against meaningful partial rescue in practice.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Zhang 2024 confirms DMD, not BMD; truncated full-length dystrophin loss and sarcolemmal fragility better explain the severe phenotype."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD (nmd_cohort|DMD) predicts near-total mRNA loss, incompatible with the partial-rescue protein retention required by this hypothesis."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact shows 3 distal cell types SPARED, making selective distal-isoform ablation implausible for this variant."
+                }
+              ],
+              "testable_predictions": [
+                "Multiplex ligation-dependent probe amplification of exons flanking 20: detect any in-frame spontaneous skipping products.",
+                "Western blot with rod-domain dystrophin antibody in P6 muscle: expect absence of truncated BMD-type band.",
+                "Immunofluorescence with Dp71-specific antibody in non-muscle tissue: expect preserved Dp71 staining confirming spared distal isoforms."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 8
+              }
+            },
+            "context": {
+              "hgvsc": "c.2510del",
+              "exon_n": 20,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -21524,7 +23402,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -22161,6 +24039,88 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P6's c.2510del at exon 20 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 3 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|11",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|11",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S1_novel|11",
+                  "rationale": "1 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P6's c.2510del in exon 20 (Zhang 2024) lies upstream of distal promoters for Dp140, Dp116, and Dp71 (iso_arch), raising the theoretical possibility of selective distal-isoform loss driving CNS, retinal, or renal dysfunction beyond muscle. HPA expression data (hpa|DMD) confirm dystrophin in non-muscle tissues. However, celltype_impact data for this patient show 3 distal cell types explicitly SPARED, and only 1 distal tissue system is affected (tissue_impact), directly contradicting a dominant distal-isoform mechanism. The variant is proximal to all distal promoters, further weakening this hypothesis.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal fragility via full-length Dp427m loss (UniProt, celltype_impact 4 muscle types) far better explains the confirmed DMD phenotype."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Confirmed DMD (Zhang 2024) contradicts BMD-like partial rescue; iso_arch spared isoforms do not produce clinically meaningful protein."
+                },
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism (nmd_cohort|DMD) targets Dp427m transcript; distal isoform transcripts with own promoters would escape NMD."
+                }
+              ],
+              "testable_predictions": [
+                "ERG testing in P6: expect preserved retinal waveform amplitude if Dp260/Dp71 isoforms are truly spared.",
+                "Cognitive assessment and brain MRI: expect normal cognition if Dp140/Dp71 in cortical astrocytes remain intact.",
+                "Urine albumin:creatinine ratio: expect normal if Dp71 in podocytes is unaffected by exon 20 deletion."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 5
+              }
+            },
+            "context": {
+              "hgvsc": "c.2510del",
+              "exon_n": 20,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p"
+              ],
+              "spared_isoforms": [
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.03,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "frameshift_exonic",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": []
         }
       ]
@@ -22522,7 +24482,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -23342,6 +25302,86 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P7's c.6577C>T at exon 45 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|202",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|202",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P7's c.6577C>T nonsense variant in exon 45 introduces a premature termination codon upstream of downstream exon-exon junctions, triggering nonsense-mediated decay of the Dp427m transcript (nmd_cohort|DMD; zhang|S2_reported|202). This yields near-total dystrophin loss at the sarcolemma (uniprot_subcellular|DMD), disrupting DGC anchoring across 4 muscle-lineage cell types (celltype_impact|S2_reported|202) in skeletal and cardiac muscle (tissue_impact|S2_reported|202), consistent with elevated CK and increased MRI fat fraction in vastus lateralis (labs|S2_reported|202|CK; labs|S2_reported|202|MRI_ff_VL). AbSplice 0.04 (absplice|S2_reported|202) excludes a competing splice mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein hypothesis requires ribosomal read-through of a PTC; nmd_cohort|DMD evidence favors transcript degradation over stable truncation."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S2_reported|202 shows 1 distal cell type spared, contradicting selective distal-isoform ablation as primary mechanism."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S2_reported|202 shows Dp427m is hit; DMD phenotype (zhang|S2_reported|202) refutes BMD-like partial-rescue scenario."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR on patient muscle RNA: expect absent or markedly reduced Dp427m transcript vs. controls.",
+                "Western blot of muscle biopsy: expect near-total loss of full-length dystrophin band (~427 kDa).",
+                "Immunofluorescence for sarcolemmal dystrophin in skeletal muscle: expect absent membrane staining in myonuclei-containing fibers."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.6577C>T",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -23367,7 +25407,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -24480,6 +26520,86 @@
             "chainLinks": 43,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P7's c.6577C>T at exon 45 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|202",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|202",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P7's c.6577C>T (exon 45) generates an out-of-frame transcript producing a truncated dystrophin lacking the C-terminal DGC anchor (uniprot_subcellular|DMD), causing sarcolemmal fragility across skeletal and cardiac muscle (tissue_impact|S2_reported|202). Four muscle-lineage cell types are affected—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact|S2_reported|202)—consistent with elevated CK, increased MRI fat fraction in vastus lateralis, and reduced 6MWT (labs|S2_reported|202|CK; labs|S2_reported|202|MRI_ff_VL; labs|S2_reported|202|m6MWT). AbSplice 0.04 (absplice|S2_reported|202) excludes a splice-based reading-frame shift.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD strongly supports NMD transcript elimination rather than accumulation of a truncated protein product."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S2_reported|202 records 1 distal cell type spared, undermining selective distal-isoform mechanism."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S2_reported|202 documents DMD phenotype, not BMD; iso_arch|S2_reported|202 shows Dp427m is disrupted, contradicting partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of muscle biopsy: expect truncated dystrophin fragment below 427 kDa or absent band.",
+                "Immunofluorescence for dystrophin and beta-dystroglycan at sarcolemma: expect disrupted DGC co-localization in muscle fibers.",
+                "Reactome DGC-pathway protein panel (alpha-sarcoglycan, syntrophin) by immunoblot: expect secondary reduction consistent with DGC disassembly."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.6577C>T",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -24510,7 +26630,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -25149,6 +27269,86 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P7's c.6577C>T at exon 45 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 1 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|202",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|202",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S2_reported|202",
+                  "rationale": "3 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P7's c.6577C>T in exon 45 could, by iso_arch|S2_reported|202 isoform mapping, ablate distal isoforms Dp140, Dp116, and Dp71, potentially causing tissue-specific dysfunction in CNS, kidney, and retina (tissue_impact|S2_reported|202; hpa|DMD). However, celltype_impact|S2_reported|202 documents 1 distal cell type spared for this patient, and the dominant phenotype recorded in zhang|S2_reported|202 is DMD without noted distal-isoform-specific features, markedly weakening this hypothesis relative to muscle-centric mechanisms.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD and absent contradictions make NMD-driven total loss a stronger, more parsimonious explanation than isoform selectivity."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Sarcolemmal-fragility hypothesis addresses 4 muscle cell types (celltype_impact|S2_reported|202) more completely than distal-isoform loss alone."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S2_reported|202 confirms Dp427m is hit; DMD phenotype (zhang|S2_reported|202) excludes BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "Dp71-specific immunofluorescence on patient retinal or renal biopsy: expect absent Dp71 signal if distal isoform hypothesis holds.",
+                "Electroretinogram: expect reduced b-wave amplitude if Dp260/Dp71 loss affects retinal Müller cells.",
+                "Urine albumin-to-creatinine ratio: expect elevation consistent with podocyte Dp71 loss as reported for mdx variants."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.6577C>T",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "IQ",
@@ -25179,7 +27379,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -25760,6 +27960,86 @@
             "chainLinks": 19,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P7's c.6577C>T at exon 45 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|202",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|202",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P7's c.6577C>T (exon 45) might spare downstream isoforms Dp116 and Dp71 (iso_arch|S2_reported|202), theoretically permitting residual dystrophin function and a BMD-like attenuated course. However, zhang|S2_reported|202 documents a DMD phenotype, all 4 muscle-lineage cell types are affected (celltype_impact|S2_reported|202), and labs show elevated CK and markedly reduced 6MWT (labs|S2_reported|202|CK; labs|S2_reported|202|m6MWT), collectively inconsistent with meaningful partial rescue. AbSplice 0.04 (absplice|S2_reported|202) eliminates an alternative in-frame splice rescue.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD evidence establishes NMD as the predominant consequence of PTCs, directly contradicting stable partial-protein retention."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein sarcolemmal-fragility model still predicts severe DMD, inconsistent with the BMD-like partial-rescue claim here."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S2_reported|202 shows distal cell type spared, and tissue_impact|S2_reported|202 lacks confirmed distal-isoform clinical features for P7."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot for Dp116 and Dp71 in patient-derived cells: expect preserved shorter isoform bands if partial rescue is operative.",
+                "Exon-skipping efficiency assay targeting exon 45 transcript: expect negligible endogenous skip product confirming no natural rescue.",
+                "6MWT longitudinal tracking vs. BMD cohort: expect DMD-trajectory decline inconsistent with BMD-like partial function."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.6577C>T",
+              "exon_n": 45,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "m6MWT",
@@ -26127,7 +28407,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -26974,6 +29254,86 @@
             "chainLinks": 28,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P8's c.7817G>A at exon 53 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|225",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|225",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P8's c.7817G>A nonsense variant in exon 53 places a premature termination codon upstream of downstream exon-exon junctions, triggering nonsense-mediated decay of the Dp427m transcript and near-total dystrophin loss. AbSplice 0.04 excludes a cryptic-splice contribution, making NMD the singular mechanism. Loss of sarcolemmal dystrophin (UniProt: peripheral membrane, cytoplasmic face) disrupts DGC anchoring across 4 muscle-lineage cell types (celltype_impact|S2_reported|225), consistent with elevated CK and MRI fat-fraction in VL (labs|S2_reported|225).",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein mechanism requires translation past the PTC; NMD (rank-1) predicts transcript elimination, making protein-truncation secondary."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S2_reported|225 shows 1 distal cell type spared, directly contradicting selective distal-isoform ablation."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S2_reported|225 spares only Dp116 and Dp71; full DMD phenotype (zhang|S2_reported|225) is incompatible with BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR of patient muscle RNA: Dp427m transcript absent or severely reduced vs. control.",
+                "Dystrophin immunofluorescence on muscle biopsy: absent sarcolemmal staining in myonuclei and cardiomyocytes.",
+                "NMD inhibition (cycloheximide) assay in patient myotubes: partial transcript restoration confirms NMD pathway."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.7817G>A",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -27004,7 +29364,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -28090,6 +30450,86 @@
             "chainLinks": 42,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P8's c.7817G>A at exon 53 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|225",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|225",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P8's c.7817G>A nonsense variant in exon 53 produces an out-of-frame transcript encoding a truncated dystrophin lacking the C-terminal DGC anchor (UniProt: sarcolemma, peripheral membrane, cytoplasmic face), causing sarcolemmal fragility in skeletal and cardiac muscle (tissue_impact|S2_reported|225). Four muscle-lineage cell types are affected—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact|S2_reported|225)—consistent with elevated CK and MRI fat-fraction in VL (labs|S2_reported|225). AbSplice 0.04 excludes a splice contribution.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD (rank-1, score 9.5) predicts transcript elimination before truncated protein can accumulate, making protein-truncation mechanism lower priority."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S2_reported|225 shows 1 distal cell type spared, undermining the distal-isoform-selective ablation claim."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S2_reported|225 confirms full DMD phenotype; iso_arch|S2_reported|225 sparing only Dp116/Dp71 is insufficient for BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of patient muscle lysate: absent or near-absent full-length dystrophin band at expected molecular weight.",
+                "Dystrophin immunofluorescence on biopsy: loss of sarcolemmal staining in all 4 muscle-lineage cell types.",
+                "Reactome DGC-assembly assay in patient myotubes: reduced β-dystroglycan membrane anchoring vs. control."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.7817G>A",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -28115,7 +30555,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -28781,6 +31221,86 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P8's c.7817G>A at exon 53 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 1 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|225",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|225",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S2_reported|225",
+                  "rationale": "3 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P8's c.7817G>A in exon 53 could, by isoform architecture (iso_arch|S2_reported|225), ablate distal isoforms Dp140/Dp116/Dp71, predicting dysfunction in CNS, kidney, and retina (tissue_impact|S2_reported|225) and correlating with the IQ lab abnormality (labs|S2_reported|225|IQ). HPA expression data support dystrophin loss across these tissues. However, celltype_impact|S2_reported|225 records 1 distal cell type spared, directly weakening a pure distal-isoform mechanism and relegating this hypothesis to rank 3.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism (score 9.5) is fully supported without contradictions; distal-isoform hypothesis carries net-negative celltype_impact|S2_reported|225 weight."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein sarcolemmal mechanism addresses primary muscle phenotype more directly than distal-isoform tissue dysfunction."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "BMD-like partial rescue (score 1.5) conflicts with full DMD phenotype per zhang|S2_reported|225, ranking lower than distal-isoform hypothesis."
+                }
+              ],
+              "testable_predictions": [
+                "Dp71-specific RT-PCR in patient brain-derived cells: absent Dp71 transcript confirms distal-isoform loss.",
+                "Retinal ERG in patient: reduced b-wave amplitude consistent with Dp260/Dp71 loss.",
+                "Urine albumin-to-creatinine ratio: elevated level would support podocyte Dp71 loss per haenggi_2006."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.7817G>A",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "IQ",
@@ -28801,7 +31321,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -29355,6 +31875,86 @@
             "chainLinks": 18,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P8's c.7817G>A at exon 53 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|225",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|225",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P8's c.7817G>A in exon 53 could theoretically permit in-frame rescue, sparing Dp116 and Dp71 (iso_arch|S2_reported|225) and yielding a BMD-like milder course. However, the confirmed full DMD phenotype (zhang|S2_reported|225) and involvement of all 4 muscle-lineage cell types (celltype_impact|S2_reported|225) are incompatible with meaningful partial function, making this the lowest-ranked hypothesis (score 1.5).",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD (score 9.5, no contradictions) predicts transcript elimination, directly opposing the partial-rescue premise."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Truncated-protein mechanism with full DGC disruption better explains the full DMD phenotype per zhang|S2_reported|225."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform hypothesis (score 3.0) has more supporting premises including IQ lab and tissue_impact data than BMD-rescue hypothesis."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of patient muscle: absence of any internally truncated in-frame dystrophin band rules out rescue.",
+                "Dp116-specific RT-PCR in patient Schwann cells: persistent transcript would be required for partial-rescue scenario.",
+                "6-minute walk test trajectory: rapid decline consistent with DMD, not BMD-like stabilization per zhang|S2_reported|225 phenotype."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.7817G>A",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.04,
+              "absplice_tissue": "Muscle_Skeletal",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "LVEF",
@@ -29732,7 +32332,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -30552,6 +33152,86 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P9's c.7745C>G at exon 53 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|49",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|49",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P9's c.7745C>G nonsense variant in exon 53 (zhang|S1_novel|49) introduces a premature termination codon upstream of downstream exon-exon junctions, triggering NMD of the Dp427m transcript and near-total dystrophin loss at the sarcolemma (uniprot_subcellular|DMD). Cohort-scale NMD cross-tabulation (nmd_cohort|DMD) supports this as the dominant mechanism. Consequence: loss of DGC anchoring across 4 muscle-lineage cell types (celltype_impact|S1_novel|49) in skeletal and cardiac muscle (tissue_impact|S1_novel|49), consistent with elevated CK (labs|S1_novel|49|CK) and MRI fat fraction in vastus lateralis (labs|S1_novel|49|MRI_ff_VL). AbSplice 0.05 (absplice|S1_novel|49) argues against a dominant cryptic-splice contribution.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Hypothesis 01 invokes out-of-frame truncation rather than NMD; labs|S1_novel|49|CK and nmd_cohort|DMD better support NMD-mediated total loss."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|49 shows 1 distal cell type spared, directly contradicting selective distal-isoform ablation claimed by H04."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "iso_arch|S1_novel|49 spares only Dp116 and Dp71; zhang|S1_novel|49 records DMD phenotype, not BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR of patient muscle RNA: expect absent or markedly reduced Dp427m transcript confirming NMD.",
+                "Western blot of muscle biopsy: expect near-total dystrophin loss (<5% normal) at sarcolemma.",
+                "Immunofluorescence of muscle section: expect absent sarcolemmal dystrophin in all 4 muscle-lineage cell types per celltype_impact|S1_novel|49."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.7745C>G",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.05,
+              "absplice_tissue": "Nerve_Tibial",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -30577,7 +33257,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -31663,6 +34343,86 @@
             "chainLinks": 42,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P9's c.7745C>G at exon 53 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|49",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|49",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P9's c.7745C>G at exon 53 (zhang|S1_novel|49) generates an out-of-frame transcript producing a truncated dystrophin protein lacking the C-terminal DGC-anchoring domain (uniprot_subcellular|DMD), causing sarcolemmal fragility. Four muscle-lineage cell types are affected—Myonuclei, Thymic myoid cells, Cardiomyocytes, and Salivary myoepithelial cells (celltype_impact|S1_novel|49)—across skeletal and cardiac muscle (tissue_impact|S1_novel|49). Elevated CK (labs|S1_novel|49|CK) and increased MRI fat fraction in vastus lateralis (labs|S1_novel|49|MRI_ff_VL) corroborate ongoing muscle damage. Reactome DGC-formation pathway disruption (reactome|DMD) is a primary downstream consequence. AbSplice 0.05 (absplice|S1_novel|49) indicates minimal secondary splicing contribution.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "H03 better accounts for near-total protein loss via nmd_cohort|DMD NMD mechanism, scoring 9.5 versus 6.0."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|49 shows 1 distal cell type spared, undermining distal-isoform-selective ablation in H04."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S1_novel|49 documents DMD phenotype; iso_arch|S1_novel|49 sparing only Dp116/Dp71 does not support BMD-like partial rescue."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of muscle biopsy: expect truncated dystrophin band or near-absent protein confirming frame disruption.",
+                "Immunofluorescence of muscle section: expect absent or markedly reduced sarcolemmal dystrophin in Myonuclei and Cardiomyocytes.",
+                "Co-immunoprecipitation of DGC components: expect disrupted beta-dystroglycan association confirming C-terminal anchor loss."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 1
+              }
+            },
+            "context": {
+              "hgvsc": "c.7745C>G",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.05,
+              "absplice_tissue": "Nerve_Tibial",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -31688,7 +34448,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -32354,6 +35114,86 @@
               }
             ]
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P9's c.7745C>G at exon 53 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition contradicts: 1 distal cell types spared for this patient — H04 mechanism unlikely.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|49",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|49",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "tissue_impact|S1_novel|49",
+                  "rationale": "3 distal tissue systems (CNS/kidney/retina) affected — supports H04"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P9's c.7745C>G at exon 53 (zhang|S1_novel|49) could selectively ablate distal isoforms Dp140, Dp116, and Dp71, causing tissue-specific dysfunction beyond muscle in CNS, kidney, and retina (tissue_impact|S1_novel|49). ERG b-wave abnormality (labs|S1_novel|49|ERG_bwave) points toward Dp260/Dp71 loss in retina (lit|pillers_1993). However, celltype_impact|S1_novel|49 records 1 distal cell type spared, and the primary phenotype documented in zhang|S1_novel|49 is DMD driven by proximal isoform loss, making selective distal ablation an incomplete explanation. AbSplice 0.05 (absplice|S1_novel|49) does not support aberrant splicing rescuing proximal isoforms.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD cohort-scale evidence and absence of contradictions give H03 dominant explanatory power over H04."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "H01 accounts for all 4 muscle-lineage cell types via sarcolemmal fragility; H04 cannot explain primary muscle phenotype in zhang|S1_novel|49."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "zhang|S1_novel|49 records DMD not BMD; labs|S1_novel|49|CK elevation contradicts partial-function rescue in H02."
+                }
+              ],
+              "testable_predictions": [
+                "ERG full-field testing: expect reduced b-wave amplitude confirming Dp71/Dp260 loss per labs|S1_novel|49|ERG_bwave.",
+                "Urine albumin-to-creatinine ratio: expect elevated albuminuria consistent with Dp71 loss in podocytes per lit|haenggi_2006.",
+                "Immunohistochemistry of retinal sections: expect absent Dp71 at inner limiting membrane confirming distal isoform ablation."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 6
+              }
+            },
+            "context": {
+              "hgvsc": "c.7745C>G",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.05,
+              "absplice_tissue": "Nerve_Tibial",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "ERG_bwave",
@@ -32374,7 +35214,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -32955,6 +35795,86 @@
             "chainLinks": 19,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P9's c.7745C>G at exon 53 may retain partial function via in-frame rescue → BMD-like presentation with slower progression. Spared isoforms: Dp116, Dp71.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S1_novel|49",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S1_novel|49",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P9's c.7745C>G at exon 53 (zhang|S1_novel|49) might permit in-frame rescue via exon skipping or alternative splicing, producing truncated but partially functional dystrophin analogous to BMD, with Dp116 and Dp71 spared per iso_arch|S1_novel|49. The 4 affected muscle-lineage cell types (celltype_impact|S1_novel|49) could retain partial DGC anchoring (uniprot_subcellular|DMD). Motor function retention (labs|S1_novel|49|NSAA) weakly supports partial-rescue. However, zhang|S1_novel|49 documents overt DMD phenotype, and AbSplice 0.05 (absplice|S1_novel|49) argues against spontaneous splicing rescue.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "nmd_cohort|DMD and zhang|S1_novel|49 DMD phenotype classification contradict BMD-like partial rescue posited by H02."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "labs|S1_novel|49|CK elevation and MRI fat fraction (labs|S1_novel|49|MRI_ff_VL) indicate severe muscle damage inconsistent with H02 partial function."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "celltype_impact|S1_novel|49 showing 1 distal cell type spared weakens H04 distal-isoform hypothesis more than H02's partial-rescue premise."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR of muscle RNA spanning exon 53: expect no in-frame skip product, ruling out spontaneous rescue.",
+                "Western blot for Dp116 and Dp71: expect preserved bands confirming iso_arch|S1_novel|49 sparing of distal isoforms.",
+                "NSAA longitudinal reassessment: expect progressive decline inconsistent with stable BMD-like partial-rescue trajectory."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.7745C>G",
+              "exon_n": 53,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140"
+              ],
+              "spared_isoforms": [
+                "Dp116",
+                "Dp71"
+              ],
+              "absplice_max": 0.05,
+              "absplice_tissue": "Nerve_Tibial",
+              "absplice_category": "exonic_nonsense_or_missense",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [],
+              "distal_spared_cells": [
+                "Adipocytes"
+              ]
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "NSAA",
@@ -33321,7 +36241,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -34137,6 +37057,87 @@
             "chainLinks": 27,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P10's c.9361+1G>C at exon 64 generates a PTC upstream of the last exon-exon junction → NMD degrades the Dp427m transcript → near-total protein loss. AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing is a compounding NMD trigger.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|266",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "nmd_cohort|DMD",
+                  "rationale": "ClinVar 11,790-variant NMD × ACMG cross-tab supports NMD mechanism at cohort scale"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|266",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P10's c.9361+1G>C disrupts the canonical splice-donor +1 position at exon 64, with AbSplice 0.88 in Heart_Atrial_Appendage confirming high-confidence aberrant splicing. The resulting frameshift introduces a premature termination codon upstream of the last exon-exon junction, triggering NMD and near-total Dp427m loss. This is supported by the ClinVar 11,790-variant NMD×ACMG cross-tab, abnormal CK and MRI_ff_VL labs, and expression loss across 4 muscle-lineage cell types in skeletal and cardiac muscle, where dystrophin normally anchors the DGC at the sarcolemmal cytoplasmic face.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "01",
+                  "why_lower": "Out-of-frame truncation ranks lower because AbSplice 0.88 and NMD cohort data favor complete transcript degradation over stable truncated protein."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform hypothesis ranks lower because exon 64 position spares Dp140/Dp116/Dp71 per iso_arch projection, reducing its primacy."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Partial in-frame rescue is contradicted by AbSplice 0.88 canonical donor disruption and the severe DMD phenotype from zhang|S2_reported|266."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR on patient skeletal muscle RNA: expect absent or severely reduced Dp427m transcript confirming NMD.",
+                "Western blot of muscle biopsy: expect near-total dystrophin loss at sarcolemma using DGC-anchor antibody.",
+                "Cycloheximide NMD-inhibition assay in myotubes: expect partial transcript rescue confirming NMD dependence."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 3
+              }
+            },
+            "context": {
+              "hgvsc": "c.9361+1G>C",
+              "exon_n": 64,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.88,
+              "absplice_tissue": "Heart_Atrial_Appendage",
+              "absplice_category": "canonical_splice_donor_+1",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -34162,7 +37163,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -35271,6 +38272,87 @@
             "chainLinks": 43,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P10's c.9361+1G>C at exon 64 produces an out-of-frame transcript → truncated dystrophin lacking the C-terminal DGC anchor → sarcolemmal fragility in skeletal + cardiac muscle. Composition: 4 muscle-lineage cell types hit (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|266",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|266",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "absplice|S2_reported|266",
+                  "rationale": "AbSplice 0.88 in Heart_Atrial_Appendage (canonical_splice_donor_+1) — aberrant splicing compounds the NMD/DGC-loss mechanism"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P10's c.9361+1G>C at exon 64 disrupts the splice donor, most likely producing an out-of-frame transcript that encodes a truncated dystrophin lacking the C-terminal DGC-anchoring domain. UniProt confirms dystrophin localizes to the sarcolemmal cytoplasmic face; loss disrupts DGC integrity. AbSplice 0.88 in Heart_Atrial_Appendage supports aberrant splicing. Four muscle-lineage cell types (Myonuclei, Thymic myoid cells, Cardiomyocytes, Salivary myoepithelial cells) are affected, consistent with abnormal CK, MRI_ff_VL, and m6MWT labs from zhang|S2_reported|266.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD-dominant mechanism ranks higher because nmd_cohort|DMD cross-tab and AbSplice 0.88 together favor transcript degradation over stable truncated product."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform-selective loss ranks lower; iso_arch|S2_reported|266 projection shows exon 64 primarily disrupts full-length Dp427m, not distal isoforms."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "BMD-like partial rescue is inconsistent with the severe DMD phenotype and canonical splice-donor disruption confirmed in zhang|S2_reported|266."
+                }
+              ],
+              "testable_predictions": [
+                "Western blot of muscle biopsy: expect truncated or absent dystrophin band lacking C-terminal epitope.",
+                "Immunofluorescence of muscle section: expect disrupted sarcolemmal dystrophin staining in Myonuclei and Cardiomyocytes.",
+                "RT-PCR spanning exon 64 junction: expect aberrant splicing product consistent with out-of-frame inclusion or exon skipping."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.9361+1G>C",
+              "exon_n": 64,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.88,
+              "absplice_tissue": "Heart_Atrial_Appendage",
+              "absplice_category": "canonical_splice_donor_+1",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "CK",
@@ -35301,7 +38383,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -35968,6 +39050,87 @@
             "chainLinks": 24,
             "contradictions": []
           },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P10's c.9361+1G>C at exon 64 selectively ablates distal isoforms (Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle. Composition supports: 3 distal cell types hit (Rod photoreceptor cells, Cone photoreceptor cells, Adipocytes).",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|266",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.8,
+                  "premiseId": "celltype_impact|S2_reported|266",
+                  "rationale": "3 distal (retinal/adipose) cell types affected — supports distal-isoform-loss mechanism"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|266",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P10's c.9361+1G>C at exon 64 may selectively ablate distal isoforms Dp140, Dp116, and Dp71 beyond the primary Dp427m effect, causing tissue-specific dysfunction in retina, CNS, and kidney. The iso_arch|S2_reported|266 projection supports distal-isoform impact. Three distal cell types are affected: Rod photoreceptor cells, Cone photoreceptor cells, and Adipocytes. Abnormal ERG_bwave and UACR labs from zhang|S2_reported|266 provide direct biomarker evidence of retinal and renal involvement beyond muscle, consistent with Dp71 loss at non-sarcolemmal localizations.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism ranks higher because nmd_cohort|DMD and AbSplice 0.88 provide stronger mechanistic weight than distal-isoform projections alone."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Out-of-frame truncation ranks higher due to stronger DGC-anchoring premise weight from uniprot_subcellular|DMD and celltype_impact|S2_reported|266."
+                },
+                {
+                  "other_id": "02",
+                  "why_lower": "Partial in-frame rescue contradicts AbSplice 0.88 canonical donor loss and is unsupported by the DMD phenotype in zhang|S2_reported|266."
+                }
+              ],
+              "testable_predictions": [
+                "ERG b-wave amplitude measurement: expect reduced response confirming Rod/Cone photoreceptor Dp71 loss.",
+                "Urine albumin-to-creatinine ratio (UACR) longitudinal tracking: expect elevated UACR consistent with renal Dp71 absence.",
+                "Dp71-specific Western blot of retinal or renal biopsy: expect absent Dp71 band confirming distal-isoform loss."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 6
+              }
+            },
+            "context": {
+              "hgvsc": "c.9361+1G>C",
+              "exon_n": 64,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.88,
+              "absplice_tissue": "Heart_Atrial_Appendage",
+              "absplice_category": "canonical_splice_donor_+1",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
+          },
           "patientEvidence": [
             {
               "labKey": "ERG_bwave",
@@ -35993,7 +39156,7 @@
           "generator": {
             "id": "HYP-MODEL",
             "version": "v0-scored-2026-08",
-            "at": "2026-08-09T23:02:09+00:00"
+            "at": "2026-08-10T00:01:18+00:00"
           },
           "premises": [
             {
@@ -36607,6 +39770,87 @@
             },
             "chainLinks": 21,
             "contradictions": []
+          },
+          "refinedClaim": {
+            "layer1": {
+              "claim": "P10's c.9361+1G>C at exon 64 may retain partial function via in-frame rescue → BMD-like presentation with slower progression.",
+              "distinguishing": [
+                {
+                  "weight": 1.0,
+                  "premiseId": "zhang|S2_reported|266",
+                  "rationale": "variant + phenotype + exon from Zhang 2024 record"
+                },
+                {
+                  "weight": 0.7,
+                  "premiseId": "iso_arch|S2_reported|266",
+                  "rationale": "per-isoform hit/spared projection from variant exon position"
+                },
+                {
+                  "weight": 0.6,
+                  "premiseId": "uniprot_subcellular|DMD",
+                  "rationale": "UniProt: dystrophin localizes at sarcolemma (peripheral membrane, cytoplasmic face); loss disrupts DGC anchoring"
+                }
+              ]
+            },
+            "layer2": {
+              "narrative": "P10's c.9361+1G>C at exon 64 could theoretically yield partial in-frame rescue via cryptic splice-acceptor use, producing a BMD-like truncated dystrophin with residual sarcolemmal function and slower progression. AbSplice 0.88 at the canonical donor does not exclude minor cryptic products. Four muscle cell types affected per celltype_impact|S2_reported|266 and partial m6MWT retention are weakly consistent. However, the confirmed DMD phenotype in zhang|S2_reported|266 and high NMD probability make this the least supported mechanism.",
+              "considered_but_discarded": [
+                {
+                  "other_id": "03",
+                  "why_lower": "NMD mechanism is strongly favored by nmd_cohort|DMD cross-tab and AbSplice 0.88, precluding partial-function rescue as primary explanation."
+                },
+                {
+                  "other_id": "01",
+                  "why_lower": "Out-of-frame truncation ranks higher because iso_arch|S2_reported|266 and uniprot_subcellular|DMD together support DGC-loss over in-frame rescue."
+                },
+                {
+                  "other_id": "04",
+                  "why_lower": "Distal-isoform loss has direct biomarker support from labs|S2_reported|266|ERG_bwave and UACR, unlike the partial-rescue hypothesis."
+                }
+              ],
+              "testable_predictions": [
+                "RT-PCR with cryptic-exon primers: expect no detectable in-frame rescue product from patient muscle RNA.",
+                "Western blot with N-terminal and C-terminal dystrophin antibodies: expect absent bands ruling out stable truncated protein.",
+                "Minigene splicing assay with c.9361+1G>C construct: expect exclusively aberrant out-of-frame or NMD-susceptible products."
+              ],
+              "model": "claude-sonnet-4-6",
+              "generated": "2026-08-09T23:54:47+00:00",
+              "groundedness": {
+                "unverified_isoforms": [],
+                "unverified_citations": [],
+                "unverified_numbers": [],
+                "total_mentions": 2
+              }
+            },
+            "context": {
+              "hgvsc": "c.9361+1G>C",
+              "exon_n": 64,
+              "hit_isoforms": [
+                "Dp427m",
+                "Dp427c",
+                "Dp427p",
+                "Dp260",
+                "Dp140",
+                "Dp116",
+                "Dp71"
+              ],
+              "spared_isoforms": [],
+              "absplice_max": 0.88,
+              "absplice_tissue": "Heart_Atrial_Appendage",
+              "absplice_category": "canonical_splice_donor_+1",
+              "muscle_hit_cells": [
+                "Myonuclei",
+                "Thymic myoid cells",
+                "Cardiomyocytes",
+                "Salivary myoepithelial cells"
+              ],
+              "distal_hit_cells": [
+                "Rod photoreceptor cells",
+                "Cone photoreceptor cells",
+                "Adipocytes"
+              ],
+              "distal_spared_cells": []
+            }
           },
           "patientEvidence": [
             {

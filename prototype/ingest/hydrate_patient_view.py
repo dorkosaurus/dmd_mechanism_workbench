@@ -354,19 +354,31 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
         rows = conn.execute("""
             SELECT hypothesis_id, mechanism_template, rank, score, confidence,
                    claim, rationale, generator_id, generator_version, generated_at,
-                   score_vector
+                   score_vector, refined_claim
             FROM patient_hypothesis
             WHERE patient_id = ?
             ORDER BY rank
         """, (pid_raw,)).fetchall()
     except sqlite3.OperationalError:
-        return None  # table doesn't exist yet — caller should fall back
+        # Fall back to the old shape if refined_claim column doesn't exist yet
+        try:
+            rows = conn.execute("""
+                SELECT hypothesis_id, mechanism_template, rank, score, confidence,
+                       claim, rationale, generator_id, generator_version, generated_at,
+                       score_vector, NULL AS refined_claim
+                FROM patient_hypothesis
+                WHERE patient_id = ?
+                ORDER BY rank
+            """, (pid_raw,)).fetchall()
+        except sqlite3.OperationalError:
+            return None
     if not rows:
         return None
 
     hyps = []
     for r in rows:
-        (hid, tmpl, rank, score, conf, claim, rationale, gen_id, gen_ver, gen_at, sv_json) = r
+        (hid, tmpl, rank, score, conf, claim, rationale, gen_id, gen_ver, gen_at,
+         sv_json, rc_json) = r
         # Load premises supporting this hypothesis
         premises = [{
             "premiseId": p[0], "sourceId": p[1], "weight": p[2],
@@ -402,6 +414,11 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
         try: score_vector = json.loads(sv_json) if sv_json else None
         except Exception: score_vector = None
 
+        # Refined claim (Layer 1 deterministic + Layer 2 LLM). May be null
+        # for legacy rows or when LLM was unavailable.
+        try: refined_claim = json.loads(rc_json) if rc_json else None
+        except Exception: refined_claim = None
+
         # Load therapeutics attached to this hypothesis
         therapies = [{
             "therapeuticId": t[0], "rank": t[1], "score": t[2], "confidence": t[3],
@@ -430,6 +447,7 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
             "therapeutics": therapies,
             "chainLinks": {"nodes": chain_nodes, "edges": chain_edges},
             "scoreVector": score_vector,
+            "refinedClaim": refined_claim,
             # patientEvidence retained for backward compat (was per-hypothesis
             # lab bullet list). Rebuilt from lab-scoped premises.
             "patientEvidence": [

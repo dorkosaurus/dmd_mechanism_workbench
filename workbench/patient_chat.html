@@ -287,6 +287,38 @@
   .sv-metric-fill.warn { background: var(--warn); }
   .sv-metric-fill.bad  { background: var(--bad); }
 
+  /* Refined-claim panel — Layer 1 deterministic + Layer 2 LLM narrative */
+  .refined-claim { margin: 10px 0; padding: 12px 14px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: 6px; }
+  .refined-claim-h { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .refined-claim-h .layer-badge { background: var(--accent-soft);
+    color: var(--accent); padding: 1px 6px; border-radius: 3px;
+    font-size: 9px; }
+  .refined-claim-h .model-tag { color: var(--ink-3);
+    font-family: "SF Mono", Menlo, monospace; margin-left: auto;
+    font-weight: 500; text-transform: none; letter-spacing: 0; }
+  .refined-narrative { font-size: 13px; line-height: 1.55; color: var(--ink);
+    margin-bottom: 8px; }
+  .refined-details { display: flex; flex-direction: column; gap: 6px;
+    margin-top: 8px; }
+  .refined-section { border: 1px solid var(--line); border-radius: 5px;
+    background: var(--bg); overflow: hidden; }
+  .refined-section summary { padding: 6px 10px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2);
+    font-weight: 700; cursor: pointer; user-select: none; }
+  .refined-section[open] summary { border-bottom: 1px solid var(--line); }
+  .refined-section-body { padding: 8px 10px; font-size: 12px;
+    color: var(--ink-2); line-height: 1.5; }
+  .refined-section-body ul { margin: 0; padding-left: 20px; }
+  .refined-section-body li { margin-bottom: 4px; }
+  .cbd-item { padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .cbd-item:last-child { border-bottom: none; }
+  .cbd-item .other-id { font-weight: 700; color: var(--ink);
+    font-family: "SF Mono", Menlo, monospace; margin-right: 6px; }
+
   /* Contradictions panel — shown under the score vector when consistency < 1 */
   .contradictions-panel { margin: 10px 0; padding: 10px 12px;
     background: var(--warn-soft); border: 1px solid var(--warn);
@@ -1154,6 +1186,48 @@ function renderChainArtifact(p, hypId, artifactIdx) {
       <span class="sv-hint">${sv.chainLinks} chain links · ranking is vector, not scalar</span>
     </div>` : '';
 
+  // Refined-claim panel: prefer LLM narrative (layer2), fall back to
+  // deterministic enrichment (layer1). Falls back silently to nothing
+  // if neither is available.
+  const rc = storedHyp?.refinedClaim || {};
+  const layer1 = rc.layer1 || {};
+  const layer2 = rc.layer2 || null;
+  const primaryNarrative = layer2?.narrative || layer1.claim || '';
+  const cbd = layer2?.considered_but_discarded || [];
+  const testable = layer2?.testable_predictions || [];
+  const modelTag = layer2?.model || (layer2 ? 'llm' : 'deterministic');
+  const layerBadge = layer2 ? 'LAYER 2' : (layer1.claim ? 'LAYER 1' : '');
+  const refinedClaimPanel = primaryNarrative ? `
+    <div class="refined-claim">
+      <div class="refined-claim-h">
+        <span class="layer-badge">${layerBadge}</span>
+        Claim
+        <span class="model-tag">${esc(modelTag)}</span>
+      </div>
+      <div class="refined-narrative">${esc(primaryNarrative)}</div>
+      ${(cbd.length || testable.length) ? `
+      <div class="refined-details">
+        ${cbd.length ? `
+        <details class="refined-section" open>
+          <summary>Considered but discarded (${cbd.length})</summary>
+          <div class="refined-section-body">
+            ${cbd.map(c => `
+              <div class="cbd-item">
+                <span class="other-id">H${esc(c.other_id || '?')}</span>${esc(c.why_lower || '')}
+              </div>
+            `).join('')}
+          </div>
+        </details>` : ''}
+        ${testable.length ? `
+        <details class="refined-section">
+          <summary>Testable predictions (${testable.length})</summary>
+          <div class="refined-section-body">
+            <ul>${testable.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+          </div>
+        </details>` : ''}
+      </div>` : ''}
+    </div>` : '';
+
   // Contradictions panel — surfaces the specific chain positions where
   // premises argue in opposite directions (e.g., cohort literature says
   // distal cells express Dp71, but patient's isoform-arch says they're spared)
@@ -1195,6 +1269,7 @@ function renderChainArtifact(p, hypId, artifactIdx) {
     </div>
     ${provenance}
     ${scoreVectorStrip}
+    ${refinedClaimPanel}
     ${contradictionsPanel}
     ${peHtml}
     ${lede}

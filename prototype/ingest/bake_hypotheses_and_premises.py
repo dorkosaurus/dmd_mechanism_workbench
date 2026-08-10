@@ -127,6 +127,8 @@ ROSTER_KEYS = [
     ("S1_novel",    "49"),
     ("S2_reported", "266"),
 ]
+# Display labels — mirrors patient_data.json patient ids (P1..P10).
+ROSTER_LABELS = {key: f"P{i}" for i, key in enumerate(ROSTER_KEYS, start=1)}
 
 # The four canonical mechanism templates (kept in mechanism.sqlite.hypotheses).
 HYP_TEMPLATES = [
@@ -907,6 +909,355 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
     return out
 
 
+# ----------------------------------------------------------------------
+# Claim enrichment
+#
+# Layer 0 = CLAIM_TEMPLATES with 3 slots (p / cons / exon). Every H01
+#           patient reads the same. `exon_str` bug leaks through.
+# Layer 1 = deterministic enrichment — reads real values out of the
+#           premise bundle (exon_n from isoform_arch, AbSplice score,
+#           muscle_hit count, distal spared/hit, hit_isoforms) and
+#           weaves them into the mechanism sentence + a "distinguishing
+#           evidence" line built from the top-3 weighted premises.
+#           Pure code, no LLM.
+# Layer 2 = LLM refinement (below) — takes Layer 1 + full premise bundle
+#           and produces {narrative, considered_but_discarded, testable}.
+# ----------------------------------------------------------------------
+
+_DISTAL_TISSUE_KEYS  = ("retina", "adipose", "brain", "cortex", "hippocampus", "cerebellum")
+_MUSCLE_TISSUE_KEYS  = ("muscle", "cardiac", "thymus", "salivary")
+
+
+def build_claim_context(patient_key: str, nuc: str | None, exon_n: int | None,
+                        patient_premises: dict) -> dict:
+    """Extract structured, template-agnostic values from the premise bundle
+    for claim composition. Values are None when the underlying premise
+    is absent."""
+    ctx: dict = {
+        "p":       patient_key,
+        "hgvsc":   nuc,
+        "exon_n":  exon_n,
+    }
+
+    # isoform_arch: which isoforms are hit vs spared for this patient
+    iso_ev = patient_premises.get("iso_ev") or {}
+    ctx["hit_isoforms"]    = iso_ev.get("hit_isoforms")    or []
+    ctx["spared_isoforms"] = iso_ev.get("spared_isoforms") or []
+
+    # AbSplice: variant-level splice-disruption score
+    absp = patient_premises.get("absplice_ev") or {}
+    ctx["absplice_max"]      = absp.get("max_score")
+    ctx["absplice_tissue"]   = absp.get("max_tissue")
+    ctx["absplice_category"] = absp.get("category")
+
+    # patient_celltype_impact: which cell types are hit/spared for this patient
+    ct = patient_premises.get("celltype_impact_ev") or {}
+    cells = ct.get("cells", [])
+    def _match(c, keys):
+        return any(k in ((c.get("tissue") or "") + " " + (c.get("name") or "")).lower() for k in keys)
+    ctx["muscle_hit_cells"]    = [c["name"] for c in cells if _match(c, _MUSCLE_TISSUE_KEYS)  and c["status"] == "hit"]
+    ctx["distal_hit_cells"]    = [c["name"] for c in cells if _match(c, _DISTAL_TISSUE_KEYS)  and c["status"] == "hit"]
+    ctx["distal_spared_cells"] = [c["name"] for c in cells if _match(c, _DISTAL_TISSUE_KEYS)  and c["status"] == "spared"]
+
+    # patient_tissue_impact: tissues hit/spared
+    tis = patient_premises.get("tissue_impact_ev") or {}
+    ctx["tissues_hit"]    = tis.get("tissues_hit")    or []
+    ctx["tissues_spared"] = tis.get("tissues_spared") or []
+    return ctx
+
+
+def _fmt_list(xs: list[str], limit: int = 4) -> str:
+    """Human-readable comma list with ellipsis after `limit`."""
+    if not xs: return ""
+    if len(xs) <= limit: return ", ".join(xs)
+    return ", ".join(xs[:limit]) + f", +{len(xs) - limit} more"
+
+
+def enrich_claim(tmpl_id: str, ctx: dict, prem_weights: list[tuple[str, float, str]]) -> dict:
+    """Layer 1: produce a per-patient claim by weaving premise-bundle
+    values into the mechanism sentence. Returns {claim, distinguishing}."""
+    p     = ctx.get("p")     or "patient"
+    hgvsc = ctx.get("hgvsc") or "variant"
+    exon  = ctx.get("exon_n") if ctx.get("exon_n") is not None else "?"
+
+    if tmpl_id == "01":
+        muscle = _fmt_list(ctx.get("muscle_hit_cells") or [])
+        muscle_note = f" Composition: {len(ctx.get('muscle_hit_cells') or [])} muscle-lineage cell types hit ({muscle})." if muscle else ""
+        claim = (
+            f"{p}'s {hgvsc} at exon {exon} produces an out-of-frame transcript → "
+            f"truncated dystrophin lacking the C-terminal DGC anchor → "
+            f"sarcolemmal fragility in skeletal + cardiac muscle."
+            f"{muscle_note}"
+        )
+    elif tmpl_id == "02":
+        rescue_note = ""
+        hit = ctx.get("hit_isoforms") or []
+        spared = ctx.get("spared_isoforms") or []
+        if spared:
+            rescue_note = f" Spared isoforms: {_fmt_list(spared)}."
+        claim = (
+            f"{p}'s {hgvsc} at exon {exon} may retain partial function via "
+            f"in-frame rescue → BMD-like presentation with slower progression."
+            f"{rescue_note}"
+        )
+    elif tmpl_id == "03":
+        splice_note = ""
+        if ctx.get("absplice_max") is not None and ctx["absplice_max"] >= 0.5:
+            splice_note = (
+                f" AbSplice {ctx['absplice_max']:.2f} in "
+                f"{ctx.get('absplice_tissue') or 'target tissue'} "
+                f"({ctx.get('absplice_category') or 'splice event'}) — "
+                f"aberrant splicing is a compounding NMD trigger."
+            )
+        claim = (
+            f"{p}'s {hgvsc} at exon {exon} generates a PTC upstream of the last "
+            f"exon-exon junction → NMD degrades the Dp427m transcript → "
+            f"near-total protein loss."
+            f"{splice_note}"
+        )
+    elif tmpl_id == "04":
+        distal_note = ""
+        hit    = ctx.get("distal_hit_cells")    or []
+        spared = ctx.get("distal_spared_cells") or []
+        if hit:
+            distal_note = f" Composition supports: {len(hit)} distal cell types hit ({_fmt_list(hit)})."
+        elif spared:
+            distal_note = f" Composition contradicts: {len(spared)} distal cell types spared for this patient — H04 mechanism unlikely."
+        claim = (
+            f"{p}'s {hgvsc} at exon {exon} selectively ablates distal isoforms "
+            f"(Dp140 / Dp116 / Dp71) → tissue-specific dysfunction beyond muscle."
+            f"{distal_note}"
+        )
+    else:
+        claim = CLAIM_TEMPLATES.get(tmpl_id, "").format(p=p, cons=hgvsc, exon=exon)
+
+    top3 = sorted(prem_weights, key=lambda x: -abs(x[1]))[:3]
+    distinguishing = [
+        {"weight": round(w, 2),
+         "premiseId": pr_id,
+         "rationale": (rat or "")[:200]}
+        for (pr_id, w, rat) in top3
+    ]
+
+    return {"claim": claim, "distinguishing": distinguishing}
+
+
+# ----------------------------------------------------------------------
+# Layer 2: LLM refinement via Anthropic Messages API (stdlib urllib —
+# no SDK dep). Takes the Layer-1 claim + full premise bundle for all 4
+# hypotheses of a patient, returns per-hypothesis {narrative,
+# considered_but_discarded, testable_predictions}.
+# ----------------------------------------------------------------------
+import os as _os
+import urllib.request as _urllib_req
+import urllib.error as _urllib_err
+
+_LLM_CACHE_DIR = REPO / "cache" / "llm_refine"
+_LLM_ENDPOINT  = "https://api.anthropic.com/v1/messages"
+_LLM_MODEL     = _os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6")
+
+
+def _llm_available() -> bool:
+    return bool(_os.environ.get("ANTHROPIC_API_KEY"))
+
+
+def _llm_cache_path(cache_key: str) -> Path:
+    _LLM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    return _LLM_CACHE_DIR / f"{cache_key}.json"
+
+
+def _call_anthropic(messages: list[dict], max_tokens: int = 3000,
+                    timeout: int = 180) -> str:
+    """Blocking single-turn Messages API call. Returns assistant text."""
+    body = {
+        "model":      _LLM_MODEL,
+        "max_tokens": max_tokens,
+        "messages":   messages,
+    }
+    req = _urllib_req.Request(
+        _LLM_ENDPOINT,
+        method="POST",
+        headers={
+            "x-api-key":         _os.environ["ANTHROPIC_API_KEY"],
+            "anthropic-version": "2023-06-01",
+            "content-type":      "application/json",
+        },
+        data=json.dumps(body).encode(),
+    )
+    with _urllib_req.urlopen(req, timeout=timeout) as r:
+        resp = json.load(r)
+    return resp["content"][0]["text"]
+
+
+def _extract_json_object(text: str) -> dict | None:
+    """Parse the first top-level {...} JSON object from `text`. Returns
+    None on failure. Handles markdown fences and pre/post prose."""
+    if not text: return None
+    s = text.strip()
+    if s.startswith("```"):
+        s = s.split("```", 2)[1]
+        if s.startswith("json"): s = s[4:]
+        s = s.rsplit("```", 1)[0]
+    start = s.find("{")
+    end   = s.rfind("}")
+    if start < 0 or end < 0 or end <= start: return None
+    try: return json.loads(s[start:end + 1])
+    except json.JSONDecodeError: return None
+
+
+def _build_llm_prompt(patient_label: str, patient_meta: dict,
+                      hypotheses: list[dict]) -> list[dict]:
+    """Build a single-turn prompt asking the model to refine claims for
+    ALL of a patient's hypotheses in one call. Cross-hypothesis context
+    is needed so the "considered but discarded" text can reference the
+    other templates' specific premises."""
+    system_intent = (
+        "You are refining draft mechanism claims for a rare-disease "
+        "mechanism workbench. You are strictly grounded: every specific "
+        "value (numbers, cell names, isoform names, tissue names, citation "
+        "authors) MUST appear in the input premise bundle. If a claim "
+        "would require an unsupported value, omit it rather than "
+        "invent it. Do NOT re-rank the hypotheses. For each hypothesis: "
+        "(a) narrative: ≤ 90 words, one paragraph, clinician-readable, "
+        "cite specific premise values by short name (e.g. 'AbSplice 0.88', "
+        "'Muntoni 2003'); (b) considered_but_discarded: for each of the "
+        "OTHER 3 hypotheses, one sentence ≤ 25 words citing the specific "
+        "premise that made it rank lower; (c) testable_predictions: "
+        "exactly 3 concrete assays, each ≤ 22 words. Do not repeat the "
+        "input premise bundle. Be dense, not verbose."
+    )
+    schema = {
+        "hypotheses": [
+            {
+                "id": "01",
+                "narrative": "one paragraph, clinician-readable, cite specific premise values",
+                "considered_but_discarded": [
+                    {"other_id": "02", "why_lower": "specific premise-cited reason"},
+                    {"other_id": "03", "why_lower": "..."},
+                    {"other_id": "04", "why_lower": "..."}
+                ],
+                "testable_predictions": [
+                    "assay 1 with expected result",
+                    "assay 2 with expected result"
+                ]
+            }
+        ]
+    }
+    user = {
+        "role": "user",
+        "content": (
+            f"{system_intent}\n\n"
+            f"Patient: {patient_label}\n"
+            f"Variant: {patient_meta.get('hgvsc')} at exon {patient_meta.get('exon_n')}\n"
+            f"Phenotype: {patient_meta.get('phenotype')}\n"
+            f"Consequence: {patient_meta.get('consequence')}\n\n"
+            f"Hypotheses (each with rank, score, Layer-1 claim, premises, contradictions):\n"
+            f"```json\n{json.dumps(hypotheses, indent=2)}\n```\n\n"
+            f"Return EXACTLY ONE JSON object matching this schema (no prose before or after, no markdown fences):\n"
+            f"```json\n{json.dumps(schema, indent=2)}\n```"
+        ),
+    }
+    return [user]
+
+
+def refine_claims_with_llm(patient_label: str, patient_meta: dict,
+                            hypotheses_bundle: list[dict], cache_key: str
+                            ) -> dict | None:
+    """Layer 2. Returns {"hypotheses": [{id, narrative, considered_but_discarded,
+    testable_predictions}, ...]} or None if LLM unavailable / call failed.
+    Cached by cache_key."""
+    if not _llm_available(): return None
+
+    cache_path = _llm_cache_path(cache_key)
+    if cache_path.exists():
+        try:
+            print(f"[llm] {patient_label} — cache hit")
+            return json.loads(cache_path.read_text())
+        except Exception: pass  # fall through and re-call
+
+    print(f"[llm] {patient_label} — refining {len(hypotheses_bundle)} hypotheses via {_LLM_MODEL}...")
+    try:
+        messages = _build_llm_prompt(patient_label, patient_meta, hypotheses_bundle)
+        raw = _call_anthropic(messages, max_tokens=8000)
+    except (_urllib_err.URLError, TimeoutError, KeyError, ValueError, OSError) as e:
+        print(f"[llm]   FAILED for {patient_label}: {type(e).__name__}: {e}")
+        return None
+
+    parsed = _extract_json_object(raw)
+    if not parsed or "hypotheses" not in parsed:
+        # Persist the raw response so we can debug parse failures.
+        debug_path = _LLM_CACHE_DIR / f"{cache_key}.debug.txt"
+        debug_path.write_text(raw or "")
+        print(f"[llm]   unparseable response for {patient_label} — saved to {debug_path}")
+        return None
+
+    payload = {
+        "model":     _LLM_MODEL,
+        "generated": NOW,
+        "raw":       raw,
+        "hypotheses": parsed["hypotheses"],
+    }
+    cache_path.write_text(json.dumps(payload, indent=2))
+    return payload
+
+
+# Patterns for lightweight groundedness verification: any specific value
+# the LLM mentions (isoform, number, author-year) should appear somewhere
+# in the input premise bundle. Unverified mentions get logged, not blocked.
+_ISOFORM_RE = re.compile(r"\bDp(?:427[mcp]?|260|140|116|71)\b")
+_NUMBER_RE  = re.compile(r"\b\d+(?:\.\d+)?\b")
+_AUTHOR_RE  = re.compile(r"\b[A-Z][a-zäöüéèñ]+ (?:\d{4}|et al\.? \d{4})")
+
+
+def _check_groundedness(narrative: str, bundle_text: str) -> dict:
+    """Return {unverified_isoforms, unverified_numbers, unverified_citations,
+    total_mentions}. Numbers < 3 chars (like page counts, cell counts) are
+    ignored — only decimal scores and 4-digit years get checked."""
+    findings = {
+        "unverified_isoforms":  sorted(
+            {m.group() for m in _ISOFORM_RE.finditer(narrative)
+             if m.group() not in bundle_text}
+        ),
+        "unverified_citations": sorted(
+            {m.group() for m in _AUTHOR_RE.finditer(narrative)
+             if m.group() not in bundle_text}
+        ),
+        "unverified_numbers": sorted(
+            {m.group() for m in _NUMBER_RE.finditer(narrative)
+             if ("." in m.group() or len(m.group()) == 4)
+             and m.group() not in bundle_text}
+        ),
+    }
+    findings["total_mentions"] = (
+        len(_ISOFORM_RE.findall(narrative))
+        + len(_AUTHOR_RE.findall(narrative))
+        + sum(1 for m in _NUMBER_RE.finditer(narrative)
+              if "." in m.group() or len(m.group()) == 4)
+    )
+    return findings
+
+
+def _hyp_bundle_for_llm(hyp_id: str, tmpl_id: str, rank: int, score: float,
+                        layer1_claim: str, prem_weights: list[tuple[str, float, str]],
+                        contradictions: list[dict]) -> dict:
+    """Shape one hypothesis for the LLM prompt — only the fields the
+    model needs to write a narrative + differential."""
+    return {
+        "id":            tmpl_id,
+        "rank":          rank,
+        "score":         round(score, 2),
+        "layer1_claim":  layer1_claim,
+        "premises":      [
+            {"weight": round(w, 2),
+             "premiseId": pr_id,
+             "rationale": (rat or "")[:200]}
+            for (pr_id, w, rat) in
+            sorted(prem_weights, key=lambda x: -abs(x[1]))[:15]
+        ],
+        "contradictions": contradictions,
+    }
+
+
 def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: float | None,
                                  amb: str | None, exon_str: str | None, nuc: str | None,
                                  aa: str | None, cons: str | None, acmg: str | None,
@@ -935,7 +1286,8 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         except Exception: return {}
 
     patient_premises = {
-        "zhang": zhang_pid, "iso": iso_pid, "esm3": esm3_pid, "labs": lab_pids,
+        "zhang": zhang_pid, "iso": iso_pid, "iso_ev": _load_ev(iso_pid),
+        "esm3": esm3_pid, "labs": lab_pids,
         "celltype_impact": ct_pid, "celltype_impact_ev": _load_ev(ct_pid),
         "tissue_impact":   tis_pid, "tissue_impact_ev":   _load_ev(tis_pid),
         "absplice":        absp_pid, "absplice_ev":       _load_ev(absp_pid),
@@ -965,9 +1317,19 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         except Exception: ev = {}
         return (row[0], ev)
 
+    # Shared context for claim enrichment. Uses "P{seq}" label if a
+    # roster order was passed via ROSTER_LABELS; else falls back to the
+    # cohort-scoped variant key.
+    patient_label = ROSTER_LABELS.get((cohort, pid)) or f"{cohort}#{pid}"
+    claim_ctx = build_claim_context(patient_label, nuc, exon_n, patient_premises)
+
     n_hyps = 0
+    layer1_bundles: list[dict] = []  # Collected during the loop and
+                                     # fed into one batched Layer-2 LLM
+                                     # call after all hypotheses baked.
     for rank, (tmpl_id, (score, fit)) in enumerate(ranked, start=1):
         hyp_id = f"P_{cohort}#{pid}:h{tmpl_id}:v1"
+        # Layer 0 claim (raw template) — kept for backwards compat + audit.
         claim = CLAIM_TEMPLATES[tmpl_id].format(
             p=f"{cohort}#{pid}",
             cons=(cons or "variant").lower(),
@@ -1078,17 +1440,94 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
             "contradictions": contradictions,
         }
 
+        # Layer 1: deterministic claim enrichment (fills the raw template
+        # with real premise values + top-3 distinguishing evidence).
+        layer1 = enrich_claim(tmpl_id, claim_ctx, prem_weights)
+        refined_claim = {
+            "layer1":  layer1,
+            "layer2":  None,  # populated by the LLM refinement pass below
+            "context": {k: claim_ctx.get(k) for k in
+                        ("hgvsc", "exon_n", "hit_isoforms", "spared_isoforms",
+                         "absplice_max", "absplice_tissue", "absplice_category",
+                         "muscle_hit_cells", "distal_hit_cells",
+                         "distal_spared_cells")},
+        }
+
         conn.execute(
             "INSERT OR REPLACE INTO patient_hypothesis "
             "(hypothesis_id, patient_id, variant_key, mechanism_template, rank, score, "
-            " confidence, claim, rationale, score_vector, generator_id, generator_version, "
-            " generated_at, input_context_hash) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            " confidence, claim, rationale, score_vector, refined_claim, "
+            " generator_id, generator_version, generated_at, input_context_hash) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (hyp_id, pid, variant_key, tmpl_id, rank, score,
              min(1.0, score / 10.0), claim, rationale,
-             json.dumps(score_vector),
+             json.dumps(score_vector), json.dumps(refined_claim),
              HYP_GENERATOR[0], HYP_GENERATOR[1], NOW, input_hash),
         )
+
+        # Collect per-hypothesis bundle for the batched LLM call below.
+        layer1_bundles.append({
+            "hyp_id":         hyp_id,
+            "tmpl_id":        tmpl_id,
+            "rank":           rank,
+            "score":          score,
+            "layer1_claim":   layer1["claim"],
+            "prem_weights":   prem_weights,
+            "contradictions": contradictions,
+            "refined_claim":  refined_claim,
+        })
         n_hyps += 1
+
+    # 2b. Layer 2 — one LLM call per patient covering all 4 hypotheses.
+    #     Batched so the model has cross-hypothesis context needed for
+    #     "considered but discarded". Cached by patient input_hash so
+    #     unchanged inputs skip the API call.
+    if _llm_available() and layer1_bundles:
+        llm_bundles = [
+            _hyp_bundle_for_llm(b["hyp_id"], b["tmpl_id"], b["rank"], b["score"],
+                                 b["layer1_claim"], b["prem_weights"], b["contradictions"])
+            for b in layer1_bundles
+        ]
+        patient_meta = {
+            "hgvsc":       nuc,
+            "exon_n":      exon_n,
+            "phenotype":   phen,
+            "consequence": cons,
+        }
+        cache_key = f"{cohort}_{pid}_{input_hash}"
+        refined = refine_claims_with_llm(patient_label, patient_meta,
+                                          llm_bundles, cache_key)
+        if refined and "hypotheses" in refined:
+            by_tmpl = {h.get("id"): h for h in refined["hypotheses"]}
+            # Serialize the full input bundle once — used as the "ground
+            # truth" text against which the LLM output is verified.
+            bundle_text = json.dumps(llm_bundles)
+            n_unverified_total = 0
+            for b in layer1_bundles:
+                layer2 = by_tmpl.get(b["tmpl_id"])
+                if not layer2: continue
+                narrative = layer2.get("narrative") or ""
+                grounded = _check_groundedness(narrative, bundle_text)
+                n_unverified_total += (
+                    len(grounded["unverified_isoforms"]) +
+                    len(grounded["unverified_citations"]) +
+                    len(grounded["unverified_numbers"])
+                )
+                rc = b["refined_claim"]
+                rc["layer2"] = {
+                    "narrative":               narrative,
+                    "considered_but_discarded": layer2.get("considered_but_discarded"),
+                    "testable_predictions":    layer2.get("testable_predictions"),
+                    "model":                   refined.get("model"),
+                    "generated":               refined.get("generated"),
+                    "groundedness":            grounded,
+                }
+                conn.execute(
+                    "UPDATE patient_hypothesis SET refined_claim = ? WHERE hypothesis_id = ?",
+                    (json.dumps(rc), b["hyp_id"]),
+                )
+            if n_unverified_total:
+                print(f"[llm]   grounded: {n_unverified_total} unverified mentions across {len(layer1_bundles)} hypotheses")
 
     # 3. Emit patient_therapeutic rows for the top hypothesis
     top_hyp_id = f"P_{cohort}#{pid}:h{ranked[0][0]}:v1"
@@ -1152,7 +1591,8 @@ def _ensure_column(conn, table: str, column: str, decl: str) -> None:
 def main() -> None:
     conn = sqlite3.connect(DB)
     conn.executescript(SCHEMA_MIGRATION)
-    _ensure_column(conn, "patient_hypothesis", "score_vector", "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "score_vector",  "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "refined_claim", "TEXT")
 
     # 1. Register premise sources
     register_sources(conn)

@@ -567,12 +567,43 @@ chain artifact so the user can see the specific evidence conflict.
 The 3 patients with distal-reaching variants (P5, P258, P266) stay
 clean because both sources agree the distal cells are affected.
 
-**LLM-refined claims.** The mechanism-claim text for each hypothesis
-is currently template-filled. An LLM refinement pass conditioned on
-the assembled premise bundle would produce per-patient customized
-claims, "considered but discarded" transparency, and testable
-predictions — layered on top of the deterministic template-scored
-backbone.
+**LLM-refined claims — now implemented (two layers).**
+
+*Layer 1 (deterministic enrichment)* replaces the raw template's three
+slots (`{p}`, `{cons}`, `{exon}`) with real values read out of the
+premise bundle. Fixes the `int64` bug (exon number now comes from the
+`isoform_arch` premise, not the raw variant string), names the specific
+muscle-lineage cell types hit for H01 via the composition premise,
+lists the spared isoforms for H02, weaves the AbSplice score into H03
+when it's a canonical splice event, and marks H04 as "composition
+contradicts" vs "composition supports" based on the distal-cell impact
+pattern. Pure code, no LLM dependency. Also emits a top-3 distinguishing-
+evidence list per hypothesis.
+
+*Layer 2 (LLM refinement)* takes Layer 1 output plus the full
+premise bundle for all 4 hypotheses of a patient and calls
+`claude-sonnet-4-6` via the Anthropic Messages API (stdlib urllib,
+no SDK dependency). One batched call per patient so the model has
+cross-hypothesis context needed for `considered_but_discarded`
+paragraphs. Returns per-hypothesis `{narrative,
+considered_but_discarded, testable_predictions}` where each field is
+constrained by the prompt: narrative ≤ 90 words, discarded rationale
+≤ 25 words per other-hypothesis, exactly 3 testable predictions ≤ 22
+words each. Cached by `cohort_pid_input_hash` so re-bakes on unchanged
+inputs skip the API call.
+
+*Groundedness verification* — a post-hoc check flags any isoform name
+(Dp71, Dp427m, etc.), numeric value, or author-year citation appearing
+in the LLM narrative that does not appear in the input premise bundle.
+Unverified mentions are logged and stored alongside the narrative in
+`scoreVector.groundedness` for surface-in-UI, without blocking the
+refinement itself.
+
+*Total cost*: ~$0.36 for a full-cohort refinement (10 patients ×
+~4K input + ~4K output tokens each at Sonnet 4.6 rates). Graceful
+skip if `ANTHROPIC_API_KEY` is unset — Layer 1 alone still ships an
+enriched claim. Layer 0 template stays in the `claim` column for
+audit continuity.
 
 **Novel hypothesis discovery.** For DMD the four canonical templates
 cover essentially all documented mechanisms. For less-well-studied
