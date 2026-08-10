@@ -281,6 +281,92 @@ def build_nmd_cohort(conn) -> dict:
     }
 
 
+def build_premise_sources(conn) -> list[dict]:
+    """Return the premise-source registry plus per-source count of
+    baked premises. Used by the substrate explorer artifact."""
+    try:
+        rows = conn.execute(
+            "SELECT source_id, source_type, version, description, reference_url "
+            "FROM premise_source ORDER BY source_id"
+        ).fetchall()
+    except Exception:
+        return []
+    counts = dict(conn.execute(
+        "SELECT source_id, COUNT(*) FROM premise GROUP BY source_id"
+    ).fetchall())
+    hyp_counts = dict(conn.execute(
+        "SELECT p.source_id, COUNT(DISTINCT hp.hypothesis_id) "
+        "FROM hypothesis_premise hp JOIN premise p ON hp.premise_id = p.premise_id "
+        "GROUP BY p.source_id"
+    ).fetchall())
+    return [
+        {"sourceId": sid, "type": stype, "version": ver,
+         "description": desc, "url": url,
+         "nPremises": counts.get(sid, 0),
+         "nHypothesesFired": hyp_counts.get(sid, 0)}
+        for (sid, stype, ver, desc, url) in rows
+    ]
+
+
+def build_open_targets(conn) -> dict | None:
+    """Return the Open Targets DMD summary if the bake has been run;
+    None otherwise. Emits a compact shape sized for direct rendering."""
+    have = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' "
+        "AND name='opentargets_dmd_summary'"
+    ).fetchone()
+    if not have:
+        return None
+    summ = conn.execute("SELECT * FROM opentargets_dmd_summary").fetchone()
+    if not summ:
+        return None
+    (ensembl_id, symbol, name, biotype, refreshed_at, source_url) = summ
+    tract_by_mod: dict[str, list[str]] = {}
+    for mod, label, val in conn.execute(
+        "SELECT modality, label, value FROM opentargets_dmd_tractability"
+    ):
+        tract_by_mod.setdefault(mod, []).append({"label": label, "value": bool(val)})
+    return {
+        "ensemblId":    ensembl_id,
+        "symbol":       symbol,
+        "name":         name,
+        "biotype":      biotype,
+        "refreshedAt":  refreshed_at,
+        "sourceUrl":    source_url,
+        "tractability": tract_by_mod,
+        "pathways": [
+            {"id": r[0], "name": r[1], "topLevel": r[2]}
+            for r in conn.execute(
+                "SELECT pathway_id, pathway, top_level_term FROM opentargets_dmd_pathway"
+            )
+        ],
+        "topDiseases": [
+            {"id": r[0], "name": r[1], "score": r[2]}
+            for r in conn.execute(
+                "SELECT disease_id, disease_name, score "
+                "FROM opentargets_dmd_disease ORDER BY score DESC LIMIT 10"
+            )
+        ],
+        "drugs": [
+            {"id": r[0], "name": r[1], "type": r[2],
+             "maxStage": r[3], "drugMaxStage": r[4]}
+            for r in conn.execute(
+                "SELECT drug_id, drug_name, drug_type, max_clinical_stage, "
+                "       drug_max_stage FROM opentargets_dmd_drug"
+            )
+        ],
+        "interactions": [
+            {"partnerId": r[0], "symbol": r[1], "score": r[2], "source": r[3]}
+            for r in conn.execute(
+                "SELECT partner_id, partner_symbol, score, source_database "
+                "FROM opentargets_dmd_interaction "
+                "WHERE partner_symbol IS NOT NULL "
+                "ORDER BY score DESC LIMIT 20"
+            )
+        ],
+    }
+
+
 def main() -> None:
     conn = sqlite3.connect(DB)
     data = {
@@ -307,7 +393,9 @@ def main() -> None:
             "total": q_one(conn, "SELECT COUNT(*) FROM lovd_variants"),
             "unit":  "hypotheses shown",
         },
-        "nmdCohort": build_nmd_cohort(conn),
+        "nmdCohort":     build_nmd_cohort(conn),
+        "openTargets":   build_open_targets(conn),
+        "premiseSources": build_premise_sources(conn),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2, ensure_ascii=False))

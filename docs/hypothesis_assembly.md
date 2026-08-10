@@ -96,7 +96,7 @@ process aims to accumulate both.
 
 ## Data sources and which layer each informs
 
-The workbench currently integrates twelve data or model sources. Each
+The workbench currently integrates thirteen data or model sources. Each
 source produces typed evidence rows (**premises**) that are then
 attributed to node and edge positions in the biological chain:
 
@@ -110,6 +110,7 @@ attributed to node and edge positions in the biological chain:
 | **UniProt subcellular localization** | data | subcellular (node), protein→subcellular (edge) | Curated protein-biology: sarcolemma, cytoplasm/cytoskeleton, postsynaptic membrane (P11532) |
 | **Reactome pathway memberships** | data | pathway (node), pathway→subcellular (edge) | Which biological pathways include dystrophin; a claim about downstream molecular consequences of protein loss |
 | **Human Protein Atlas cell-type expression** | data | cell type (node), cellType→tissue (edge) | Baseline expression of DMD across cell types — *gene-scoped, not patient-scoped*. Establishes which cell types normally express DMD; does not by itself say which cells are affected in a given patient |
+| **Open Targets Platform** | data | pathway (node), protein→subcellular (edge), phenotype (node) | Target record for DMD (ENSG00000198947): five approved drugs (delandistrogene moxeparvovec, eteplirsen, viltolarsen, golodirsen, casimersen), twelve named DGC molecular partners (SNTA1, SNTB1, SNTB2, SGCA-D, SSPN, DAG1, DTNA, DTNB, ...), three Reactome pathway memberships, disease-association scores (DMD 0.87, BMD 0.82, DCM 0.79), tractability profile. Approved drugs actively argue *against* H04 (distal-isoform-loss) since they all restore Dp427, not distal isoforms. |
 | **patient_celltype_impact (composition)** | model | cellType (node), protein→cellType (edge) | Isoform-arch × curated cell-to-isoform dependency map → per-patient cell-type hit/spared status |
 | **patient_tissue_impact (composition)** | model | tissue (node), cellType→tissue (edge) | Isoform-arch × isoform tissue-expression map → per-patient tissue hit status |
 | **Literature (curated citations)** | data | any node or edge | Peer-reviewed claims attributed to specific chain positions per hypothesis; dual-attribution at subcellular |
@@ -148,13 +149,42 @@ these negative premises actually reduce hypothesis scores. Coverage
 still counts *any* premise (positive or negative) so the chain
 completeness metric is unaffected.
 
-Additional sources — AbSplice for aberrant-splicing predictions,
-ESM2 log-likelihood ratios for variant-level functional-disruption
-scoring, and downstream network sources (Open Targets, STRING, ARCHS4,
-Geneformer) — are called out in the rare-disease-platform deck as
-priority additions. Each would enter as a new premise producer,
-attributing to the appropriate node or edge without disturbing sources
-already integrated.
+Additional sources — ESM2 log-likelihood ratios for variant-level
+functional-disruption scoring, STRING for full protein-interaction
+edge weights, ARCHS4 for co-expression, Geneformer for perturbation
+response, CMap for signature-reversal drug queries — are called out
+in the rare-disease-platform deck as priority additions. Each would
+enter as a new premise producer, attributing to the appropriate node
+or edge without disturbing sources already integrated.
+
+### Pareto ranking: confidence × severity × treatability
+
+Each hypothesis carries a three-axis score vector on top of the
+aggregate signed weight:
+
+- **Confidence** — a normalised combination of `aggregate` (signed
+  premise-weight sum), `coverage` (fraction of the seven layers with
+  any evidence), `consistency` (fraction of chain positions without
+  contradiction), and `parsimony` (inverse of empty layers). Range
+  ~[0.5, 1.0] across the current substrate.
+- **Severity** — phenotype baseline (DMD 0.90, IMD 0.75, BMD 0.50,
+  DCM 0.65) multiplied by a per-mechanism factor (H01/H03 = 1.0 for
+  complete-loss trajectories, H02 = 0.6 for partial-function BMD,
+  H04 = 0.7 for distal-isoform loss), with a small cardiac bump when
+  the patient has abnormal LVEF.
+- **Treatability** — weighted average of `TISSUE_TRACTABILITY` over
+  the mechanism's target tissues. Muscle_Skeletal = 0.95 (AAV9 is
+  clinically proven), Heart_LV = 0.75, Retina = 0.90 (subretinal AAV
+  precedent), CNS_young = 0.60, CNS_adult = 0.35, Kidney = 0.35,
+  Adipose = 0.15. Under-4 patients get the young-CNS number, older
+  patients the adult one.
+
+The three axes let the workbench answer *"pick the hypothesis with the
+best trust-vs-severity-vs-treatability tradeoff"* rather than a single
+scalar ranking. In practice: H01 sits at the corner of the frontier
+(high on all three); H02 is the treatability-optimizer's pick (higher
+treatability than H01, lower severity/confidence); H04 is the
+distal-isoform mechanism no approved drug currently addresses.
 
 ## How a hypothesis emerges
 

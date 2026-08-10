@@ -237,6 +237,96 @@
   .premise-weight.neg { color: var(--bad); }
   .premise-rationale { color: var(--ink-2); line-height: 1.4; }
 
+  /* --------- 4-column compare-hypotheses artifact --------- */
+  .cmp-grid { display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-top: 8px; }
+  .cmp-col { border: 1px solid var(--line-2); border-radius: 8px;
+    background: var(--bg); padding: 10px 10px 12px; display: flex;
+    flex-direction: column; gap: 8px; min-width: 0; }
+  .cmp-col.rank-1 { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .cmp-hd { display: flex; justify-content: space-between; align-items: baseline;
+    gap: 6px; }
+  .cmp-hd b { font-size: 13px; color: var(--ink); }
+  .cmp-hd .cmp-rank { font-size: 10px; color: var(--ink-3);
+    font-variant-numeric: tabular-nums; }
+  .cmp-name { font-size: 11px; color: var(--ink-2); line-height: 1.3;
+    font-weight: 500; }
+  .cmp-axes { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+  .cmp-axis { display: grid; grid-template-columns: 60px 1fr 32px;
+    gap: 4px; align-items: center; font-size: 10px; }
+  .cmp-axis-lbl { color: var(--ink-3); text-transform: uppercase;
+    letter-spacing: 0.05em; font-size: 9px; }
+  .cmp-axis-bar { height: 6px; background: var(--panel); border-radius: 3px;
+    overflow: hidden; }
+  .cmp-axis-bar-fill { height: 100%; border-radius: 3px; }
+  .cmp-axis-v { font-variant-numeric: tabular-nums; font-weight: 600;
+    color: var(--ink); text-align: right; font-size: 10px; }
+  .cmp-axis-v.neg { color: var(--bad); }
+  .cmp-claim { font-size: 11px; color: var(--ink-2); line-height: 1.4;
+    padding: 8px; background: var(--panel); border-radius: 5px;
+    border-left: 2px solid var(--accent); }
+  .cmp-premises { list-style: none; margin: 0; padding: 0; font-size: 10.5px; }
+  .cmp-premises li { display: grid; grid-template-columns: 32px 1fr;
+    gap: 6px; padding: 3px 0; align-items: baseline; }
+  .cmp-premises .w { font-variant-numeric: tabular-nums; font-weight: 700;
+    color: var(--good); text-align: right; }
+  .cmp-premises .w.neg { color: var(--bad); }
+  .cmp-premises .r { color: var(--ink-2); line-height: 1.35; }
+  .cmp-flags { display: flex; gap: 4px; flex-wrap: wrap; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.04em; }
+  .cmp-flag { padding: 2px 6px; border-radius: 3px; font-weight: 700; }
+  .cmp-flag.contra { background: var(--warn-soft, #fff2c8); color: var(--warn); }
+  .cmp-flag.top    { background: var(--accent); color: white; }
+
+  /* --------- Substrate explorer artifact --------- */
+  .sub-table { width: 100%; border-collapse: collapse; font-size: 11px;
+    margin-top: 6px; }
+  .sub-table th { text-align: left; padding: 6px 8px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.04em; font-size: 9px;
+    font-weight: 700; border-bottom: 1px solid var(--line-2); }
+  .sub-table td { padding: 7px 8px; vertical-align: top; line-height: 1.35;
+    border-bottom: 1px solid var(--line); color: var(--ink-2); }
+  .sub-table tr.hi td { background: var(--accent-soft); }
+  .sub-table tr.dim td { color: var(--ink-3); }
+  .sub-src { font-family: "SF Mono", Menlo, monospace; font-size: 10px;
+    color: var(--ink); font-weight: 700; }
+  .sub-type { display: inline-block; padding: 1px 6px; border-radius: 3px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; }
+  .sub-type.data  { background: var(--accent-soft); color: var(--accent); }
+  .sub-type.model { background: var(--panel); color: var(--ink-2);
+    border: 1px solid var(--line-2); }
+  .sub-count { font-variant-numeric: tabular-nums; text-align: right;
+    color: var(--ink); font-weight: 600; }
+  .sub-desc { color: var(--ink-2); }
+  .sub-desc a { color: var(--accent); text-decoration: none; }
+  .sub-desc a:hover { text-decoration: underline; }
+
+  /* --------- Pareto scatter artifact --------- */
+  .pareto-wrap { display: grid; grid-template-columns: 1fr 220px; gap: 12px;
+    margin-top: 6px; }
+  .pareto-svg { width: 100%; height: 320px; background: var(--bg);
+    border: 1px solid var(--line); border-radius: 6px; }
+  .pareto-pt { cursor: pointer; transition: r 0.15s; }
+  .pareto-pt:hover { r: 12; }
+  .pareto-lbl { font-family: "SF Mono", Menlo, monospace; font-size: 11px;
+    font-weight: 700; fill: white; pointer-events: none; }
+  .pareto-controls { display: flex; flex-direction: column; gap: 10px;
+    font-size: 11px; color: var(--ink-2); }
+  .pareto-ctrl { display: flex; flex-direction: column; gap: 3px; }
+  .pareto-ctrl label { display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--ink-3); text-transform: uppercase;
+    letter-spacing: 0.04em; }
+  .pareto-ctrl input[type=range] { width: 100%; }
+  .pareto-frontier { stroke: var(--accent); stroke-width: 2;
+    stroke-dasharray: 4 3; fill: none; opacity: 0.6; }
+  .pareto-score-tbl { width: 100%; font-size: 11px; margin-top: 4px; }
+  .pareto-score-tbl td { padding: 3px 4px; border-bottom: 1px solid var(--line); }
+  .pareto-score-tbl .name { color: var(--ink); font-weight: 600; }
+  .pareto-score-tbl .val  { text-align: right; font-variant-numeric: tabular-nums;
+    font-weight: 700; color: var(--accent); }
+
+
   .therapies-panel { margin: 10px 0; padding: 10px 12px;
     background: var(--good-soft); border: 1px solid var(--good);
     border-radius: 8px; }
@@ -1638,9 +1728,261 @@ function renderStream(p) {
       case 'widget':        return renderWidgetArtifact(a, i);
       case 'nmd_marimekko':   return renderNmdMarimekko(i);
       case 'esm3_structure':  return renderEsm3Structure(p, i);
+      case 'compare_hypotheses': return renderCompareHypotheses(p, i);
+      case 'pareto_hypotheses':  return renderParetoHypotheses(p, i);
+      case 'substrate_explorer': return renderSubstrateExplorer(p, i);
       default:              return '';
     }
   }).join('');
+}
+
+// ================================================================
+// COMPARE-HYPOTHESES ARTIFACT — 4-column side-by-side of H01..H04
+// ================================================================
+function renderCompareHypotheses(p, idx) {
+  const byId = Object.fromEntries((MECH_DATA?.hypotheses || []).map(h => [h.id, h]));
+  const ranked = [...(p.hypothesisRanking || [])].sort((a, b) =>
+    (a.id || '').localeCompare(b.id || ''));
+  if (!ranked.length) {
+    return `<div class="gen-artifact" data-artifact-idx="${idx}">
+      <div class="gen-artifact-h"><span class="gen-artifact-badge">compare</span>
+      Cross-hypothesis compare<button class="close" data-artifact-remove="${idx}">×</button>
+      </div>No hypotheses baked for this patient.</div>`;
+  }
+
+  const AXIS_COLOR = { confidence: 'var(--accent)', severity: 'var(--bad)',
+                        treatability: 'var(--good)' };
+  const bar = (v, name) => {
+    const w = Math.max(0, Math.min(100, (v || 0) * 100));
+    const cls = v < 0 ? 'neg' : '';
+    return `<div class="cmp-axis">
+      <span class="cmp-axis-lbl">${esc(name)}</span>
+      <span class="cmp-axis-bar"><span class="cmp-axis-bar-fill"
+         style="width:${w.toFixed(0)}%;background:${AXIS_COLOR[name]}"></span></span>
+      <span class="cmp-axis-v ${cls}">${(v || 0).toFixed(2)}</span>
+    </div>`;
+  };
+
+  const cols = ranked.map(r => {
+    const meta = byId[r.id] || {};
+    const sv = r.scoreVector || {};
+    const rc = r.refinedClaim || {};
+    const claimText = rc.layer1?.claim || r.claim || meta.name || `H${r.id}`;
+    const prems = [...(r.premises || [])]
+      .filter(x => x.sourceId !== 'zhang_2024')  // always-on, unhelpful for compare
+      .sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight))
+      .slice(0, 4)
+      .map(x => `<li>
+        <span class="w ${x.weight < 0 ? 'neg' : ''}">${x.weight >= 0 ? '+' : ''}${x.weight.toFixed(2)}</span>
+        <span class="r"><b>${esc(x.sourceId)}</b> · ${esc((x.rationale || '').slice(0, 120))}${(x.rationale || '').length > 120 ? '…' : ''}</span>
+      </li>`).join('');
+    const contras = (sv.contradictions || []).length;
+    const isTop = r.rank === 1;
+    const flags = [
+      isTop ? `<span class="cmp-flag top">rank #1</span>` : '',
+      contras ? `<span class="cmp-flag contra">${contras} contradiction${contras === 1 ? '' : 's'}</span>` : '',
+    ].filter(Boolean).join('');
+    return `<div class="cmp-col rank-${r.rank}">
+      <div class="cmp-hd">
+        <b>H${esc(r.id)}</b>
+        <span class="cmp-rank">rank #${r.rank} · ${(r.score || 0).toFixed(1)}/10</span>
+      </div>
+      <div class="cmp-name">${esc(meta.name || '')}</div>
+      <div class="cmp-flags">${flags}</div>
+      <div class="cmp-axes">
+        ${bar(sv.confidence, 'confidence')}
+        ${bar(sv.severity, 'severity')}
+        ${bar(sv.treatability, 'treatability')}
+      </div>
+      <div class="cmp-claim">${esc(claimText)}</div>
+      <ul class="cmp-premises">${prems || '<li><span class="r" style="color:var(--ink-3)">no premise contributions</span></li>'}</ul>
+    </div>`;
+  }).join('');
+
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">compare</span>
+      Cross-hypothesis view · H01 → H04 side-by-side
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink-2);line-height:1.4;margin-bottom:6px">
+      Each column shows one hypothesis's Pareto axes (confidence · severity · treatability)
+      and its top 4 premise contributions by |weight|. Rank #1 is outlined; contradictions
+      are flagged when both positive and negative premises accrue meaningful weight at the
+      same chain position.
+    </div>
+    <div class="cmp-grid">${cols}</div>
+  </div>`;
+}
+
+// ================================================================
+// SUBSTRATE EXPLORER ARTIFACT — one row per premise source
+// ================================================================
+function renderSubstrateExplorer(p, idx) {
+  const sources = MECH_DATA?.premiseSources || [];
+  const usedByTop = new Set(
+    (p.hypothesisRanking?.[0]?.premises || []).map(x => x.sourceId));
+
+  if (!sources.length) {
+    return `<div class="gen-artifact" data-artifact-idx="${idx}">
+      <div class="gen-artifact-h"><span class="gen-artifact-badge">substrate</span>
+      Substrate explorer<button class="close" data-artifact-remove="${idx}">×</button>
+      </div>Premise-source registry not baked. Run hydrate_mechanism_view.</div>`;
+  }
+
+  const rows = sources.map(s => {
+    const hi  = usedByTop.has(s.sourceId);
+    const dim = s.nPremises === 0;
+    const cls = hi ? 'hi' : dim ? 'dim' : '';
+    const link = s.url
+      ? `<a href="${esc(s.url)}" target="_blank">↗</a>`
+      : '';
+    return `<tr class="${cls}">
+      <td class="sub-src">${esc(s.sourceId)}</td>
+      <td><span class="sub-type ${esc(s.type)}">${esc(s.type)}</span></td>
+      <td style="color:var(--ink-3);font-family:'SF Mono',Menlo,monospace;font-size:10px">${esc(s.version || '')}</td>
+      <td class="sub-count">${s.nPremises}</td>
+      <td class="sub-count">${s.nHypothesesFired}</td>
+      <td class="sub-desc">${esc(s.description || '')} ${link}</td>
+    </tr>`;
+  }).join('');
+
+  const totalPremises = sources.reduce((a, s) => a + s.nPremises, 0);
+  const nFiring = sources.filter(s => s.nPremises > 0).length;
+
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">substrate</span>
+      Substrate explorer · ${nFiring}/${sources.length} sources firing · ${totalPremises} premises baked
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink-2);line-height:1.4;margin-bottom:6px">
+      One row per premise source in the registry. <b>Highlighted rows</b> are the sources currently attached to
+      ${patientLabel(p)}'s top hypothesis (<b>H${esc(p.hypothesisRanking?.[0]?.id || '?')}</b>). "Fired" counts
+      distinct hypotheses this source contributed evidence to across the roster.
+    </div>
+    <table class="sub-table">
+      <thead><tr>
+        <th>Source</th><th>Type</th><th>Version</th><th style="text-align:right">Premises</th>
+        <th style="text-align:right">Fired</th><th>Description</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// ================================================================
+// PARETO SCATTER ARTIFACT — 2D projection of the 3-axis score vector
+// ================================================================
+function renderParetoHypotheses(p, idx) {
+  const ranked = [...(p.hypothesisRanking || [])].sort((a, b) =>
+    (a.id || '').localeCompare(b.id || ''));
+  if (!ranked.length) {
+    return `<div class="gen-artifact" data-artifact-idx="${idx}">
+      <div class="gen-artifact-h"><span class="gen-artifact-badge">pareto</span>
+      Pareto ranking<button class="close" data-artifact-remove="${idx}">×</button>
+      </div>No hypotheses baked for this patient.</div>`;
+  }
+
+  // Default projection: x = confidence, y = treatability, color = severity.
+  // With normalized [0,1] axes, the Pareto frontier consists of hypotheses
+  // that no other hypothesis simultaneously exceeds on both x and y.
+  const pts = ranked.map(r => ({
+    id: r.id,
+    rank: r.rank,
+    conf: r.scoreVector?.confidence || 0,
+    sev:  r.scoreVector?.severity   || 0,
+    treat: r.scoreVector?.treatability || 0,
+    score: r.score || 0,
+  }));
+
+  // Frontier calc: not dominated by any other point on (conf, treat)
+  const onFrontier = pts.filter(p =>
+    !pts.some(o => o !== p && o.conf >= p.conf && o.treat >= p.treat
+                   && (o.conf > p.conf || o.treat > p.treat)));
+
+  // Composite score (equal-weight default; sliders live in UI but recompute
+  // is on render — sliders can be a future enhancement)
+  const composite = pts.map(pt => ({
+    ...pt,
+    composite: (pt.conf + pt.sev + pt.treat) / 3,
+  })).sort((a, b) => b.composite - a.composite);
+
+  const W = 460, H = 320, pad = { l: 44, r: 24, t: 20, b: 40 };
+  const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const scaleX = v => pad.l + v * plotW;
+  const scaleY = v => pad.t + (1 - v) * plotH;
+
+  const sevColor = v => v > 0.75 ? 'var(--bad)' : v > 0.55 ? 'var(--warn)' : 'var(--good)';
+
+  const grid = [0.25, 0.5, 0.75, 1.0].map(v => `
+    <line x1="${scaleX(v)}" y1="${pad.t}" x2="${scaleX(v)}" y2="${pad.t + plotH}"
+      stroke="var(--line)" stroke-dasharray="2 3"/>
+    <line x1="${pad.l}" y1="${scaleY(v)}" x2="${pad.l + plotW}" y2="${scaleY(v)}"
+      stroke="var(--line)" stroke-dasharray="2 3"/>
+    <text x="${scaleX(v)}" y="${pad.t + plotH + 14}" fill="var(--ink-3)"
+      font-size="9" text-anchor="middle">${v}</text>
+    <text x="${pad.l - 6}" y="${scaleY(v) + 3}" fill="var(--ink-3)"
+      font-size="9" text-anchor="end">${v}</text>`).join('');
+
+  // Frontier polyline: sort frontier by conf ascending
+  const frontierSorted = [...onFrontier].sort((a, b) => a.conf - b.conf);
+  const frontierPath = frontierSorted.length > 1
+    ? `<polyline class="pareto-frontier"
+         points="${frontierSorted.map(p => `${scaleX(p.conf)},${scaleY(p.treat)}`).join(' ')}"/>`
+    : '';
+
+  const dots = pts.map(pt => `
+    <circle class="pareto-pt" cx="${scaleX(pt.conf)}" cy="${scaleY(pt.treat)}"
+      r="10" fill="${sevColor(pt.sev)}"
+      stroke="${onFrontier.includes(pt) ? 'var(--accent)' : 'white'}" stroke-width="2">
+      <title>H${pt.id} · rank #${pt.rank}
+conf ${pt.conf.toFixed(2)} · sev ${pt.sev.toFixed(2)} · treat ${pt.treat.toFixed(2)}</title>
+    </circle>
+    <text class="pareto-lbl" x="${scaleX(pt.conf)}" y="${scaleY(pt.treat) + 3}"
+      text-anchor="middle">${pt.id}</text>`).join('');
+
+  const rankedTbl = composite.map(pt =>
+    `<tr><td class="name">H${pt.id}</td><td class="val">${pt.composite.toFixed(2)}</td></tr>`
+  ).join('');
+
+  return `<div class="gen-artifact" data-artifact-idx="${idx}">
+    <div class="gen-artifact-h">
+      <span class="gen-artifact-badge">pareto</span>
+      Pareto ranking · confidence × treatability · color = severity
+      <button class="close" data-artifact-remove="${idx}">×</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink-2);line-height:1.4;margin-bottom:6px">
+      Each dot = one hypothesis. Axes are normalized [0, 1]. Dots on the dashed line are
+      on the Pareto frontier (no other hypothesis exceeds them on both confidence AND
+      treatability). Color codes severity: red = high (life-limiting), yellow = moderate,
+      green = mild.
+    </div>
+    <div class="pareto-wrap">
+      <svg class="pareto-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+        ${grid}
+        <text x="${pad.l + plotW / 2}" y="${H - 8}" fill="var(--ink-2)"
+          font-size="11" text-anchor="middle" font-weight="600">confidence →</text>
+        <text x="12" y="${pad.t + plotH / 2}" fill="var(--ink-2)" font-size="11"
+          text-anchor="middle" font-weight="600"
+          transform="rotate(-90 12 ${pad.t + plotH / 2})">treatability ↑</text>
+        ${frontierPath}
+        ${dots}
+      </svg>
+      <div class="pareto-controls">
+        <b style="color:var(--ink);font-size:11px">Composite score</b>
+        <div style="font-size:10px;color:var(--ink-3);margin-top:-6px">
+          equal-weight (conf + sev + treat) / 3
+        </div>
+        <table class="pareto-score-tbl">${rankedTbl}</table>
+        <b style="color:var(--ink);font-size:11px;margin-top:8px">Frontier</b>
+        <div style="font-size:10.5px">
+          ${onFrontier.map(p => `<b>H${p.id}</b>`).join(', ')}
+          — not dominated on the (confidence, treatability) plane.
+        </div>
+      </div>
+    </div>
+  </div>`;
 }
 
 // Patient-scoped EXAMPLES catalog — organized by biological layer of
@@ -1734,7 +2076,7 @@ function buildExamples(p) {
 
     // ---- Pillar 4: Downstream ------------------------------------
     { category: 'P4 · Downstream', items: [
-      { tag: '◇ roadmap',    question: 'What are DMD\'s molecular interactors and pathways (Open Targets)?' },
+      { tag: '✓ chat',       question: 'What are DMD\'s molecular interactors and pathways (Open Targets)?' },
       { tag: '◇ roadmap',    question: 'What genes co-express with DMD (ARCHS4)?' },
       { tag: '◇ roadmap',    question: 'Which protein complexes and direct interactors are disrupted (STRING)?' },
       { tag: '◇ roadmap',    question: 'What is the cellular perturbation response to DMD loss (Geneformer)?' },
@@ -1744,10 +2086,14 @@ function buildExamples(p) {
     // ---- Mechanism synthesis (workbench-unique) ------------------
     { category: '✦ Mechanism synthesis', items: [
       { tag: '✓ chain',      question: 'Show me the reasoning chain' },
+      { tag: '✓ compare',    question: 'Compare all four hypotheses side-by-side' },
+      { tag: '✓ pareto',     question: 'Show the Pareto ranking (confidence × severity × treatability)' },
+      { tag: '✓ substrate',  question: 'Open the substrate explorer — what data sources fired?' },
       { tag: '✓ chain',      question: 'What supports H01 (sarcolemmal fragility)?' },
       { tag: '✓ chain',      question: 'What supports H02 (partial in-frame rescue)?' },
       { tag: '✓ chain',      question: 'What supports H03 (NMD-mediated loss)?' },
       { tag: '✓ chain',      question: 'What supports H04 (distal isoform loss)?' },
+      { tag: '✓ chat',       question: 'What is the mechanism narrative for the top hypothesis?' },
       { tag: '✓ chat',       question: 'What was considered but discarded for the top hypothesis?' },
       { tag: '✓ chat',       question: 'What testable predictions follow from the top mechanism?' },
       { tag: '✓ chat',       question: 'Where do the premises contradict each other?' },
@@ -2045,6 +2391,155 @@ function planChat(query, p) {
     };
   }
 
+  // ---- Open Targets (drug list + interactors + tractability + pathways) ----
+  if (/open ?targets|molecular interactors( and pathways)?|approved drug|delandistrogene|eteplirsen|viltolarsen|golodirsen|casimersen|dgc partners|drug list|downstream molecular interactions|reactome pathway/.test(q)) {
+    const ot = MECH_DATA?.openTargets;
+    if (!ot) return { text: 'Open Targets data not baked yet. Run `python3 -m prototype.ingest.bake_opentargets`.' };
+    const approved = (ot.drugs || []).filter(d => (d.maxStage || '').toUpperCase() === 'APPROVAL');
+    const drugsLine = approved.length
+      ? approved.map(d => `${d.name} <span style="color:var(--ink-3)">(${d.type})</span>`).join(' · ')
+      : '<i>none approved</i>';
+    const pw = (ot.pathways || []).slice(0, 3).map(p => p.name).join(' · ') || '—';
+    const inx = (ot.interactions || []).slice(0, 8).map(i => i.symbol).join(' · ') || '—';
+    const tractHits = Object.entries(ot.tractability || {}).flatMap(([mod, items]) =>
+      items.filter(x => x.value).map(x => `${mod}:${x.label}`));
+    return {
+      text: `<b>Open Targets · DMD</b> (${ot.ensemblId})<br><br>` +
+            `<b>Approved drugs (${approved.length}):</b> ${drugsLine}<br><br>` +
+            `<b>Top pathways:</b> ${pw}<br>` +
+            `<b>Top molecular interactors:</b> ${inx}<br><br>` +
+            `<b>Tractable modalities (${tractHits.length}):</b> ${tractHits.slice(0, 6).join(' · ') || '<i>none flagged</i>'}<br><br>` +
+            `Fetched ${ot.refreshedAt?.slice(0, 10)} · <a href="${esc(ot.sourceUrl)}" target="_blank" style="color:var(--accent)">platform.opentargets.org</a>`,
+    };
+  }
+
+  // ---- LLM-refined narrative / considered-but-discarded / testable predictions ----
+  if (/narrative|synthesis|mechanism story|why is this the story|refined claim/.test(q)) {
+    const top = p.hypothesisRanking?.[0];
+    const rc = top?.refinedClaim;
+    const l2 = rc?.layer2;
+    if (l2?.narrative) {
+      return {
+        text: `<b>H${top.id} — synthesized narrative</b> (${l2.model || 'LLM'}):<br><br>` +
+              `<i>${esc(l2.narrative)}</i><br><br>` +
+              (rc.layer1?.distinguishing ? `<b>Distinguishing evidence:</b> ${esc(rc.layer1.distinguishing)}` : ''),
+        hypToOpen: top.id,
+      };
+    }
+    if (rc?.layer1?.claim) {
+      return {
+        text: `<b>H${top.id} — Layer 1 (deterministic) claim:</b><br><br>${esc(rc.layer1.claim)}<br><br>` +
+              `<i>Layer 2 LLM refinement not baked for this run — set ANTHROPIC_API_KEY and re-run bake to enable.</i>`,
+        hypToOpen: top.id,
+      };
+    }
+    return { text: 'No refined claim available yet — re-run the bake to populate refinedClaim.' };
+  }
+  if (/considered.*discard|alternative.*(hypothes|mechanism)|what.*ruled out|what was considered/.test(q)) {
+    const top = p.hypothesisRanking?.[0];
+    const cbd = top?.refinedClaim?.layer2?.considered_but_discarded;
+    if (cbd) {
+      return {
+        text: `<b>Considered but discarded for H${top.id}:</b><br><br><i>${esc(cbd)}</i>`,
+        hypToOpen: top.id,
+      };
+    }
+    return { text: 'No "considered but discarded" statement — Layer 2 LLM refinement is required (set ANTHROPIC_API_KEY and re-bake).' };
+  }
+  if (/testable|prediction|experiment|would (confirm|falsify)|how.*test/.test(q)) {
+    const top = p.hypothesisRanking?.[0];
+    const tests = top?.refinedClaim?.layer2?.testable_predictions;
+    if (tests?.length) {
+      return {
+        text: `<b>Testable predictions for H${top.id}:</b><br><br>` +
+              tests.map((t, i) => `${i + 1}. ${esc(t)}`).join('<br>'),
+        hypToOpen: top.id,
+      };
+    }
+    return { text: 'No testable predictions baked — Layer 2 LLM refinement is required.' };
+  }
+  if (/contradict|conflicting|opposing (evidence|premises?)|where.*disagree/.test(q)) {
+    const ranked = p.hypothesisRanking || [];
+    const withContra = ranked.filter(r => (r.scoreVector?.contradictions || []).length);
+    if (!withContra.length) {
+      return { text: `No detected contradictions across ${ranked.length} hypotheses (a contradiction fires when both positive and negative premises accrue ≥0.1 weight at the same chain position).` };
+    }
+    const lines = withContra.map(r => {
+      const contras = r.scoreVector.contradictions;
+      const rows = contras.slice(0, 2).map(c =>
+        `  • at <code>${esc(c.position)}</code>: +${c.positiveSum} vs −${c.negativeSum}`).join('<br>');
+      return `<b>H${r.id}</b> (${contras.length} contradiction${contras.length === 1 ? '' : 's'}):<br>${rows}`;
+    }).join('<br><br>');
+    return { text: `<b>Contradictions detected:</b><br><br>${lines}` };
+  }
+
+  // ---- Pareto axes (confidence × severity × treatability) — opens 2D scatter ----
+  if (/pareto|tradeoff|trade[- ]off|treatab|severity vs|confidence vs|three axis|axes|rank.*(pareto|axis)/.test(q)) {
+    return {
+      text: `Opening the Pareto ranking artifact — 2D scatter of confidence × treatability, colored by severity. ` +
+            `Frontier points (dashed line) are hypotheses that no other hypothesis dominates on both axes.`,
+      artifactToOpen: { type: 'pareto_hypotheses' },
+    };
+  }
+
+  // ---- Substrate explorer ----
+  if (/substrate|premise (source|registry|list)|data sources? fired|what.*(sources?|premises?).*(baked|available)|which data|source registry/.test(q)) {
+    return {
+      text: `Opening the substrate explorer — one row per premise source with counts of baked premises and hypotheses fired against. Highlighted rows are the sources currently feeding ${patientLabel(p)}'s top hypothesis.`,
+      artifactToOpen: { type: 'substrate_explorer' },
+    };
+  }
+
+  // ---- Cell-type ranking match to symptoms ----
+  if (/cell.?type.*(rank|order).*(match|explain).*(dmd|symptom)|does.*rank(ing)?.*match/.test(q)) {
+    const hits = p.cellTypeImpact.filter(c => c.status === 'hit').map(c => c.name);
+    return {
+      text: `Cell-type ranking (HPA nCPM) puts <b>myonuclei</b> and <b>cardiomyocytes</b> at the top — matching DMD's dominant symptoms (skeletal muscle wasting + cardiomyopathy). Photoreceptors and adipocytes sit lower but non-zero, explaining the sub-clinical retinal ERG changes and adipose-tissue infiltration seen in later DMD.<br><br>` +
+            `For ${patientLabel(p)}, cells impacted: ${hits.join(', ') || '<i>none</i>'}.`,
+    };
+  }
+
+  // ---- Roadmap questions: return a real explanation of *what's missing*
+  //      and *what would need to bake* to answer them. Better than the
+  //      "no canned answer" fallback for questions we've deliberately
+  //      scoped out of iteration 1.
+  const roadmap = [
+    { re: /allele[- ]?specific|ASE|allelic imbalance/i,
+      answer: `<b>Allele-specific expression (ASE)</b> — not baked. Would require patient-level RNA-seq with matched genotype (WGS or WES) so we can split reads at heterozygous SNPs and compute the reference-vs-alternative allele ratio. Standard tools: ASEReadCounter (GATK), phASER. For X-linked DMD in females it's especially informative — reveals skewed X-inactivation. Ingestion planned: <code>bake_patient_rnaseq.py</code> + heterozygous-site allele-counting step.` },
+    { re: /nmd.?trigger.*cardio|nmd.*(associated|correlate).*(cardio|heart)/i,
+      answer: `<b>Roadmap</b> — statistical: does NMD-triggering variant class predict cardiac involvement (LVEF < 55 or DCM diagnosis)? Requires a cohort-level cross-tab: rows = NMD category (triggering / transcript-dep / escaping), columns = cardiac status, cell = odds ratio + 95% CI. Substrate is present (clinvar_nmd + patient_labs), just needs one bake script.` },
+    { re: /nmd.*(status|category).*predict.*sever|nmd.*(controlling|adjust).*age/i,
+      answer: `<b>Roadmap</b> — statistical: NMD-status × syndromic severity, controlling for age. Would fit a logistic model on the Zhang 2024 cohort: <code>severity ~ nmd_category + age + phenotype</code>. Substrate present; ingestion planned: <code>bake_cohort_regressions.py</code>.` },
+    { re: /ER retention|endoplasmic reticulum retention/i,
+      answer: `<b>Roadmap</b> — no substrate: needs pulse-chase or IF/IEM studies of misfolded dystrophin trafficking. In practice this would come from published biopsy papers (Cohn et al., Ohlendieck) manually curated as literature premises, plus a targeted BioGRID query for ER-quality-control machinery.` },
+    { re: /LLR.*(predict|correlate).*symptom/i,
+      answer: `<b>Roadmap</b> — statistical (per-symptom): does ESM2 LLR severity predict individual symptom presence (cardiomyopathy, cognitive, retinal)? Would require ESM2 LLR baked across DMD's 3685 residues (~50 GB VRAM) + per-patient symptom vector. Plan: run ESM2 on a bigger box; store <code>llr_by_position</code>; join to <code>patient_symptoms</code>.` },
+    { re: /LLR.*syndromic|syndromic.*LLR/i,
+      answer: `<b>Roadmap</b> — statistical (syndromic): fit <code>syndromic_score ~ mean_LLR_across_hit_residues + age</code>. Same substrate dependency as the per-symptom question above.` },
+    { re: /UK Biobank|proteomics.*(dystrophin|abundance)/i,
+      answer: `<b>Roadmap</b> — external cohort: UKB Olink panel includes ~1500 proteins but not full-length dystrophin (2.3 MDa, out of range for affinity-based assays). MS-based dystrophin quant exists in muscle biopsy proteomics (Whitfield 2020, Chase 2018). Would ingest as a cohort_premise tying protein abundance to variant class.` },
+    { re: /co-?express.*(ARCHS4|DMD)|ARCHS4/i,
+      answer: `<b>Roadmap</b> — needs ARCHS4 fetch: top-100 co-expressed genes with DMD across the ARCHS4 RNA-seq compendium (300K samples). Would land as a <code>gene_coexpression</code> table + cohort premise. Ingestion: <code>bake_archs4_coexpression.py</code> (H5 pull via the S3 endpoint).` },
+    { re: /STRING|protein complexes.*(interactor|disrupted)/i,
+      answer: `<b>Roadmap</b> — partially covered by Open Targets (interactions table has ~40 STRING partners). A full STRING dump would give edge weights + evidence channels (experimental, database, textmining). Substrate: <code>bake_string.py</code> + <code>protein_interaction</code> table.` },
+    { re: /Geneformer|perturbation response.*(DMD|cell)/i,
+      answer: `<b>Roadmap</b> — needs Geneformer: single-cell foundation model predicting cell-state response to gene KO. Would run <code>DMD_KO</code> on a myofiber embedding, return top perturbed genes/pathways. Requires GPU + ~30 GB weights; plan: bake on a bigger box, cache <code>data/models/geneformer_dmd_ko.json</code>.` },
+    { re: /CMap|drug.*reverse.*signature|connectivity map/i,
+      answer: `<b>Roadmap</b> — needs Connectivity Map query: given the DMD-loss transcriptional signature (derived from patient RNA-seq vs baseline), which perturbagens reverse it? Substrate: <code>bake_cmap_query.py</code> against the LINCS L1000 API. Existing approved DMD drugs (see Open Targets) are the strongest prior for what a good hit looks like.` },
+  ];
+  for (const rm of roadmap) {
+    if (rm.re.test(q)) return { text: rm.answer };
+  }
+
+  // ---- Altered transcript-level expression (roadmap) ----
+  if (/altered expression.*transcript|transcript.?level.*(expression|abundance)|mRNA (level|abundance)/.test(q)) {
+    return {
+      text: `<b>Roadmap</b>: patient-specific RNA-seq isn't wired yet. In production, we'd overlay the patient's transcript-level abundance (from muscle biopsy RNA-seq or PAXgene blood) against a cohort baseline to confirm the NMD prediction. ` +
+            `The current substrate proxies this via <b>isoform_arch × exon position</b> — ${patientLabel(p)}'s variant hits ${p.isoformImpact.filter(i => i.hit).length}/${p.isoformImpact.length} isoforms.<br><br>` +
+            `<i>Ingestion script planned: bake_patient_rnaseq.py — reads GTEx-baseline · patient-BAM · runs DESeq2-style residualization.</i>`,
+    };
+  }
+
   // ---- 1. Isoform-specific (MUST come before "spared"/"tissue" routes) ----
   const isoMatch = q.match(/dp\s?(427[mcp]?|260|140|116|71)/);
   if (isoMatch) {
@@ -2155,18 +2650,13 @@ function planChat(query, p) {
     };
   }
 
-  // ---- 6b. Compare hypotheses (requires hypothesis context) ----
-  const cmpMatch = q.match(/compar.*(?:hypothes|h0?\d|rank|top)|h(0?\d).*(?:vs|versus|or)\s*h(0?\d)/)
+  // ---- 6b. Compare hypotheses — opens the 4-column compare artifact ----
+  const cmpMatch = q.match(/compar.*(?:hypothes|h0?\d|rank|top)|h(0?\d).*(?:vs|versus|or)\s*h(0?\d)|side.?by.?side|four.column|4.column|all four hypothes/)
                 || (q.startsWith('compare') && /hypothes|rank/.test(q));
   if (cmpMatch) {
     return {
-      text: `Ranking for ${patientLabel(p)}:<br>` +
-        p.hypothesisRanking.map(r => {
-          const h = byId[r.id];
-          const pe = (r.patientEvidence || []).length;
-          return `<b>#${r.rank} · H${r.id}</b> — score ${r.score.toFixed(1)}, ${pe} lab bullets. <i>${esc(r.fit)}</i>`;
-        }).join('<br>') +
-        `<br><br>Ask <i>"why H0X"</i> or click any row in the rank artifact to see its chain.`,
+      text: `Opening cross-hypothesis compare artifact for ${patientLabel(p)} — 4 columns showing H01…H04 side-by-side, each with its Pareto axes and top premise contributions.`,
+      artifactToOpen: { type: 'compare_hypotheses' },
     };
   }
 

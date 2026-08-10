@@ -157,6 +157,7 @@ PREMISE_SOURCES = [
     ("literature",              "data",  "curated_2026-08", "Peer-reviewed citations anchoring specific chain-edge and chain-node claims (Monaco 1988, Popp & Maquat 2013, Ervasti & Campbell 1993, Pillers 1993, ...)", None),
     ("uniprot_subcellular",     "data",  "UniProt REST",    "UniProt-curated subcellular localization (sarcolemma, cytoskeleton, postsynaptic membrane for DMD P11532)", "https://www.uniprot.org/uniprotkb/P11532"),
     ("absplice",                "model", "absplice_v1.0.4", "AbSplice-DNA per-tissue aberrant-splicing probability (Wagner et al. Nat Genet 2023). Distinguishes canonical splice-site variants from exonic ones — flags cryptic-splice risk that isoform_arch and clinvar_nmd cannot see.", "https://github.com/gagneurlab/absplice"),
+    ("open_targets",            "data",  "opentargets_25.06", "Open Targets Platform target record for DMD (ENSG00000198947): approved-drug list, DGC molecular interactors, tractability profile, top disease associations, Reactome pathway memberships.", "https://platform.opentargets.org/target/ENSG00000198947"),
 ]
 
 # Cell-type → required-isoform dependency map (mirrors hydrate_patient_view.CELL_TO_ISOFORMS).
@@ -169,6 +170,58 @@ CELL_TO_ISOFORMS: dict[str, list[str]] = {
     "Cone photoreceptor cells":     ["Dp260", "Dp71"],
     "Adipocytes":                   ["Dp71"],
 }
+
+# Tissue tractability by AAV / oligonucleotide delivery success.
+# These are surrogate priors, not measured efficacy — grounded in the
+# approved therapies currently in market (AAV9 systemic → skeletal
+# muscle; subretinal AAV for RPE65; nusinersen intrathecal for infant
+# SMA), and the well-known delivery-failure tissues (adult CNS, kidney,
+# adipose). Used by the treatability axis of the Pareto ranking.
+TISSUE_TRACTABILITY: dict[str, float] = {
+    "Muscle_Skeletal":      0.95,  # delandistrogene AAV9 approved
+    "Heart_Left_Ventricle": 0.75,  # cardiac AAV works but harder to dose
+    "Retina":               0.90,  # subretinal AAV (voretigene precedent)
+    "CNS_young":            0.60,  # infant intrathecal delivery is real
+    "CNS_adult":            0.35,  # blood-brain barrier stays hard
+    "Kidney":               0.35,  # AAV kidney tropism is poor
+    "Adipose":              0.15,  # essentially no clinical delivery
+    "Salivary":             0.05,
+    "Thymus":               0.20,
+    "Peripheral_nerve":     0.40,
+}
+
+# Target-tissue weightings per mechanism template. Sums to 1.0 per
+# template. Used to fold TISSUE_TRACTABILITY into a per-hypothesis
+# treatability score.
+TEMPLATE_TARGET_TISSUES: dict[str, dict[str, float]] = {
+    "01": {"Muscle_Skeletal": 0.60, "Heart_Left_Ventricle": 0.40},
+    "02": {"Muscle_Skeletal": 0.85, "Heart_Left_Ventricle": 0.15},
+    "03": {"Muscle_Skeletal": 0.60, "Heart_Left_Ventricle": 0.40},
+    "04": {"Retina": 0.35, "CNS_young": 0.30, "Kidney": 0.20, "Adipose": 0.15},
+}
+
+# Baseline severity per phenotype class. DMD ~ life-limiting by 20s;
+# BMD ~ ambulatory into adulthood; IMD in between; DCM = cardiac
+# variant. Multiplied by a per-template severity factor below.
+PHENOTYPE_SEVERITY: dict[str, float] = {
+    "DMD":   0.90,
+    "IMD":   0.75,
+    "BMD":   0.50,
+    "DCM":   0.65,
+    "other": 0.40,
+}
+
+# Per-mechanism severity multiplier: complete-loss mechanisms (H01/H03)
+# imply the worst prognosis; H02 (partial-function BMD) is milder; H04
+# (distal-isoform) adds CNS/renal/retinal on top of skeletal but is
+# usually cognitive/subclinical severity in isolation.
+TEMPLATE_SEVERITY: dict[str, float] = {
+    "01": 1.00,   # sarcolemmal fragility: full DMD trajectory
+    "02": 0.60,   # partial-function BMD scenario
+    "03": 1.00,   # NMD-driven complete loss
+    "04": 0.70,   # distal-isoform loss: cognitive/renal comorbid
+}
+
 
 # Node → biological-layer mapping per curated hypothesis chain
 # (hypothesis_chain_nodes uses v1/v2/v3, m1/m2/m3, p1/p2/p3 node IDs;
@@ -303,6 +356,92 @@ def emit_reactome_premise(conn) -> str:
     conn.execute(
         "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
         (premise_id, "reactome", "cohort", "DMD", json.dumps(ev), 0.9, _prov()),
+    )
+    return premise_id
+
+
+def emit_opentargets_premise(conn) -> str | None:
+    """Cohort-scope premise summarizing the Open Targets DMD record.
+
+    Reads the six `opentargets_dmd_*` tables baked by
+    `prototype.ingest.bake_opentargets`. Returns None if the tables are
+    empty (fresh clones may not have run the fetch yet)."""
+    have = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' "
+        "AND name='opentargets_dmd_summary'"
+    ).fetchone()
+    if not have:
+        return None
+    summ = conn.execute("SELECT * FROM opentargets_dmd_summary").fetchone()
+    if not summ:
+        return None
+    (ensembl_id, symbol, name, biotype, refreshed_at, source_url) = summ
+
+    # Tractable modalities: only where value=1. Group by modality
+    # (SM=small-molecule, AB=antibody, PR=PROTAC, OC=other clinical).
+    tract_by_mod: dict[str, list[str]] = {}
+    for mod, label, val in conn.execute(
+        "SELECT modality, label, value FROM opentargets_dmd_tractability"
+    ):
+        if val:
+            tract_by_mod.setdefault(mod, []).append(label)
+
+    pathways = [
+        {"id": pid, "name": pname, "top_level": tlt}
+        for pid, pname, tlt in conn.execute(
+            "SELECT pathway_id, pathway, top_level_term "
+            "FROM opentargets_dmd_pathway"
+        )
+    ]
+
+    top_diseases = [
+        {"id": did, "name": dname, "score": round(sc, 3)}
+        for did, dname, sc in conn.execute(
+            "SELECT disease_id, disease_name, score "
+            "FROM opentargets_dmd_disease ORDER BY score DESC LIMIT 8"
+        )
+    ]
+
+    drugs = [
+        {"id": did, "name": dname, "type": dtype,
+         "max_stage": mcs, "drug_max_stage": dms}
+        for did, dname, dtype, mcs, dms in conn.execute(
+            "SELECT drug_id, drug_name, drug_type, max_clinical_stage, "
+            "       drug_max_stage FROM opentargets_dmd_drug"
+        )
+    ]
+    approved = [d for d in drugs if (d["max_stage"] or "").upper() == "APPROVAL"]
+
+    interactions = [
+        {"partner_id": pid, "symbol": sym, "score": round(sc, 3),
+         "source": src}
+        for pid, sym, sc, src in conn.execute(
+            "SELECT partner_id, partner_symbol, score, source_database "
+            "FROM opentargets_dmd_interaction "
+            "WHERE partner_symbol IS NOT NULL "
+            "ORDER BY score DESC LIMIT 12"
+        )
+    ]
+
+    ev = {
+        "ensembl_id":     ensembl_id,
+        "symbol":         symbol,
+        "name":           name,
+        "biotype":        biotype,
+        "refreshed_at":   refreshed_at,
+        "tractability":   tract_by_mod,
+        "pathways":       pathways,
+        "top_diseases":   top_diseases,
+        "drugs":          drugs,
+        "approved_drugs": approved,
+        "interactions":   interactions,
+    }
+
+    premise_id = _pid("opentargets", "DMD")
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "open_targets", "cohort", "DMD",
+         json.dumps(ev), 0.9, _prov(source_url)),
     )
     return premise_id
 
@@ -742,6 +881,19 @@ def premise_chain_positions(source_id: str, evidence: dict) -> list[tuple[str, s
         # (variant-level classification signal).
         return [("node", "variant", "variant"),
                 ("edge", "variant", "protein")]
+    if source_id == "open_targets":
+        # Open Targets supplies multi-position evidence:
+        #  - Reactome pathway memberships (DGC formation, striated muscle
+        #    contraction, non-integrin ECM interactions) → pathway node.
+        #  - Molecular interactors (SNTA1, SNTB1, SGCD, SSPN, ...) argue
+        #    the protein sits in a complex on the sarcolemma →
+        #    protein→subcellular edge.
+        #  - Approved-drug list (exon-skipping ASOs + delandistrogene AAV)
+        #    proves the phenotype end is treatable via dystrophin
+        #    restoration → phenotype node.
+        return [("node", "pathway", "pathway"),
+                ("edge", "protein", "subcellular"),
+                ("node", "phenotype", "phenotype")]
     # `literature` premises carry their per-hypothesis chain positions
     # via literature_links_for_template — no source-level default.
     return []
@@ -799,6 +951,47 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
         elif hyp_id == "04":
             out.append((us_pid, 0.2,
                 "UniProt: primary localization is sarcolemma; distal isoforms (Dp71 in retina/CNS/kidney) have separate localization patterns"))
+
+    # Open Targets: approved drugs + DGC interactors + Reactome pathways
+    # + top disease associations. Cohort-scope premise — same weight
+    # rationale applies to every patient. We compose ONE synthesized
+    # rationale per hypothesis (rather than three competing INSERT OR
+    # REPLACE writes) so the strongest evidence surfaces intact.
+    ot_pid = cohort_premises.get("opentargets")
+    ot_ev  = cohort_premises.get("opentargets_ev", {})
+    if ot_pid and ot_ev:
+        approved     = ot_ev.get("approved_drugs") or []
+        n_approved   = len(approved)
+        interactors  = ot_ev.get("interactions") or []
+        dgc_partners = sorted({x["symbol"] for x in interactors
+                               if x.get("symbol") in
+                               {"SNTA1", "SNTB1", "SNTB2", "SGCA", "SGCB",
+                                "SGCD", "SGCG", "SSPN", "DAG1", "DTNA",
+                                "DTNB", "NOS1"}})
+        top_disease  = (ot_ev.get("top_diseases") or [{}])[0].get("name") or "?"
+        top_score    = (ot_ev.get("top_diseases") or [{}])[0].get("score") or 0.0
+
+        parts: list[str] = []
+        if n_approved >= 2:
+            parts.append(f"{n_approved} approved dystrophin-restoration drugs (exon-skipping ASOs + AAV μ-dystrophin)")
+        if dgc_partners:
+            parts.append("DGC partners " + ", ".join(dgc_partners[:5]))
+        if top_score >= 0.7 and top_disease.lower().startswith("duchenne"):
+            parts.append(f"assoc {top_score:.2f} → {top_disease}")
+        prefix = "; ".join(parts) if parts else "target record present"
+
+        # Signed weight per hypothesis
+        if hyp_id in ("01", "03"):
+            w = 0.6
+            tail = "treats/anchors the DGC-loss mechanism"
+        elif hyp_id == "02":
+            w = 0.4
+            tail = "same rescue target; partial-function fits the BMD scenario"
+        else:  # H04 — approved drugs restore full-length, not distal isoforms
+            w = -0.2
+            tail = "approved drugs target Dp427 restoration, not distal isoforms — H04 mechanism has no approved treatment"
+
+        out.append((ot_pid, w, f"OpenTargets: {prefix} — {tail}"))
 
     # AbSplice: per-tissue aberrant-splicing probability.
     # Weight scales with max_score across tissues:
@@ -1166,14 +1359,15 @@ def refine_claims_with_llm(patient_label: str, patient_meta: dict,
     """Layer 2. Returns {"hypotheses": [{id, narrative, considered_but_discarded,
     testable_predictions}, ...]} or None if LLM unavailable / call failed.
     Cached by cache_key."""
-    if not _llm_available(): return None
-
+    # Cache lookup happens first so previously-baked refinements survive
+    # re-runs even when ANTHROPIC_API_KEY isn't sourced in the shell.
     cache_path = _llm_cache_path(cache_key)
     if cache_path.exists():
         try:
             print(f"[llm] {patient_label} — cache hit")
             return json.loads(cache_path.read_text())
         except Exception: pass  # fall through and re-call
+    if not _llm_available(): return None
 
     print(f"[llm] {patient_label} — refining {len(hypotheses_bundle)} hypotheses via {_LLM_MODEL}...")
     try:
@@ -1297,6 +1491,8 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         "hpa":                 _pid("hpa", "DMD"),
         "reactome":            _pid("reactome", "DMD"),
         "uniprot_subcellular": _pid("uniprot_subcellular", "DMD"),
+        "opentargets":         _pid("opentargets", "DMD"),
+        "opentargets_ev":      _load_ev(_pid("opentargets", "DMD")),
     }
     lit_data = lit_data or {}
 
@@ -1429,11 +1625,60 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         consistency = (1.0 - len(contradictions) / n_covered_positions
                        if n_covered_positions > 0 else 1.0)
 
+        # ----- Pareto axes: confidence / severity / treatability -----
+        # confidence is aggregated from the existing score-vector primitives
+        # so downstream code doesn't need to re-derive it (min-max
+        # normalisation is done at render time). Range: roughly 0-1.
+        # Aggregate normalizer: divide by 20 so a strongly-supported
+        # hypothesis (all-premise-sources firing, aggregate ~24) hits the
+        # cap while weaker mechanisms sit around 0.5-0.6. Empirically tuned
+        # to the current 4-template × 8-premise-source substrate — recheck
+        # if aggregate ranges shift materially.
+        confidence = max(0.0, min(1.0,
+            0.5 * min(aggregate / 20.0, 1.0)
+            + 0.25 * coverage
+            + 0.15 * consistency
+            + 0.10 * parsimony))
+
+        # Treatability: weighted average of tissue tractability over
+        # this template's target tissues. Age-based CNS shift: for
+        # patients under 4 years, CNS delivery is closer to CNS_young.
+        target_tissues = dict(TEMPLATE_TARGET_TISSUES.get(tmpl_id, {}))
+        if age is not None and age >= 4 and "CNS_young" in target_tissues:
+            w_young = target_tissues.pop("CNS_young")
+            target_tissues["CNS_adult"] = target_tissues.get("CNS_adult", 0.0) + w_young
+        treatability_axis = {
+            t: {"weight": round(w, 3),
+                "tractability": TISSUE_TRACTABILITY.get(t, 0.3)}
+            for t, w in target_tissues.items()
+        }
+        treatability = sum(w * TISSUE_TRACTABILITY.get(t, 0.3)
+                           for t, w in target_tissues.items())
+
+        # Severity: phenotype baseline × per-template multiplier, with
+        # a cardiac bump if the patient has abnormal cardiac labs.
+        base_sev = PHENOTYPE_SEVERITY.get(phen, 0.5)
+        sev_mult = TEMPLATE_SEVERITY.get(tmpl_id, 0.7)
+        cardiac_bump = 0.0
+        for lp in lab_pids:
+            if "LVEF" in lp:
+                cardiac_bump = 0.05  # any LVEF premise → cardiac involvement
+        severity = min(1.0, base_sev * sev_mult + cardiac_bump)
+
         score_vector = {
             "aggregate":     round(aggregate, 3),
             "coverage":      round(coverage, 3),
             "consistency":   round(consistency, 3),
             "parsimony":     round(parsimony, 3),
+            "confidence":    round(confidence, 3),
+            "severity":      round(severity, 3),
+            "treatability":  round(treatability, 3),
+            "treatabilityBreakdown": treatability_axis,
+            "severityBreakdown": {
+                "phenotypeBaseline":  round(base_sev, 3),
+                "templateMultiplier": round(sev_mult, 3),
+                "cardiacBump":        round(cardiac_bump, 3),
+            },
             "layerScores":   {layer: round(v, 3) for layer, v in layer_evidence.items()},
             "edgeScores":    {f"{lf}->{lt}": round(v, 3) for (lf, lt), v in edge_evidence.items()},
             "chainLinks":    n_chain_links,
@@ -1481,8 +1726,10 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     # 2b. Layer 2 — one LLM call per patient covering all 4 hypotheses.
     #     Batched so the model has cross-hypothesis context needed for
     #     "considered but discarded". Cached by patient input_hash so
-    #     unchanged inputs skip the API call.
-    if _llm_available() and layer1_bundles:
+    #     unchanged inputs skip the API call. Cache hits are honored
+    #     even without ANTHROPIC_API_KEY (see refine_claims_with_llm),
+    #     so previously-baked refinements survive re-runs.
+    if layer1_bundles:
         llm_bundles = [
             _hyp_bundle_for_llm(b["hyp_id"], b["tmpl_id"], b["rank"], b["score"],
                                  b["layer1_claim"], b["prem_weights"], b["contradictions"])
@@ -1603,7 +1850,9 @@ def main() -> None:
     emit_reactome_premise(conn)
     emit_nmd_cohort_premise(conn)
     emit_uniprot_subcellular_premise(conn, "P11532")
-    print("[cohort]   HPA + Reactome + NMD + UniProt-subcellular cohort premises emitted")
+    ot_pid = emit_opentargets_premise(conn)
+    ot_tag = "OpenTargets " if ot_pid else ""
+    print(f"[cohort]   HPA + Reactome + NMD + UniProt-subcellular + {ot_tag}cohort premises emitted")
 
     # 2b. Migrate curated citations from hypothesis_chain_edge_evidence
     #     into the literature premise source. One premise per unique

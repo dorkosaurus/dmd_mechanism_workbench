@@ -1210,5 +1210,503 @@
       "protein_length": 3685,
       "notes": "Approximation of Popp & Maquat 2013: PTCs upstream of the last exon-exon junction trigger NMD; late PTCs escape. Splice-site variants are assumed to trigger NMD via exon skipping. In-frame and missense variants are 'transcript-dependent' — no PTC generated."
     }
-  }
+  },
+  "openTargets": {
+    "ensemblId": "ENSG00000198947",
+    "symbol": "DMD",
+    "name": "dystrophin",
+    "biotype": "protein_coding",
+    "refreshedAt": "2026-08-10T14:52:05.673321+00:00",
+    "sourceUrl": "https://platform.opentargets.org/target/ENSG00000198947",
+    "tractability": {
+      "SM": [
+        {
+          "label": "Approved Drug",
+          "value": false
+        },
+        {
+          "label": "Advanced Clinical",
+          "value": false
+        },
+        {
+          "label": "Phase 1 Clinical",
+          "value": false
+        },
+        {
+          "label": "Structure with Ligand",
+          "value": false
+        },
+        {
+          "label": "High-Quality Ligand",
+          "value": false
+        },
+        {
+          "label": "High-Quality Pocket",
+          "value": false
+        },
+        {
+          "label": "Med-Quality Pocket",
+          "value": false
+        },
+        {
+          "label": "Druggable Family",
+          "value": false
+        }
+      ],
+      "AB": [
+        {
+          "label": "Approved Drug",
+          "value": false
+        },
+        {
+          "label": "Advanced Clinical",
+          "value": false
+        },
+        {
+          "label": "Phase 1 Clinical",
+          "value": false
+        },
+        {
+          "label": "UniProt loc high conf",
+          "value": false
+        },
+        {
+          "label": "GO CC high conf",
+          "value": true
+        },
+        {
+          "label": "UniProt loc med conf",
+          "value": true
+        },
+        {
+          "label": "UniProt SigP or TMHMM",
+          "value": false
+        },
+        {
+          "label": "GO CC med conf",
+          "value": false
+        },
+        {
+          "label": "Human Protein Atlas loc",
+          "value": false
+        }
+      ],
+      "PR": [
+        {
+          "label": "Approved Drug",
+          "value": false
+        },
+        {
+          "label": "Advanced Clinical",
+          "value": false
+        },
+        {
+          "label": "Phase 1 Clinical",
+          "value": false
+        },
+        {
+          "label": "Literature",
+          "value": false
+        },
+        {
+          "label": "UniProt Ubiquitination",
+          "value": false
+        },
+        {
+          "label": "Database Ubiquitination",
+          "value": true
+        },
+        {
+          "label": "Half-life Data",
+          "value": true
+        },
+        {
+          "label": "Small Molecule Binder",
+          "value": false
+        }
+      ],
+      "OC": [
+        {
+          "label": "Approved Drug",
+          "value": false
+        },
+        {
+          "label": "Advanced Clinical",
+          "value": false
+        },
+        {
+          "label": "Phase 1 Clinical",
+          "value": false
+        }
+      ]
+    },
+    "pathways": [
+      {
+        "id": "R-HSA-9913351",
+        "name": "Formation of the dystrophin-glycoprotein complex (DGC)",
+        "topLevel": "Extracellular matrix organization"
+      },
+      {
+        "id": "R-HSA-390522",
+        "name": "Striated Muscle Contraction",
+        "topLevel": "Muscle contraction"
+      },
+      {
+        "id": "R-HSA-3000171",
+        "name": "Non-integrin membrane-ECM interactions",
+        "topLevel": "Extracellular matrix organization"
+      }
+    ],
+    "topDiseases": [
+      {
+        "id": "MONDO_0010679",
+        "name": "Duchenne muscular dystrophy",
+        "score": 0.868385825826779
+      },
+      {
+        "id": "MONDO_0010311",
+        "name": "Becker muscular dystrophy",
+        "score": 0.8248148510920668
+      },
+      {
+        "id": "MONDO_0010542",
+        "name": "dilated cardiomyopathy 3B",
+        "score": 0.7911145145173464
+      },
+      {
+        "id": "MONDO_0020121",
+        "name": "muscular dystrophy",
+        "score": 0.660278009543717
+      },
+      {
+        "id": "MONDO_0700335",
+        "name": "familial isolated dilated cardiomyopathy",
+        "score": 0.6278396053337999
+      },
+      {
+        "id": "MONDO_0016106",
+        "name": "progressive muscular dystrophy",
+        "score": 0.618225956615341
+      },
+      {
+        "id": "MONDO_0016147",
+        "name": "neuromuscular disease caused by qualitative or quantitative defects of dystrophin",
+        "score": 0.5881351901474945
+      },
+      {
+        "id": "HP_0001626",
+        "name": "Abnormality of the cardiovascular system",
+        "score": 0.5526396650549491
+      },
+      {
+        "id": "MONDO_0004994",
+        "name": "cardiomyopathy",
+        "score": 0.5486077849601155
+      },
+      {
+        "id": "HP_0003236",
+        "name": "Elevated circulating creatine kinase concentration",
+        "score": 0.5455425811479963
+      }
+    ],
+    "drugs": [
+      {
+        "id": "CHEMBL4650241",
+        "name": "DELANDISTROGENE MOXEPARVOVEC",
+        "type": "Gene",
+        "maxStage": "APPROVAL",
+        "drugMaxStage": "APPROVAL"
+      },
+      {
+        "id": "CHEMBL4298193",
+        "name": "SUVODIRSEN SODIUM",
+        "type": "Oligonucleotide",
+        "maxStage": "UNKNOWN",
+        "drugMaxStage": "UNKNOWN"
+      },
+      {
+        "id": "CHEMBL4298192",
+        "name": "SUVODIRSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "PHASE_2_3",
+        "drugMaxStage": "PHASE_2_3"
+      },
+      {
+        "id": "CHEMBL2108278",
+        "name": "ETEPLIRSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "APPROVAL",
+        "drugMaxStage": "APPROVAL"
+      },
+      {
+        "id": "CHEMBL4298062",
+        "name": "VILTOLARSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "APPROVAL",
+        "drugMaxStage": "APPROVAL"
+      },
+      {
+        "id": "CHEMBL4297762",
+        "name": "GOLODIRSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "APPROVAL",
+        "drugMaxStage": "APPROVAL"
+      },
+      {
+        "id": "CHEMBL2108735",
+        "name": "DRISAPERSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "PHASE_3",
+        "drugMaxStage": "PHASE_3"
+      },
+      {
+        "id": "CHEMBL4297566",
+        "name": "CASIMERSEN",
+        "type": "Oligonucleotide",
+        "maxStage": "APPROVAL",
+        "drugMaxStage": "APPROVAL"
+      }
+    ],
+    "interactions": [
+      {
+        "partnerId": "ENSP00000217381",
+        "symbol": "SNTA1",
+        "score": 0.998,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000242729",
+        "symbol": "SSPN",
+        "score": 0.998,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000338343",
+        "symbol": "SGCD",
+        "score": 0.996,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000378965",
+        "symbol": "SNTB1",
+        "score": 0.996,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000262018",
+        "symbol": "SGCA",
+        "score": 0.995,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000370839",
+        "symbol": "SGCB",
+        "score": 0.992,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000493900",
+        "symbol": "SNTG1",
+        "score": 0.992,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000356515",
+        "symbol": "UTRN",
+        "score": 0.992,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000311837",
+        "symbol": "SNTG2",
+        "score": 0.99,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000341940",
+        "symbol": "CAV3",
+        "score": 0.99,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000470152",
+        "symbol": "DTNA",
+        "score": 0.988,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000338191",
+        "symbol": "SNTB2",
+        "score": 0.985,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000218867",
+        "symbol": "SGCG",
+        "score": 0.984,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000496268",
+        "symbol": "SGCE",
+        "score": 0.981,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000400365",
+        "symbol": "LAMA2",
+        "score": 0.978,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000458162",
+        "symbol": "ACTG1",
+        "score": 0.966,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000386881",
+        "symbol": "DYSF",
+        "score": 0.959,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000384084",
+        "symbol": "DTNB",
+        "score": 0.956,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000494750",
+        "symbol": "ACTB",
+        "score": 0.952,
+        "source": "string"
+      },
+      {
+        "partnerId": "ENSP00000211998",
+        "symbol": "VCL",
+        "score": 0.94,
+        "source": "string"
+      }
+    ]
+  },
+  "premiseSources": [
+    {
+      "sourceId": "absplice",
+      "type": "model",
+      "version": "absplice_v1.0.4",
+      "description": "AbSplice-DNA per-tissue aberrant-splicing probability (Wagner et al. Nat Genet 2023). Distinguishes canonical splice-site variants from exonic ones — flags cryptic-splice risk that isoform_arch and clinvar_nmd cannot see.",
+      "url": "https://github.com/gagneurlab/absplice",
+      "nPremises": 10,
+      "nHypothesesFired": 22
+    },
+    {
+      "sourceId": "clinvar_nmd",
+      "type": "model",
+      "version": "aenmd-rule v1",
+      "description": "NMD prediction (PTC ≥50nt upstream of last EEJ) applied to ClinVar DMD variants",
+      "url": null,
+      "nPremises": 1,
+      "nHypothesesFired": 10
+    },
+    {
+      "sourceId": "esm3",
+      "type": "model",
+      "version": "esm3-open-2024-03",
+      "description": "ESM3 protein fold + InterPro function annotation",
+      "url": "https://forge.evolutionaryscale.ai/",
+      "nPremises": 2,
+      "nHypothesesFired": 4
+    },
+    {
+      "sourceId": "hpa_expression",
+      "type": "data",
+      "version": "HPA 2024",
+      "description": "Human Protein Atlas single cell type specific nCPM",
+      "url": "https://www.proteinatlas.org/",
+      "nPremises": 1,
+      "nHypothesesFired": 30
+    },
+    {
+      "sourceId": "isoform_arch",
+      "type": "data",
+      "version": "UniProt+RefSeq",
+      "description": "DMD isoform architecture (first-shared-exon per isoform)",
+      "url": "https://www.uniprot.org/uniprotkb/P11532",
+      "nPremises": 10,
+      "nHypothesesFired": 40
+    },
+    {
+      "sourceId": "literature",
+      "type": "data",
+      "version": "curated_2026-08",
+      "description": "Peer-reviewed citations anchoring specific chain-edge and chain-node claims (Monaco 1988, Popp & Maquat 2013, Ervasti & Campbell 1993, Pillers 1993, ...)",
+      "url": null,
+      "nPremises": 30,
+      "nHypothesesFired": 40
+    },
+    {
+      "sourceId": "open_targets",
+      "type": "data",
+      "version": "opentargets_25.06",
+      "description": "Open Targets Platform target record for DMD (ENSG00000198947): approved-drug list, DGC molecular interactors, tractability profile, top disease associations, Reactome pathway memberships.",
+      "url": "https://platform.opentargets.org/target/ENSG00000198947",
+      "nPremises": 1,
+      "nHypothesesFired": 40
+    },
+    {
+      "sourceId": "patient_celltype_impact",
+      "type": "model",
+      "version": "compose_v1",
+      "description": "Per-patient cell-type impact: isoform_arch × curated cell-to-isoform dependency map (Muntoni 2003, Pillers 1993, Lidov 1995)",
+      "url": null,
+      "nPremises": 10,
+      "nHypothesesFired": 40
+    },
+    {
+      "sourceId": "patient_tissue_impact",
+      "type": "model",
+      "version": "compose_v1",
+      "description": "Per-patient tissue impact: composes cell-type impact × isoforms.primary_expression_tissues",
+      "url": null,
+      "nPremises": 10,
+      "nHypothesesFired": 30
+    },
+    {
+      "sourceId": "reactome",
+      "type": "data",
+      "version": "Reactome v96",
+      "description": "Reactome DMD pathway memberships + specificity scoring",
+      "url": "https://reactome.org/",
+      "nPremises": 1,
+      "nHypothesesFired": 10
+    },
+    {
+      "sourceId": "synthetic_labs",
+      "type": "model",
+      "version": "synthetic_v1",
+      "description": "Per-patient synthetic clinical labs (Birnkrant 2018 ranges)",
+      "url": null,
+      "nPremises": 71,
+      "nHypothesesFired": 33
+    },
+    {
+      "sourceId": "uniprot_subcellular",
+      "type": "data",
+      "version": "UniProt REST",
+      "description": "UniProt-curated subcellular localization (sarcolemma, cytoskeleton, postsynaptic membrane for DMD P11532)",
+      "url": "https://www.uniprot.org/uniprotkb/P11532",
+      "nPremises": 1,
+      "nHypothesesFired": 40
+    },
+    {
+      "sourceId": "zhang_2024",
+      "type": "data",
+      "version": "supp S1+S2 (2024)",
+      "description": "Per-patient genotype/phenotype records (Zhang et al. 2024, PMC11344408)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11344408/",
+      "nPremises": 10,
+      "nHypothesesFired": 40
+    }
+  ]
 }
