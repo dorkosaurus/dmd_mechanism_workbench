@@ -2634,24 +2634,20 @@ function laurenTileIsoforms(p) {
     ${cats.map(c => `<td style="padding:6px 4px 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap">${esc(catLabel[c] || c)}</td>`).join('')}
   </tr>`;
 
-  // Section headers above the two halves of the table
-  const headerGroup = `<div style="display:flex;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin-bottom:2px">
-      <div style="width:auto;padding-right:8px;visibility:hidden">isoform</div>
-      <div style="flex:1;text-align:center;border-bottom:1px solid var(--line-2);padding-bottom:2px;margin-right:12px">Isoform × Tissue</div>
-      <div style="flex:1;text-align:center;border-bottom:1px solid var(--line-2);padding-bottom:2px">Isoform × Variant</div>
-    </div>`;
+  // Section-header row (inside the same table so cells align with actual columns)
+  const headerRow = `<tr>
+    <td></td>
+    <td colspan="${allTissues.length}" style="text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;padding:4px 0 6px;border-bottom:1px solid var(--line-2)">Isoform × Tissue</td>
+    <td></td>
+    <td colspan="${cats.length}" style="text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;padding:4px 0 6px;border-bottom:1px solid var(--line-2)">Isoform × Pathogenic variant</td>
+  </tr>`;
 
   return `<div class="lauren-tile" style="grid-column:span 3">
     <div class="lauren-tile-h">Isoforms × Tissues + Variants</div>
-    <div style="font-size:11px;color:var(--ink-2);margin-bottom:6px">
-      ${isos.length} DMD isoforms · ${allTissues.length} tissues · ${cats.length} variant categories.
-      Variant counts follow the isoform-hit rule (variant exon ≥ isoform's first shared exon) — nested totals.
-      Based on ${iv?.parsed?.toLocaleString() ?? '?'} of ${iv?.denominator?.toLocaleString() ?? '?'} ClinVar P/LP variants with parseable c-coordinates.
-    </div>
-    ${headerGroup}
     <div style="overflow-x:auto">
       <table style="border-collapse:collapse;font-size:12px">
         <tbody>
+          ${headerRow}
           ${rows}
           ${labelRow}
         </tbody>
