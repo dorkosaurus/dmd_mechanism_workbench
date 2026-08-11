@@ -2562,9 +2562,101 @@ function renderLaurenView(p) {
       ${laurenTileProteinImpact(p)}
       ${laurenTileMostAffectedCells(p)}
       ${laurenTileTopPathways(p)}
+      ${laurenTileIsoforms(p)}
     </div>
     <div class="lauren-section-h">Mechanistic Hypotheses</div>
     ${laurenHypothesesTable(p)}
+  </div>`;
+}
+
+// ---- Tile: Isoform × (tissues + variant categories), patient-agnostic ----
+// Left half: which isoforms are expressed in which tissues (dots).
+// Right half: how many ClinVar Pathogenic + LP variants of each consequence
+// class hit each isoform (numbers, nested by first_shared_exon rule).
+// Column labels sit at the bottom for both halves.
+function laurenTileIsoforms(p) {
+  const isos = DATA.isoforms || [];
+  const iv   = MECH_DATA?.isoformVariantCounts;
+  if (!isos.length) {
+    return `<div class="lauren-tile" style="grid-column:span 3">
+      <div class="lauren-tile-h">Isoforms × Tissues + Variants</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">No isoform data.</div>
+    </div>`;
+  }
+  const allTissues = Array.from(new Set(isos.flatMap(i => i.tissues || []))).sort();
+  const cats       = iv?.categories || [];
+  const catLabel   = { nonsense: 'Nonsense', frameshift: 'Frameshift',
+                       splice: 'Splice-site', missense: 'Missense',
+                       inframe_indel: 'In-frame indel', large_del: 'Large deletion',
+                       other: 'Other' };
+  const ivByIso    = Object.fromEntries((iv?.isoforms || []).map(x => [x.id, x]));
+
+  // Map count → cell background intensity (log-scaled) for the variant cells,
+  // so the eye picks up the biggest bucket without reading every number.
+  const maxCount = Math.max(1, ...(iv?.isoforms || []).flatMap(x =>
+    cats.map(c => x.byCategory?.[c] || 0)));
+  const bgFor = (n) => {
+    if (!n) return 'transparent';
+    const t = Math.log(1 + n) / Math.log(1 + maxCount);   // 0..1
+    const alpha = 0.08 + t * 0.32;                          // 0.08..0.40
+    return `rgba(37, 99, 235, ${alpha.toFixed(2)})`;        // accent-blue
+  };
+
+  const rows = isos.map(i => {
+    const tissueCells = allTissues.map(t => {
+      const carries = (i.tissues || []).includes(t);
+      const glyph  = carries ? '●' : '–';
+      const color  = carries ? 'var(--accent)' : 'var(--ink-3)';
+      return `<td style="padding:4px;text-align:center;color:${color};font-size:14px"
+                title="${esc(i.id)} ${carries ? 'is expressed in' : 'is NOT expressed in'} ${esc(t)}">${glyph}</td>`;
+    }).join('');
+    const isoCounts = ivByIso[i.id];
+    const variantCells = cats.map(c => {
+      const n = isoCounts?.byCategory?.[c] ?? 0;
+      return `<td style="padding:4px 6px;text-align:center;font-variant-numeric:tabular-nums;background:${bgFor(n)};color:${n ? 'var(--ink)' : 'var(--ink-3)'};font-weight:${n ? 600 : 400}"
+                title="${esc(i.id)} × ${esc(catLabel[c] || c)}: ${n} pathogenic variant${n === 1 ? '' : 's'}">${n || '–'}</td>`;
+    }).join('');
+    // Skinny visual separator between tissue and variant halves
+    const sep = `<td style="padding:0;width:12px"></td>`;
+    return `<tr>
+      <td style="padding:4px 8px;font-family:'SF Mono',Menlo,monospace;font-weight:600;white-space:nowrap">${esc(i.id)}</td>
+      ${tissueCells}
+      ${sep}
+      ${variantCells}
+    </tr>`;
+  }).join('');
+
+  // Bottom labels row for both halves
+  const labelRow = `<tr>
+    <td></td>
+    ${allTissues.map(t => `<td style="padding:6px 4px 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap">${esc(t)}</td>`).join('')}
+    <td></td>
+    ${cats.map(c => `<td style="padding:6px 4px 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap">${esc(catLabel[c] || c)}</td>`).join('')}
+  </tr>`;
+
+  // Section headers above the two halves of the table
+  const headerGroup = `<div style="display:flex;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin-bottom:2px">
+      <div style="width:auto;padding-right:8px;visibility:hidden">isoform</div>
+      <div style="flex:1;text-align:center;border-bottom:1px solid var(--line-2);padding-bottom:2px;margin-right:12px">Isoform × Tissue</div>
+      <div style="flex:1;text-align:center;border-bottom:1px solid var(--line-2);padding-bottom:2px">Isoform × Variant</div>
+    </div>`;
+
+  return `<div class="lauren-tile" style="grid-column:span 3">
+    <div class="lauren-tile-h">Isoforms × Tissues + Variants</div>
+    <div style="font-size:11px;color:var(--ink-2);margin-bottom:6px">
+      ${isos.length} DMD isoforms · ${allTissues.length} tissues · ${cats.length} variant categories.
+      Variant counts follow the isoform-hit rule (variant exon ≥ isoform's first shared exon) — nested totals.
+      Based on ${iv?.parsed?.toLocaleString() ?? '?'} of ${iv?.denominator?.toLocaleString() ?? '?'} ClinVar P/LP variants with parseable c-coordinates.
+    </div>
+    ${headerGroup}
+    <div style="overflow-x:auto">
+      <table style="border-collapse:collapse;font-size:12px">
+        <tbody>
+          ${rows}
+          ${labelRow}
+        </tbody>
+      </table>
+    </div>
   </div>`;
 }
 

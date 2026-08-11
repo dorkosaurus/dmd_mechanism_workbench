@@ -392,6 +392,143 @@ def build_premise_sources(conn) -> list[dict]:
     ]
 
 
+def _load_exon_coords() -> list[dict]:
+    """Load data/variants/dmd_exon_coords.tsv → list of {exon, c_start, c_end}
+    for exons that fall entirely or partially inside the CDS."""
+    path = Path(__file__).resolve().parent.parent.parent / "data" / "variants" / "dmd_exon_coords.tsv"
+    if not path.exists():
+        return []
+    rows: list[dict] = []
+    header = None
+    for line in path.read_text().splitlines():
+        if not line or line.startswith("#"): continue
+        parts = line.split("\t")
+        if header is None:
+            header = parts
+            continue
+        r = dict(zip(header, parts))
+        rows.append({
+            "exon":    int(r["exon_num"]),
+            "c_start": int(r["c_start"]),
+            "c_end":   int(r["c_end"]),
+        })
+    return rows
+
+
+def _load_isoforms() -> list[dict]:
+    path = Path(__file__).resolve().parent.parent.parent / "data" / "variants" / "dmd_isoforms.tsv"
+    rows: list[dict] = []
+    header = None
+    for line in path.read_text().splitlines():
+        if not line or line.startswith("#"): continue
+        parts = line.split("\t")
+        if header is None:
+            header = parts
+            continue
+        r = dict(zip(header, parts))
+        rows.append({
+            "id":              r["isoform_id"],
+            "firstSharedExon": int(r["first_shared_exon"]),
+            "promoterTissue":  r.get("promoter_tissue", ""),
+        })
+    return rows
+
+
+# Parse a c-coord (int) out of a ClinVar variant_name. Handles:
+#   NM_004006.3(DMD):c.3469G>T           → 3469
+#   NM_004006.3(DMD):c.6540del           → 6540
+#   NM_004006.3(DMD):c.9974+2T>A         → 9974  (splice-donor + offset)
+#   NM_004006.3(DMD):c.9225-285A>G       → 9225  (deep intronic - offset)
+#   c.NNN_MMM del / dup                  → NNN
+_CDOT_RE = re.compile(r'c\.(-?\d+)')
+
+
+def _c_pos_to_exon(c_pos: int, exon_coords: list[dict]) -> int | None:
+    """Return the exon number containing this c-coordinate. Uses the first
+    exon whose [c_start, c_end] range brackets c_pos. Splice-flank offsets
+    (e.g. c.9974+2) are treated as belonging to the exon at the anchor
+    position (9974), which is what the caller extracts."""
+    if c_pos < 1: return None
+    for e in exon_coords:
+        if e["c_start"] <= c_pos <= e["c_end"]:
+            return e["exon"]
+    return None
+
+
+def build_isoform_variant_counts(conn) -> dict:
+    """For each of the 7 DMD isoforms, count how many ClinVar pathogenic
+    variants land at exon ≥ isoform.first_shared_exon (i.e. hit that isoform).
+
+    Counts are NESTED — every variant hits Dp427* (first shared exon = 1),
+    a subset also hits Dp260 (≥ ex30), a smaller subset hits Dp140 (≥ ex45),
+    etc. So Dp71 count ⊂ Dp116 count ⊂ Dp140 count ⊂ Dp260 count ⊂ Dp427*.
+
+    Returns { source, denominator, unparseable, isoforms: [{id, firstSharedExon,
+             promoterTissue, nHits, pct}...] }
+    """
+    exon_coords = _load_exon_coords()
+    if not exon_coords:
+        return {"error": "dmd_exon_coords.tsv missing — run bake_dmd_exon_coords"}
+    isoforms = _load_isoforms()
+
+    total = 0
+    unparseable = 0
+    variant_rows: list[tuple[int, str]] = []   # (exon, category) per parseable variant
+    for (name,) in conn.execute(
+        "SELECT variant_name FROM clinvar_phenotype "
+        "WHERE data_source='clinvar' AND clin_sig IN "
+        "('Pathogenic','Likely pathogenic','Pathogenic/Likely pathogenic')"
+    ):
+        total += 1
+        if not name:
+            unparseable += 1
+            continue
+        m = _CDOT_RE.search(name)
+        if not m:
+            unparseable += 1
+            continue
+        try:
+            c_pos = int(m.group(1))
+        except ValueError:
+            unparseable += 1
+            continue
+        exon = _c_pos_to_exon(c_pos, exon_coords)
+        if exon is None:
+            unparseable += 1
+            continue
+        category = _classify_consequence(name)
+        variant_rows.append((exon, category))
+
+    n_parsed = len(variant_rows)
+    # Categories to expose (drop those with 0 counts to keep the table clean)
+    all_cats = ['nonsense', 'frameshift', 'splice', 'missense',
+                'inframe_indel', 'large_del', 'other']
+    cat_totals = {c: sum(1 for (_e, cc) in variant_rows if cc == c) for c in all_cats}
+    active_cats = [c for c in all_cats if cat_totals[c] > 0]
+
+    iso_rows: list[dict] = []
+    for iso in isoforms:
+        f = iso["firstSharedExon"]
+        n_hits = sum(1 for (e, _c) in variant_rows if e >= f)
+        by_cat = {c: sum(1 for (e, cc) in variant_rows if e >= f and cc == c) for c in active_cats}
+        iso_rows.append({
+            **iso,
+            "nHits":       n_hits,
+            "pct":         round(100.0 * n_hits / n_parsed, 1) if n_parsed else 0.0,
+            "byCategory":  by_cat,
+        })
+    return {
+        "source":       "ClinVar (P + LP + P/LP) × dmd_exon_coords · nested per-isoform hits",
+        "denominator":  total,
+        "parsed":       n_parsed,
+        "unparseable":  unparseable,
+        "note":         "counts are nested — variant hits isoform iff variant_exon ≥ first_shared_exon",
+        "categories":   active_cats,
+        "categoryTotals": {c: cat_totals[c] for c in active_cats},
+        "isoforms":     iso_rows,
+    }
+
+
 def build_open_targets(conn) -> dict | None:
     """Return the Open Targets DMD summary if the bake has been run;
     None otherwise. Emits a compact shape sized for direct rendering."""
@@ -479,6 +616,7 @@ def main() -> None:
         },
         "nmdCohort":     build_nmd_cohort(conn),
         "clinvarComposition": build_clinvar_composition(conn),
+        "isoformVariantCounts": build_isoform_variant_counts(conn),
         "openTargets":   build_open_targets(conn),
         "premiseSources": build_premise_sources(conn),
     }

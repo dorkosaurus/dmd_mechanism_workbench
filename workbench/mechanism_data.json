@@ -1282,6 +1282,136 @@
       "other"
     ]
   },
+  "isoformVariantCounts": {
+    "source": "ClinVar (P + LP + P/LP) × dmd_exon_coords · nested per-isoform hits",
+    "denominator": 3478,
+    "parsed": 2154,
+    "unparseable": 1324,
+    "note": "counts are nested — variant hits isoform iff variant_exon ≥ first_shared_exon",
+    "categories": [
+      "nonsense",
+      "frameshift",
+      "splice",
+      "missense",
+      "large_del",
+      "other"
+    ],
+    "categoryTotals": {
+      "nonsense": 781,
+      "frameshift": 795,
+      "splice": 366,
+      "missense": 41,
+      "large_del": 50,
+      "other": 121
+    },
+    "isoforms": [
+      {
+        "id": "Dp427m",
+        "firstSharedExon": 1,
+        "promoterTissue": "muscle",
+        "nHits": 2154,
+        "pct": 100.0,
+        "byCategory": {
+          "nonsense": 781,
+          "frameshift": 795,
+          "splice": 366,
+          "missense": 41,
+          "large_del": 50,
+          "other": 121
+        }
+      },
+      {
+        "id": "Dp427c",
+        "firstSharedExon": 1,
+        "promoterTissue": "cortical",
+        "nHits": 2154,
+        "pct": 100.0,
+        "byCategory": {
+          "nonsense": 781,
+          "frameshift": 795,
+          "splice": 366,
+          "missense": 41,
+          "large_del": 50,
+          "other": 121
+        }
+      },
+      {
+        "id": "Dp427p",
+        "firstSharedExon": 1,
+        "promoterTissue": "Purkinje",
+        "nHits": 2154,
+        "pct": 100.0,
+        "byCategory": {
+          "nonsense": 781,
+          "frameshift": 795,
+          "splice": 366,
+          "missense": 41,
+          "large_del": 50,
+          "other": 121
+        }
+      },
+      {
+        "id": "Dp260",
+        "firstSharedExon": 30,
+        "promoterTissue": "retinal",
+        "nHits": 1205,
+        "pct": 55.9,
+        "byCategory": {
+          "nonsense": 445,
+          "frameshift": 452,
+          "splice": 195,
+          "missense": 18,
+          "large_del": 30,
+          "other": 65
+        }
+      },
+      {
+        "id": "Dp140",
+        "firstSharedExon": 45,
+        "promoterTissue": "brain_kidney",
+        "nHits": 755,
+        "pct": 35.1,
+        "byCategory": {
+          "nonsense": 243,
+          "frameshift": 285,
+          "splice": 147,
+          "missense": 15,
+          "large_del": 23,
+          "other": 42
+        }
+      },
+      {
+        "id": "Dp116",
+        "firstSharedExon": 56,
+        "promoterTissue": "Schwann",
+        "nHits": 470,
+        "pct": 21.8,
+        "byCategory": {
+          "nonsense": 140,
+          "frameshift": 178,
+          "splice": 97,
+          "missense": 12,
+          "large_del": 14,
+          "other": 29
+        }
+      },
+      {
+        "id": "Dp71",
+        "firstSharedExon": 63,
+        "promoterTissue": "ubiquitous",
+        "nHits": 297,
+        "pct": 13.8,
+        "byCategory": {
+          "nonsense": 73,
+          "frameshift": 114,
+          "splice": 64,
+          "missense": 10,
+          "large_del": 14,
+          "other": 22
+        }
+      }
+    ]
+  },
   "openTargets": {
     "ensemblId": "ENSG00000198947",
     "symbol": "DMD",
