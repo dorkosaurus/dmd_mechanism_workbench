@@ -758,6 +758,28 @@ def literature_links_for_template(lit_data: dict, tmpl_id: str
 # but as a "generator" that emits stored hypothesis rows with rationale
 # + a hypothesis_premise audit trail.
 
+def pick_topk_diverse(ranked, *, family_of, k=3):
+    """Greedy top-K with a hard one-per-family diversity constraint.
+
+    `ranked` is `[(item_id, payload), ...]` already sorted best-first.
+    `family_of(item_id)` returns the mechanism-family key. Walks the ranking
+    once, admitting each candidate whose family hasn't already been claimed
+    until K survivors are picked. If fewer than K distinct families exist we
+    return however many families we found (never dips into a second-from-a-
+    family filler — Phase 2 will introduce that fallback if needed).
+    """
+    picked, seen = [], set()
+    for item in ranked:
+        fam = family_of(item[0])
+        if fam in seen:
+            continue
+        picked.append(item)
+        seen.add(fam)
+        if len(picked) == k:
+            break
+    return picked
+
+
 def parse_exon(s: str | None) -> int | None:
     if not s: return None
     t = s.strip()
@@ -1496,9 +1518,20 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     }
     lit_data = lit_data or {}
 
-    # 2. Score templates and emit patient_hypothesis rows
+    # 2. Score templates, then prune to top-K with mechanism-family diversity.
+    #
+    # Phase 1: each of H01-H04 is its own mechanism family, so top-K-diverse
+    # with K=3 just drops the lowest-scoring template. The diversity primitive
+    # is written now (rather than a bare `[:3]`) so Phase 2 — LLM-mutated
+    # candidates whose family is inherited from their seed — can reuse it
+    # without further plumbing.
     scores = score_templates(cons, phen, exon_n)
     ranked = sorted(scores.items(), key=lambda kv: -kv[1][0])
+    pruned = pick_topk_diverse(
+        ranked,
+        family_of=lambda tmpl_id: tmpl_id,   # seed rows: family = template
+        k=3,
+    )
     input_hash = _hash(variant_key, phen, cons or "", str(exon_n), acmg or "")
 
     # Look up each premise's source_id + evidence so we can attribute
@@ -1523,7 +1556,7 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     layer1_bundles: list[dict] = []  # Collected during the loop and
                                      # fed into one batched Layer-2 LLM
                                      # call after all hypotheses baked.
-    for rank, (tmpl_id, (score, fit)) in enumerate(ranked, start=1):
+    for rank, (tmpl_id, (score, fit)) in enumerate(pruned, start=1):
         hyp_id = f"P_{cohort}#{pid}:h{tmpl_id}:v1"
         # Layer 0 claim (raw template) — kept for backwards compat + audit.
         claim = CLAIM_TEMPLATES[tmpl_id].format(
@@ -1702,11 +1735,13 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
             "INSERT OR REPLACE INTO patient_hypothesis "
             "(hypothesis_id, patient_id, variant_key, mechanism_template, rank, score, "
             " confidence, claim, rationale, score_vector, refined_claim, "
+            " parent_hypothesis_id, mutation_trace, mechanism_family, "
             " generator_id, generator_version, generated_at, input_context_hash) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (hyp_id, pid, variant_key, tmpl_id, rank, score,
              min(1.0, score / 10.0), claim, rationale,
              json.dumps(score_vector), json.dumps(refined_claim),
+             None, None, tmpl_id,   # Phase 1: seeds have no parent + family=template
              HYP_GENERATOR[0], HYP_GENERATOR[1], NOW, input_hash),
         )
 
@@ -1776,9 +1811,9 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
             if n_unverified_total:
                 print(f"[llm]   grounded: {n_unverified_total} unverified mentions across {len(layer1_bundles)} hypotheses")
 
-    # 3. Emit patient_therapeutic rows for the top hypothesis
-    top_hyp_id = f"P_{cohort}#{pid}:h{ranked[0][0]}:v1"
-    n_therapies = emit_therapeutics(conn, cohort, pid, ranked[0][0], top_hyp_id)
+    # 3. Emit patient_therapeutic rows for the top surviving hypothesis
+    top_hyp_id = f"P_{cohort}#{pid}:h{pruned[0][0]}:v1"
+    n_therapies = emit_therapeutics(conn, cohort, pid, pruned[0][0], top_hyp_id)
     return n_hyps, n_therapies
 
 
@@ -1838,8 +1873,14 @@ def _ensure_column(conn, table: str, column: str, decl: str) -> None:
 def main() -> None:
     conn = sqlite3.connect(DB)
     conn.executescript(SCHEMA_MIGRATION)
-    _ensure_column(conn, "patient_hypothesis", "score_vector",  "TEXT")
-    _ensure_column(conn, "patient_hypothesis", "refined_claim", "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "score_vector",         "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "refined_claim",        "TEXT")
+    # Phase 1 lineage columns — populated as scaffolding for Phase 2
+    # (LLM select-and-mutate). Seed rows: parent_hypothesis_id is NULL,
+    # mutation_trace is NULL, mechanism_family = mechanism_template.
+    _ensure_column(conn, "patient_hypothesis", "parent_hypothesis_id", "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "mutation_trace",       "TEXT")
+    _ensure_column(conn, "patient_hypothesis", "mechanism_family",     "TEXT")
 
     # 1. Register premise sources
     register_sources(conn)

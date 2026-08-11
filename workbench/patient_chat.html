@@ -30,15 +30,21 @@
   .pc-app { display: flex; flex-direction: column; height: 100vh;
     max-width: 1600px; margin: 0 auto; padding: 12px; gap: 8px; }
 
-  /* --------- top strip: patient selector + identity --------- */
-  .pc-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  /* --------- top strip: page title + patient picker --------- */
+  .pc-top { display: flex; gap: 12px; align-items: center;
     background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 14px; flex-shrink: 0; }
-  .pc-top-pat-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--ink-3); font-weight: 700; }
-  .pc-picker { flex: 1; padding: 6px 10px; border: 1px solid var(--line-2);
-    border-radius: 5px; background: white; font-size: 12px; font-family: inherit;
-    color: var(--ink); min-width: 260px; max-width: 640px; }
+    padding: 10px 16px; flex-shrink: 0; }
+  .pc-top-title { font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--ink); flex: 1; line-height: 1.2; }
+  .pc-top-title .pc-top-title-gene { color: var(--accent); }
+  .pc-top-pat { display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--line-2); border-radius: 6px;
+    padding: 4px 6px 4px 10px; }
+  .pc-top-pat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; white-space: nowrap; }
+  .pc-picker { padding: 5px 8px; border: 1px solid var(--line-2);
+    border-radius: 4px; background: white; font-size: 12px; font-family: inherit;
+    color: var(--ink); min-width: 240px; }
 
   /* patient details tile (in Overview) --------------------------- */
   .pd-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
@@ -59,7 +65,239 @@
   .pd-v { color: var(--ink); font-size: 12px; font-weight: 600;
     font-family: "SF Mono", Menlo, monospace; word-break: break-all; }
   .pd-v.plain { font-family: inherit; }
-  /* --------- 2-panel body --------- */
+  /* --------- top-level view tabs (Data | Mechanism) --------- */
+  .pc-viewtabs { display: flex; gap: 4px; padding: 6px 10px 0 10px;
+    background: transparent; flex-shrink: 0; }
+  .pc-viewtab { background: var(--panel); border: 1px solid var(--line);
+    border-bottom: none; border-radius: 8px 8px 0 0; padding: 8px 16px;
+    font: inherit; font-size: 12px; font-weight: 600; color: var(--ink-3);
+    cursor: pointer; letter-spacing: 0.02em; display: inline-flex;
+    align-items: center; gap: 6px; }
+  .pc-viewtab:hover { color: var(--ink); }
+  .pc-viewtab.active { color: var(--accent); background: var(--panel);
+    border-color: var(--accent); border-bottom: 1px solid var(--panel);
+    margin-bottom: -1px; position: relative; z-index: 2; }
+  .pc-viewtab-badge { font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    background: var(--bg); padding: 1px 5px; border-radius: 3px; }
+  .pc-viewtab.active .pc-viewtab-badge { color: var(--accent);
+    background: var(--accent-soft); }
+
+  /* --------- Lauren's tab --------- */
+  .pc-lauren { flex: 1; min-height: 0; overflow-y: auto;
+    background: var(--bg); padding: 4px; }
+  .lauren-section-h { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.08em; font-weight: 700; color: var(--ink-3);
+    padding: 12px 6px 8px; margin-top: 4px; }
+  .lauren-overview { display: grid; grid-template-columns: repeat(4, 1fr) 220px;
+    gap: 8px; }
+  @media (max-width: 1280px) { .lauren-overview { grid-template-columns: repeat(2, 1fr); } }
+  .lauren-tile { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column;
+    min-height: 160px; }
+  .lauren-tile-h { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    padding-bottom: 6px; margin-bottom: 8px; border-bottom: 1px solid var(--line-2); }
+  .lauren-tile-big { font-size: 34px; font-weight: 800; line-height: 1;
+    font-variant-numeric: tabular-nums; }
+  .lauren-tile-big.ok { color: var(--accent); }
+  .lauren-tile-big.warn { color: var(--warn); }
+  .lauren-tile-big.bad { color: var(--bad); }
+  .lauren-tile-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .lauren-tile-body { flex: 1; display: flex; flex-direction: column;
+    justify-content: center; margin-top: 8px; }
+  .lauren-mini-bar { display: grid; grid-template-columns: 80px 1fr 40px;
+    gap: 6px; align-items: center; font-size: 11px; margin-bottom: 3px; }
+  .lauren-mini-bar .lb-lbl { color: var(--ink-2); overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .lauren-mini-bar .lb-bar { background: var(--tile); height: 8px;
+    border-radius: 2px; overflow: hidden; }
+  .lauren-mini-bar .lb-bar-fill { display: block; height: 100%; }
+  .lauren-mini-bar .lb-val { color: var(--ink-2); text-align: right;
+    font-variant-numeric: tabular-nums; font-weight: 600; }
+  .lauren-mini-bar.me { background: var(--accent-soft); padding: 1px 4px;
+    border-radius: 3px; }
+  .lauren-mini-bar.me .lb-lbl { color: var(--accent); font-weight: 700; }
+  .lauren-donut { display: flex; align-items: center; gap: 12px; }
+  .lauren-donut svg { flex-shrink: 0; }
+  .lauren-donut-legend { font-size: 11px; color: var(--ink-2); }
+  .lauren-donut-legend div { margin-bottom: 2px; }
+  .lauren-hist { display: flex; align-items: flex-end; gap: 2px; height: 60px;
+    padding: 4px 0; }
+  .lauren-hist-bar { flex: 1; background: var(--accent); opacity: 0.5;
+    border-radius: 1px 1px 0 0; position: relative; }
+  .lauren-hist-bar.me { opacity: 1; background: var(--accent); }
+  .lauren-hyp-table { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 12px 14px; margin-top: 4px; }
+  .lauren-hyp-row { display: grid; grid-template-columns: 40px 2.5fr 1fr 1fr 1fr 1.5fr;
+    gap: 10px; padding: 8px 4px; align-items: center; font-size: 12px;
+    border-bottom: 1px solid var(--line-2); }
+  .lauren-hyp-row:last-child { border-bottom: none; }
+  .lauren-hyp-row.head { color: var(--ink-3); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
+    border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  .lauren-hyp-id { font-family: "SF Mono",Menlo,monospace; font-weight: 700;
+    text-align: center; }
+  .lauren-hyp-id.top { background: var(--accent); color: white;
+    border-radius: 3px; padding: 3px 4px; }
+  .lauren-hyp-name { font-weight: 600; color: var(--ink); }
+  .lauren-hyp-sub { color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+  .lauren-axis-bar { display: grid; grid-template-columns: 1fr 32px;
+    gap: 5px; align-items: center; font-size: 11px; }
+  .lauren-axis-bar .lb-bar { background: var(--tile); height: 10px;
+    border-radius: 2px; overflow: hidden; }
+  .lauren-axis-bar .lb-val { color: var(--ink-2); text-align: right;
+    font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* --------- Explore Data view --------- */
+  .pc-data { display: grid; gap: 10px; flex: 1; min-height: 0;
+    grid-template-columns: 340px 1fr; }
+  .pc-data-chips { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; overflow-y: auto; padding: 12px 12px 24px; }
+  .pc-data-right { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; display: flex; flex-direction: column;
+    min-height: 0; overflow: hidden; }
+  .pc-data-chat { border-bottom: 1px solid var(--line); padding: 10px 12px;
+    background: var(--bg); flex-shrink: 0; }
+  .pc-data-chat-form { display: flex; gap: 6px; align-items: center; }
+  .pc-data-chat-input { flex: 1; padding: 8px 10px; border: 1px solid var(--line-2);
+    border-radius: 6px; background: white; font: inherit; font-size: 12px;
+    color: var(--ink); }
+  .pc-data-chat-input:focus { border-color: var(--accent); outline: none; }
+  .pc-data-chat-btn { padding: 8px 14px; border: none; border-radius: 6px;
+    background: var(--accent); color: white; font: inherit; font-size: 12px;
+    font-weight: 600; cursor: pointer; }
+  .pc-data-chat-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pc-data-chat-btn.secondary { background: var(--bg); color: var(--ink-2);
+    border: 1px solid var(--line-2); }
+  .pc-data-chat-status { font-size: 10px; color: var(--ink-3);
+    margin-top: 4px; text-align: right; font-family: "SF Mono",Menlo,monospace; }
+  .pc-data-chat-status.err { color: var(--bad); }
+  .pc-data-stream { flex: 1; overflow-y: auto; padding: 12px; }
+  .pc-data-msg { padding: 10px 12px; margin-bottom: 8px; border-radius: 6px;
+    font-size: 12px; line-height: 1.5; }
+  .pc-data-msg.user  { background: var(--accent-soft); color: var(--ink);
+    border-left: 3px solid var(--accent); }
+  .pc-data-msg.agent { background: var(--tile); color: var(--ink-2);
+    border-left: 3px solid var(--ink-3); }
+  .pc-data-msg-role { font-size: 9px; text-transform: uppercase; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 3px; }
+  .pc-data-group { border: 1px solid var(--line-2); border-radius: 8px;
+    padding: 10px 10px 4px; margin-bottom: 10px; background: var(--panel); }
+  .pc-data-group-h { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    padding: 0 0 6px 2px; border-bottom: 1px dashed var(--line-2);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .pc-data-group-h .close { background: transparent; border: none;
+    color: var(--ink-3); cursor: pointer; font-size: 14px; margin-left: auto; }
+  .pc-data-group-grid { display: grid; gap: 10px; }
+  .pc-data-group-grid.n1 { grid-template-columns: 1fr; }
+  .pc-data-group-grid.n2 { grid-template-columns: 1fr 1fr; }
+  .pc-data-group-grid.n3plus { grid-template-columns: 1fr; }
+  .pc-data-pillar { margin-bottom: 8px; border-radius: 6px;
+    border: 1px solid var(--line-2); overflow: hidden;
+    border-left-width: 3px; }
+  .pc-data-pillar-h { display: flex; align-items: center; gap: 6px;
+    width: 100%; text-align: left; font-family: inherit; cursor: pointer;
+    background: var(--bg); border: none; border-bottom: 1px solid var(--line-2);
+    padding: 8px 10px; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.08em; font-weight: 700; color: var(--ink-2); }
+  .pc-data-pillar-h:hover { background: var(--tile); }
+  .pc-data-pillar.collapsed .pc-data-pillar-h { border-bottom: none; }
+  .pc-data-pillar-h .pc-data-pillar-sub { flex: 1; font-weight: 500;
+    text-transform: none; letter-spacing: 0; color: var(--ink-3);
+    margin-left: 6px; }
+  .pc-data-pillar-h .pc-data-pillar-caret { color: var(--ink-3);
+    font-family: "SF Mono", Menlo, monospace; width: 12px; text-align: center; }
+  .pc-data-pillar-h .pc-data-pillar-count { color: var(--ink-3);
+    font-weight: 500; font-size: 10px; font-family: "SF Mono", Menlo, monospace; }
+  .pc-data-pillar-body { padding: 6px 8px 8px; background: var(--panel); }
+  .pc-data-pillar.collapsed .pc-data-pillar-body { display: none; }
+  /* Per-pillar accent — border-left stripe + header text color.
+     9-pillar biological cascade: evidence → observation → cause → propagation → endpoint.
+     Roadmap chips still use --warn for the tag so they read distinct. */
+  .pc-data-pillar[data-pillar="literature"]  { border-left-color: #7c3aed; }
+  .pc-data-pillar[data-pillar="literature"]  .pc-data-pillar-h { color: #6d28d9; }
+  .pc-data-pillar[data-pillar="labs"]        { border-left-color: #10b981; }
+  .pc-data-pillar[data-pillar="labs"]        .pc-data-pillar-h { color: #059669; }
+  .pc-data-pillar[data-pillar="variant"]     { border-left-color: #ea580c; }
+  .pc-data-pillar[data-pillar="variant"]     .pc-data-pillar-h { color: #c2410c; }
+  .pc-data-pillar[data-pillar="transcript"]  { border-left-color: #0891b2; }
+  .pc-data-pillar[data-pillar="transcript"]  .pc-data-pillar-h { color: #0e7490; }
+  .pc-data-pillar[data-pillar="protein"]     { border-left-color: #d97706; }
+  .pc-data-pillar[data-pillar="protein"]     .pc-data-pillar-h { color: #b45309; }
+  .pc-data-pillar[data-pillar="downstream"]  { border-left-color: #db2777; }
+  .pc-data-pillar[data-pillar="downstream"]  .pc-data-pillar-h { color: #be185d; }
+  .pc-data-pillar[data-pillar="cell type"]   { border-left-color: #0d9488; }
+  .pc-data-pillar[data-pillar="cell type"]   .pc-data-pillar-h { color: #0f766e; }
+  .pc-data-pillar[data-pillar="tissue type"] { border-left-color: #4f46e5; }
+  .pc-data-pillar[data-pillar="tissue type"] .pc-data-pillar-h { color: #4338ca; }
+  .pc-data-pillar[data-pillar="phenotype"]   { border-left-color: #64748b; }
+  .pc-data-pillar[data-pillar="phenotype"]   .pc-data-pillar-h { color: #475569; }
+  .pc-data-chip { display: block; width: 100%; text-align: left;
+    background: var(--bg); border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 8px 10px; margin-bottom: 4px;
+    font: inherit; font-size: 12px; color: var(--ink); cursor: pointer;
+    line-height: 1.35; }
+  .pc-data-chip:hover { border-color: var(--accent); color: var(--accent);
+    background: var(--accent-soft); }
+  .pc-data-chip.roadmap { color: var(--ink-3); font-style: italic; }
+  .pc-data-chip.roadmap:hover { border-color: var(--line-2);
+    color: var(--ink-2); background: var(--panel); }
+  .pc-data-chip-tag { display: inline-block; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;
+    color: var(--ink-3); background: var(--panel); padding: 1px 5px;
+    border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+  .pc-data-chip.roadmap .pc-data-chip-tag { color: var(--warn); }
+  .pc-data-empty { color: var(--ink-3); font-size: 12px; padding: 24px 8px;
+    text-align: center; line-height: 1.5; }
+  .pc-data-artifact { border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); padding: 12px; margin-bottom: 10px; }
+  .pc-data-artifact-h { display: flex; align-items: center; gap: 8px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  .pc-data-artifact-h .badge { background: var(--accent-soft);
+    color: var(--accent); padding: 2px 6px; border-radius: 3px;
+    font-weight: 700; }
+  .pc-data-artifact-h .badge.roadmap { background: var(--warn-soft, #fff4d6);
+    color: var(--warn); }
+  .pc-data-artifact-h .qref { margin-left: auto; color: var(--ink-3);
+    font-family: "SF Mono", Menlo, monospace; }
+  .pc-data-artifact-h .close { background: transparent; border: none;
+    color: var(--ink-3); cursor: pointer; font-size: 14px; padding: 0 4px; }
+  .pc-data-artifact-h .close:hover { color: var(--bad); }
+  .pc-data-roadmap-body { color: var(--ink-2); font-size: 12px;
+    line-height: 1.5; padding: 8px 4px; }
+  .pc-data-roadmap-body b { color: var(--ink); }
+
+  /* --------- variant detail modal (lollipop marker click) --------- */
+  .pc-var-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .pc-var-modal { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 18px 20px; max-width: 480px; min-width: 360px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25); }
+  .pc-var-modal-h { display: flex; align-items: center; gap: 10px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+  .pc-var-modal-h .pat-id { font-size: 16px; font-weight: 700;
+    font-family: "SF Mono",Menlo,monospace; color: var(--accent); }
+  .pc-var-modal-h .close { margin-left: auto; background: transparent;
+    border: none; color: var(--ink-3); cursor: pointer; font-size: 20px;
+    line-height: 1; padding: 0 4px; }
+  .pc-var-modal-h .close:hover { color: var(--bad); }
+  .pc-var-modal table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .pc-var-modal td { padding: 4px 8px; }
+  .pc-var-modal td:first-child { color: var(--ink-3); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.04em; width: 130px; }
+  .pc-var-modal td:last-child { font-weight: 600; }
+  .pc-var-modal-actions { margin-top: 14px; display: flex; gap: 6px; }
+  .pc-var-modal-btn { padding: 8px 14px; border-radius: 6px; font: inherit;
+    font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
+  .pc-var-modal-btn.primary { background: var(--accent); color: white; }
+  .pc-var-modal-btn.secondary { background: var(--bg); color: var(--ink-2);
+    border: 1px solid var(--line-2); }
+
+  /* --------- 2-panel body (Mechanism view) --------- */
   .pc-body { display: grid; gap: 10px; flex: 1; min-height: 0;
     grid-template-columns: 35% 1fr;
     transition: grid-template-columns 0.2s ease; }
@@ -705,6 +943,26 @@ let morePanelOpen = false;       // "See more example questions" panel — defau
 let chainView = 'flow';          // 'flow' | 'layers'
 let rightStream = [];            // artifact stream — NEWEST FIRST (prepended)
 let scrollTopOnRender = false;   // scroll right-panel body to top when new artifact arrives
+let currentView = 'mechanism';   // 'mechanism' (original 2-panel) | 'data' (Explore Data chip UI)
+let dataStream = [];             // Explore Data stream — NEWEST FIRST. Each entry:
+                                 //   {type:'user',  text}         — user message
+                                 //   {type:'agent', text}         — agent text response
+                                 //   {type:'group', artifacts, qid} — one or more chart artifacts fired together
+                                 //   {type:'artifact', qid, renderer, filter} — legacy single-chip artifact
+let dataExpandedPillars = new Set();  // pillars expanded in Data catalog — default all collapsed
+let dataConversation = [];       // Anthropic messages array sent back to backend each turn
+let dataChatBusy = false;
+let dataChatStatus = '';         // last status line rendered below the input
+let variantModalId = null;       // patient id whose variant detail modal is open, or null
+// Derive the chat backend from window.location so the same static files
+// work whether the workbench is served from 127.0.0.1, localhost, or a
+// remote box's public hostname. Backend must be reachable on the same
+// hostname at port 8766. Override with ?chat=http://host:port if needed.
+const CHAT_ENDPOINT = (() => {
+  const override = new URLSearchParams(location.search).get('chat');
+  if (override) return override.replace(/\/+$/, '') + '/chat';
+  return `${location.protocol}//${location.hostname}:8766/chat`;
+})();
 
 const patientLabel = (p) => `Patient ${p.seqNum}`;
 
@@ -1737,13 +1995,17 @@ function renderStream(p) {
 }
 
 // ================================================================
-// COMPARE-HYPOTHESES ARTIFACT — 4-column side-by-side of H01..H04
+// COMPARE-HYPOTHESES ARTIFACT — top-3 per variant, mechanism-diverse
 // ================================================================
 function renderCompareHypotheses(p, idx) {
   const byId = Object.fromEntries((MECH_DATA?.hypotheses || []).map(h => [h.id, h]));
-  const ranked = [...(p.hypothesisRanking || [])].sort((a, b) =>
-    (a.id || '').localeCompare(b.id || ''));
-  if (!ranked.length) {
+
+  // Group by variant. Falls back to a single flat bucket if the hydrate
+  // step didn't emit the by-variant map (backwards compat with old JSON).
+  const byVariant = p.hypothesisRankingByVariant
+    || { [p.variant?.nucleotide || 'variant']: p.hypothesisRanking || [] };
+  const variantKeys = Object.keys(byVariant);
+  if (!variantKeys.length || variantKeys.every(k => !(byVariant[k] || []).length)) {
     return `<div class="gen-artifact" data-artifact-idx="${idx}">
       <div class="gen-artifact-h"><span class="gen-artifact-badge">compare</span>
       Cross-hypothesis compare<button class="close" data-artifact-remove="${idx}">×</button>
@@ -1763,7 +2025,7 @@ function renderCompareHypotheses(p, idx) {
     </div>`;
   };
 
-  const cols = ranked.map(r => {
+  const colFor = (r) => {
     const meta = byId[r.id] || {};
     const sv = r.scoreVector || {};
     const rc = r.refinedClaim || {};
@@ -1778,9 +2040,13 @@ function renderCompareHypotheses(p, idx) {
       </li>`).join('');
     const contras = (sv.contradictions || []).length;
     const isTop = r.rank === 1;
+    const famBadge = (r.mechanismFamily && r.mechanismFamily !== r.id)
+      ? `<span class="cmp-flag" style="background:var(--tile);color:var(--ink-2)">family ${esc(r.mechanismFamily)}</span>`
+      : '';
     const flags = [
       isTop ? `<span class="cmp-flag top">rank #1</span>` : '',
       contras ? `<span class="cmp-flag contra">${contras} contradiction${contras === 1 ? '' : 's'}</span>` : '',
+      famBadge,
     ].filter(Boolean).join('');
     return `<div class="cmp-col rank-${r.rank}">
       <div class="cmp-hd">
@@ -1797,21 +2063,39 @@ function renderCompareHypotheses(p, idx) {
       <div class="cmp-claim">${esc(claimText)}</div>
       <ul class="cmp-premises">${prems || '<li><span class="r" style="color:var(--ink-3)">no premise contributions</span></li>'}</ul>
     </div>`;
+  };
+
+  const variantBlocks = variantKeys.map(vk => {
+    const hyps = [...(byVariant[vk] || [])].sort((a, b) =>
+      (a.rank || 99) - (b.rank || 99));
+    const label = vk.includes(':') ? vk.split(':').slice(1).join(':') : vk;
+    const header = variantKeys.length > 1
+      ? `<div style="font-size:11px;color:var(--ink-2);margin:8px 0 4px 2px">
+           variant · <b style="color:var(--ink-1)">${esc(label)}</b> · ${hyps.length} surviving hypothes${hyps.length === 1 ? 'is' : 'es'}
+         </div>`
+      : '';
+    return `${header}<div class="cmp-grid">${hyps.map(colFor).join('')}</div>`;
   }).join('');
+
+  const nVariants = variantKeys.length;
+  const subtitle = nVariants === 1
+    ? 'top 3 hypotheses (mechanism-diverse) side-by-side'
+    : `top 3 per variant · ${nVariants} pathogenic variants`;
 
   return `<div class="gen-artifact" data-artifact-idx="${idx}">
     <div class="gen-artifact-h">
       <span class="gen-artifact-badge">compare</span>
-      Cross-hypothesis view · H01 → H04 side-by-side
+      Cross-hypothesis view · ${subtitle}
       <button class="close" data-artifact-remove="${idx}">×</button>
     </div>
     <div style="font-size:11px;color:var(--ink-2);line-height:1.4;margin-bottom:6px">
       Each column shows one hypothesis's Pareto axes (confidence · severity · treatability)
       and its top 4 premise contributions by |weight|. Rank #1 is outlined; contradictions
       are flagged when both positive and negative premises accrue meaningful weight at the
-      same chain position.
+      same chain position. Survivors are chosen top-K by score with a one-per-mechanism-family
+      constraint so no two columns collapse onto the same story.
     </div>
-    <div class="cmp-grid">${cols}</div>
+    ${variantBlocks}
   </div>`;
 }
 
@@ -2086,13 +2370,13 @@ function buildExamples(p) {
     // ---- Mechanism synthesis (workbench-unique) ------------------
     { category: '✦ Mechanism synthesis', items: [
       { tag: '✓ chain',      question: 'Show me the reasoning chain' },
-      { tag: '✓ compare',    question: 'Compare all four hypotheses side-by-side' },
+      { tag: '✓ compare',    question: 'Compare the surviving hypotheses side-by-side' },
       { tag: '✓ pareto',     question: 'Show the Pareto ranking (confidence × severity × treatability)' },
       { tag: '✓ substrate',  question: 'Open the substrate explorer — what data sources fired?' },
       { tag: '✓ chain',      question: 'What supports H01 (sarcolemmal fragility)?' },
-      { tag: '✓ chain',      question: 'What supports H02 (partial in-frame rescue)?' },
       { tag: '✓ chain',      question: 'What supports H03 (NMD-mediated loss)?' },
       { tag: '✓ chain',      question: 'What supports H04 (distal isoform loss)?' },
+      { tag: '✓ chat',       question: 'Which hypothesis got pruned for this patient, and why?' },
       { tag: '✓ chat',       question: 'What is the mechanism narrative for the top hypothesis?' },
       { tag: '✓ chat',       question: 'What was considered but discarded for the top hypothesis?' },
       { tag: '✓ chat',       question: 'What testable predictions follow from the top mechanism?' },
@@ -2178,12 +2462,1351 @@ function renderRightPanel(p) {
 }
 
 // ================================================================
+// EXPLORE DATA VIEW — chip catalog + stackable chart artifacts
+// ================================================================
+// Chip catalog. Grouped by the 4 pillars from docs/key_questions.md,
+// pulled directly from the Q2 2026 rare-disease platform deck (ALMS1
+// original, gene/disease terms swapped for DMD). Each chip declares:
+//   qid        — Q<pillar>.<n> reference into the doc
+//   label      — chip text
+//   status     — 'chart' (real renderer) | 'roadmap' (honest stub)
+//   renderer   — dispatch key handled by dataArtifact()
+//   note       — sub-line rendered inline (context / data source)
+// Ordered biological cascade: evidence → observation → cause → propagation → endpoint.
+// QIDs stay locked to the deck (docs/key_questions.md) so the audit trail
+// survives reorderings. Two chips (LA.1 labs summary, VA.1 variant card) are
+// workbench-native additions that fill pillars the deck didn't emit.
+const DATA_CHIPS = [
+  { pillar: 'Literature', sub: 'What is published?',
+    items: [
+      { qid: 'Q1.1', label: 'Variants reported in DMD (annotation, exon, source paper)',
+        status: 'chart',   renderer: 'variants_table', note: 'ClinVar + Zhang cohort' },
+    ]},
+  { pillar: 'Labs', sub: 'What has been observed clinically?',
+    items: [
+      { qid: 'LA.1', label: 'Abnormal labs for this patient (grouped by layer)',
+        status: 'chart',   renderer: 'labs_summary',   note: 'per-patient synthetic labs' },
+    ]},
+  { pillar: 'Variant', sub: 'The trigger — cause of the cascade',
+    items: [
+      { qid: 'VA.1', label: 'Variant details card (exon · HGVSc · HGVSp · ACMG)',
+        status: 'chart',   renderer: 'variant_card',   note: 'this patient\'s pathogenic variant' },
+      { qid: 'VA.2', label: 'Variant lollipop — position along DMD × phenotype',
+        status: 'chart',   renderer: 'variant_lollipop', note: 'genotype-phenotype map · cohort backdrop + Zhang patients · click a marker' },
+      { qid: 'VA.3', label: 'Genetic variants — count + composition (consequence / ACMG)',
+        status: 'chart',   renderer: 'variant_composition', note: 'dashboard-style tile · horizontal bars' },
+    ]},
+  { pillar: 'Transcript', sub: 'What happens after transcription?',
+    items: [
+      { qid: 'Q2.1', label: 'Does this patient\'s variant trigger NMD or escape?',
+        status: 'chart',   renderer: 'nmd_status',     note: 'aenmd-equivalent premise' },
+      { qid: 'Q2.2', label: 'AbSplice predictions per tissue for this variant',
+        status: 'chart',   renderer: 'absplice',       note: 'AbSplice v1.0 (curated TSV)' },
+    ]},
+  { pillar: 'Protein', sub: 'What happens to dystrophin?',
+    items: [
+      { qid: 'Q3.1', label: 'Predicted fold of dystrophin with this variant (ESM3)',
+        status: 'chart',   renderer: 'esm3_fold',      note: 'ESM3 Forge · cached PDBs' },
+      { qid: 'Q3.2', label: 'ESM2 LLR for this variant vs baseline',
+        status: 'roadmap', renderer: 'esm2_llr',       note: 'not baked · needs ESM2 pass' },
+      { qid: 'Q3.3', label: 'LLR vs symptom count across the cohort',
+        status: 'roadmap', renderer: 'llr_vs_symptom', note: 'depends on Q3.2' },
+    ]},
+  { pillar: 'Downstream', sub: 'What happens downstream of dystrophin?',
+    items: [
+      { qid: 'Q4.1', label: 'DMD molecular interactors + top pathways (Open Targets)',
+        status: 'chart',   renderer: 'opentargets',    note: 'Open Targets GraphQL' },
+      { qid: 'Q4.2', label: 'Co-expression network for DMD (ARCHS4)',
+        status: 'roadmap', renderer: 'archs4',         note: 'not baked · needs ARCHS4 pull' },
+      { qid: 'Q4.3', label: 'Protein interaction network for DMD (STRING)',
+        status: 'roadmap', renderer: 'string',         note: 'not baked · needs STRING pull' },
+      { qid: 'Q4.4', label: 'Perturbation simulation (Geneformer)',
+        status: 'roadmap', renderer: 'geneformer',     note: 'not baked · needs Geneformer run' },
+      { qid: 'Q4.5', label: 'Rescue candidates matched to DMD-loss signature (CMap)',
+        status: 'roadmap', renderer: 'cmap',           note: 'not baked · needs CMap query' },
+    ]},
+  { pillar: 'Cell Type', sub: 'Which cells are affected?',
+    items: [
+      { qid: 'Q2.3', label: 'Which cell types express DMD? (single-cell rank)',
+        status: 'chart',   renderer: 'hpa_cells',      note: 'Human Protein Atlas' },
+    ]},
+  { pillar: 'Tissue Type', sub: 'Which tissues are affected?',
+    items: [
+      { qid: 'Q2.4', label: 'Which tissues express DMD? (hit vs spared)',
+        status: 'chart',   renderer: 'gtex_tissues',   note: 'isoform × tissue projection' },
+      { qid: 'Q2.5', label: 'Isoform × tissue coverage grid',
+        status: 'chart',   renderer: 'isoform_grid',   note: 'curated per-isoform' },
+    ]},
+  { pillar: 'Phenotype', sub: 'How does this land at symptoms?',
+    items: [
+      { qid: 'Q2.6', label: 'NMD status vs symptom count across the cohort',
+        status: 'chart',   renderer: 'nmd_vs_symptom', note: 'cohort n=10 · thin' },
+      { qid: 'Q5',   label: 'How do these mechanisms link this variant to symptoms?',
+        status: 'chart',   renderer: 'route_to_mech',  note: 'switches to Mechanism tab' },
+    ]},
+];
+
+// ================================================================
+// LAUREN'S TAB — dashboard-style Mechanistic Overview + Hypotheses
+// ================================================================
+// Recapitulates the layout Lauren asked for: 4 overview tiles + Top
+// Pathways sidebar + a hypotheses table. Each tile pulls from data
+// we already have; only Protein Impact requires the ESM3 bake to
+// have run (data/variants/protein_impact.tsv).
+function renderLaurenView(p) {
+  return `<div class="pc-lauren">
+    <div class="lauren-section-h">Mechanistic Overview</div>
+    <div class="lauren-overview">
+      ${laurenTileGeneticVariants(p)}
+      ${laurenTileNMD(p)}
+      ${laurenTileProteinImpact(p)}
+      ${laurenTileMostAffectedCells(p)}
+      ${laurenTileTopPathways(p)}
+    </div>
+    <div class="lauren-section-h">Mechanistic Hypotheses</div>
+    ${laurenHypothesesTable(p)}
+  </div>`;
+}
+
+// ---- Tile 1: Genetic Variants ----
+function laurenTileGeneticVariants(p) {
+  const cc = MECH_DATA?.clinvarComposition;
+  const patients = DATA.patients || [];
+  const v = p.variant || {};
+  // Map ClinVar classifier labels → readable + workbench consequence names.
+  const LABEL = { nonsense: 'Nonsense', frameshift: 'Frameshift', splice: 'Splice-site',
+                  missense: 'Missense', inframe_indel: 'In-frame indel',
+                  large_del: 'Large deletion', other: 'Other' };
+  const COL   = { Nonsense: '#7a5cd6', Frameshift: '#c94a4a', 'Splice-site': '#d78a2b',
+                  Missense: '#4d96d1', 'In-frame indel': '#0d9488',
+                  'Large deletion': '#64748b', Other: '#94a3b8' };
+
+  if (!cc || !cc.breakdown?.length) {
+    // Fallback: cohort-only view (ClinVar bake didn't run)
+    return `<div class="lauren-tile">
+      <div class="lauren-tile-h">Genetic Variants</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">
+        clinvarComposition missing — re-run <code>hydrate_mechanism_view</code>.
+      </div>
+    </div>`;
+  }
+
+  const meC = v.consequence || '';
+  // Normalize the patient's own consequence into the same label vocabulary
+  const meNorm = /frame/i.test(meC) ? 'Frameshift'
+               : /nonsense/i.test(meC) ? 'Nonsense'
+               : /splice/i.test(meC) ? 'Splice-site'
+               : /missense/i.test(meC) ? 'Missense'
+               : meC;
+  const max = cc.breakdown[0]?.n || 1;
+  const rows = cc.breakdown.slice(0, 6).map(row => {
+    const lbl = LABEL[row.label] || row.label;
+    const w = (row.n / max) * 100;
+    const isMe = lbl === meNorm;
+    return `<div class="lauren-mini-bar ${isMe ? 'me' : ''}">
+      <span class="lb-lbl">${esc(lbl)}</span>
+      <span class="lb-bar"><span class="lb-bar-fill" style="width:${w.toFixed(0)}%;background:${COL[lbl] || 'var(--accent)'}"></span></span>
+      <span class="lb-val">${row.n}</span>
+    </div>`;
+  }).join('');
+
+  return `<div class="lauren-tile">
+    <div class="lauren-tile-h">Genetic Variants</div>
+    <div>
+      <span class="lauren-tile-big ok">${cc.total.toLocaleString()}</span>
+      <div class="lauren-tile-sub">pathogenic + likely pathogenic · ClinVar</div>
+    </div>
+    <div class="lauren-tile-body">${rows}</div>
+    <div style="border-top:1px dashed var(--line-2);margin-top:8px;padding-top:6px;font-size:10px;color:var(--ink-3);line-height:1.4">
+      <b style="color:var(--accent)">${esc(patientLabel(p))}:</b> <code style="font-size:10px">${esc(v.nucleotide || '?')}</code> · ${esc(v.consequence || '?')} · exon ${esc(v.exon || '?')} · ACMG ${esc(v.acmg || '?')}<br>
+      <span style="color:var(--ink-3)">workbench cohort: ${patients.length} curated (Zhang 2024)</span>
+    </div>
+  </div>`;
+}
+
+// ---- Tile 2: NMD Prediction ----
+function laurenTileNMD(p) {
+  const nmd = MECH_DATA?.nmdCohort;
+  const path = nmd?.grid?.pathogenic;
+  if (!path) {
+    return `<div class="lauren-tile">
+      <div class="lauren-tile-h">NMD Prediction</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">
+        nmdCohort missing — re-run <code>hydrate_mechanism_view</code>.
+      </div>
+    </div>`;
+  }
+  const trigger = path.triggering || 0;
+  const escape  = path.escape || 0;
+  const tdep    = path.transcript_dependent || 0;
+  const total   = trigger + escape + tdep;
+
+  // Verdict for this patient — mirrors classify_variant_nmd upstream.
+  const c = (p.variant?.consequence || '').toLowerCase();
+  const exonN = p.variant?.exonNum;
+  const nExons = DATA.gene?.nExons || 79;
+  const meBucket = /frameshift|nonsense/.test(c)
+                     ? (exonN != null && exonN >= nExons - 1 ? 'escape' : 'triggering')
+                 : /splice/.test(c)   ? 'triggering'
+                 : /missense|inframe/.test(c) ? 'transcript_dependent'
+                 : 'transcript_dependent';
+  const VERDICT = {
+    triggering: ['Predicted trigger',       'var(--bad)'],
+    escape:     ['Predicted escape',        'var(--warn)'],
+    transcript_dependent: ['Transcript-dep.', 'var(--good)'],
+  };
+  const [meLabel, meColor] = VERDICT[meBucket];
+
+  // Pie chart via SVG arc paths. Slices in a fixed order so colors stay
+  // legible. Highlight this patient's slice with a slight radial pop.
+  const cx = 40, cy = 40, R = 36;
+  const slices = [
+    { key: 'triggering',           frac: trigger / total, color: 'var(--bad)' },
+    { key: 'escape',               frac: escape  / total, color: 'var(--warn)' },
+    { key: 'transcript_dependent', frac: tdep    / total, color: 'var(--good)' },
+  ];
+  const pieSlices = (() => {
+    let a0 = -Math.PI / 2;  // start at 12 o'clock
+    const out = [];
+    for (const s of slices) {
+      if (s.frac <= 0) continue;
+      const a1 = a0 + s.frac * 2 * Math.PI;
+      const isMe = s.key === meBucket;
+      // Slight radial pop for the "me" slice
+      const dx = isMe ? Math.cos((a0 + a1) / 2) * 3 : 0;
+      const dy = isMe ? Math.sin((a0 + a1) / 2) * 3 : 0;
+      const x1 = cx + dx + R * Math.cos(a0);
+      const y1 = cy + dy + R * Math.sin(a0);
+      const x2 = cx + dx + R * Math.cos(a1);
+      const y2 = cy + dy + R * Math.sin(a1);
+      const large = s.frac > 0.5 ? 1 : 0;
+      // Handle full-circle edge case (single slice) with two half arcs
+      let d;
+      if (s.frac >= 0.999) {
+        d = `M ${cx+dx-R},${cy+dy} A ${R} ${R} 0 1 1 ${cx+dx+R},${cy+dy} A ${R} ${R} 0 1 1 ${cx+dx-R},${cy+dy} Z`;
+      } else {
+        d = `M ${cx+dx},${cy+dy} L ${x1.toFixed(2)},${y1.toFixed(2)} A ${R} ${R} 0 ${large} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z`;
+      }
+      const stroke = isMe ? 'white' : 'var(--panel)';
+      const sw     = isMe ? 2 : 1;
+      out.push(`<path d="${d}" fill="${s.color}" stroke="${stroke}" stroke-width="${sw}"><title>${esc(s.key)}: ${(s.frac*100).toFixed(1)}%${isMe ? ' — this patient' : ''}</title></path>`);
+      a0 = a1;
+    }
+    return out.join('');
+  })();
+  const donut = pieSlices;
+
+  const pct = (n) => total ? ((n / total) * 100).toFixed(0) + '%' : '0%';
+
+  return `<div class="lauren-tile">
+    <div class="lauren-tile-h">NMD Prediction</div>
+    <div>
+      <span class="lauren-tile-big bad">${trigger.toLocaleString()}</span>
+      <div class="lauren-tile-sub">predicted NMD-triggering of ${total.toLocaleString()} pathogenic (ClinVar)</div>
+    </div>
+    <div class="lauren-tile-body">
+      <div class="lauren-donut">
+        <svg width="90" height="90" viewBox="-4 -4 88 88">
+          ${donut}
+        </svg>
+        <div class="lauren-donut-legend">
+          <div><span style="color:var(--bad)">●</span> Predicted trigger · ${trigger.toLocaleString()} (${pct(trigger)})</div>
+          <div><span style="color:var(--warn)">●</span> Predicted escape · ${escape.toLocaleString()} (${pct(escape)})</div>
+          <div><span style="color:var(--good)">●</span> Transcript-dependent · ${tdep.toLocaleString()} (${pct(tdep)})</div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px dashed var(--line-2);margin-top:8px;padding-top:6px;font-size:10px;color:var(--ink-3);line-height:1.4">
+      <b style="color:${meColor}">${esc(patientLabel(p))}: ${esc(meLabel)}</b>
+      <span style="color:var(--ink-3)"> · ${esc(p.variant?.consequence || '?')} at exon ${esc(p.variant?.exon || '?')}</span>
+    </div>
+  </div>`;
+}
+
+// ---- Tile 3: Protein Impact — healthy vs consensus NMD-escape truncation ----
+function laurenTileProteinImpact(p) {
+  // CT is kept gray (neutral) so the truncation visibly stands out on it.
+  const DOMAINS = [
+    { name: 'N-term actin-binding',       short: 'N-ABD', start: 1,    end: 240,  color: '#4d96d1' },
+    { name: 'Central rod (24 spectrin repeats, 4 hinges)', short: 'Rod', start: 241,  end: 3040, color: '#7a5cd6' },
+    { name: 'Cysteine-rich (DGC anchor)', short: 'CR',    start: 3080, end: 3360, color: '#d78a2b' },
+    { name: 'C-terminal (syntrophin-binding)', short: 'CT', start: 3361, end: 3685, color: '#9ca3af' },
+  ];
+  const LEN = 3685;
+  const ev = MECH_DATA?.nmdCohort?.escapeVariants || [];
+  const meResidue = DATA.proteinImpactCohort?.[p.id]?.residue;
+  const meImpact  = DATA.proteinImpactCohort?.[p.id]?.impactScore;
+  const meNmdEscape = meResidue != null && meResidue >= 3600;
+
+  if (!ev.length) {
+    return `<div class="lauren-tile">
+      <div class="lauren-tile-h">Protein Impact</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">
+        No NMD-escape variants in ClinVar corpus — nothing to render.
+      </div>
+    </div>`;
+  }
+  // Consensus truncation = median of the 4 escape variants' residue positions.
+  const residues = ev.map(v => v.residue).sort((a, b) => a - b);
+  const consensus = Math.round(residues[Math.floor(residues.length / 2)]);
+  const lostAA = LEN - consensus;
+
+  const cutDom = DOMAINS.find(d => consensus >= d.start && consensus <= d.end);
+  const fullyLost = DOMAINS.filter(d => d.start > consensus);
+
+  // Combined SVG: two full-length domain bars on the LEFT, a zoomed
+  // "last 100 aa" letter view on the RIGHT. Both share the same y rows
+  // so the letters sit exactly level with each bar.
+  const W = 220, H = 18, GAP = 22, LABEL_H = 14, AA_LABEL_W = 56;
+  const ZOOM_N = 100;
+  const CHAR_W = 5.2;                 // monospace char width in SVG
+  const ZOOM_W = ZOOM_N * CHAR_W;     // ~520px
+  const ZOOM_GAP = 24;                // space between bar-area and zoom
+  const zoomX0  = W + AA_LABEL_W + ZOOM_GAP;
+  const totalW  = zoomX0 + ZOOM_W + 8;
+  const totalH  = 2 * H + GAP + 2 * LABEL_H + 22;
+  const scale   = r => (r - 1) / (LEN - 1) * W;
+  const TRUNC_OUTLINE = '#9ca3af';
+
+  const domainSegs = (yTop, truncatedAt) => {
+    const stop = truncatedAt || LEN;
+    return DOMAINS.filter(d => d.start <= stop).map(d => {
+      const x1 = scale(d.start);
+      const x2 = scale(Math.min(d.end, stop));
+      const w  = Math.max(0.5, x2 - x1);
+      return `<rect x="${x1.toFixed(1)}" y="${yTop}" width="${w.toFixed(1)}" height="${H}"
+                fill="${d.color}" stroke="white" stroke-width="0.6">
+                <title>${esc(d.name)} (aa ${d.start}-${d.end})</title>
+              </rect>`;
+    }).join('');
+  };
+  // For the truncated bar: draw the white-with-outline "phantom" region
+  // showing where the truncated aa WOULD be (from cut to LEN).
+  const truncatedPhantom = (yTop, truncatedAt) => {
+    const x1 = scale(truncatedAt);
+    const x2 = scale(LEN);
+    const w  = Math.max(0.5, x2 - x1);
+    return `<rect x="${x1.toFixed(1)}" y="${yTop}" width="${w.toFixed(1)}" height="${H}"
+              fill="white" stroke="${TRUNC_OUTLINE}" stroke-width="1" stroke-dasharray="3 2">
+              <title>Truncated (aa ${truncatedAt + 1}-${LEN})</title>
+            </rect>`;
+  };
+
+  // Vertical cut-line spanning both bars
+  const cutX  = scale(consensus);
+  const healthyY = LABEL_H;
+  const truncY   = LABEL_H + H + GAP + LABEL_H;
+  const cutLine = `<line x1="${cutX.toFixed(1)}" y1="${healthyY - 4}" x2="${cutX.toFixed(1)}" y2="${truncY + H + 4}"
+                     stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                   <text x="${cutX.toFixed(1)}" y="${healthyY - 6}" text-anchor="middle"
+                     fill="var(--bad)" font-size="9" font-weight="700">truncation @ aa ${consensus}</text>`;
+
+  // AA-count labels on right side (positioned OUTSIDE the bar viewport)
+  const healthyCount = `<text x="${W + 6}" y="${healthyY + H / 2 + 3}" fill="var(--ink)"
+                          font-size="10" font-weight="700" font-variant-numeric="tabular-nums">${LEN} aa</text>`;
+  const truncCount   = `<text x="${W + 6}" y="${truncY + H / 2 + 3}" fill="var(--ink)"
+                          font-size="10" font-weight="700" font-variant-numeric="tabular-nums">${consensus} aa</text>`;
+
+  // Patient / escape-variant markers
+  const meMarker = meResidue && meResidue <= LEN
+    ? `<circle cx="${scale(meResidue).toFixed(1)}" cy="${healthyY + H + 5}" r="2" fill="var(--accent)"><title>${esc(patientLabel(p))} variant @ aa ${meResidue}</title></circle>` : '';
+  const escapeMks = ev.map(v =>
+    `<circle cx="${scale(v.residue).toFixed(1)}" cy="${truncY + H + 5}" r="1.6" fill="var(--bad)"><title>${esc(v.variantName)}</title></circle>`
+  ).join('');
+
+  // Bar labels
+  const healthyLabel = `<text x="0" y="${healthyY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Healthy dystrophin</text>`;
+  const truncLabel   = `<text x="0" y="${truncY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Truncation · consensus of ${ev.length} NMD-escape variants</text>`;
+
+  // ── Zoomed "last 100 aa" letter view (right side of the SVG) ──────
+  // Uses the full-protein sequence tail exposed in mechanism_data.gene.
+  const tail   = MECH_DATA?.gene?.sequenceTail || '';
+  const tailStart = MECH_DATA?.gene?.sequenceTailStart || (LEN - tail.length + 1);
+  // Window we're going to render: last ZOOM_N residues
+  const winStart = LEN - ZOOM_N + 1;                // e.g. 3586
+  const winEnd   = LEN;                             // 3685
+  const offset   = winStart - tailStart;            // slice offset into tail
+  const winSeq   = tail.slice(offset, offset + ZOOM_N);
+  const zoomScale = i => zoomX0 + (i + 0.5) * CHAR_W;   // x-center of the i-th letter (0-based)
+
+  const zoomLabel = `<text x="${zoomX0}" y="${healthyY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Last 100 aa (residues ${winStart}–${winEnd})</text>`;
+
+  // Row 1 (healthy) — all 100 letters
+  const healthyLetters = Array.from(winSeq).map((ch, i) =>
+    `<text x="${zoomScale(i).toFixed(2)}" y="${healthyY + H / 2 + 3}" text-anchor="middle"
+       font-family="'SF Mono',Menlo,Consolas,monospace" font-size="9"
+       fill="var(--ink)">${esc(ch)}</text>`
+  ).join('');
+  // Row 2 (truncation) — letters preserved only up to consensus; empty after
+  const cutInWin  = consensus - winStart;   // index into winSeq of last kept residue (0-based)
+  const truncLetters = Array.from(winSeq).map((ch, i) => {
+    const kept = i <= cutInWin;
+    return `<text x="${zoomScale(i).toFixed(2)}" y="${truncY + H / 2 + 3}" text-anchor="middle"
+              font-family="'SF Mono',Menlo,Consolas,monospace" font-size="9"
+              fill="${kept ? 'var(--ink)' : '#d1d5db'}">${esc(kept ? ch : '·')}</text>`;
+  }).join('');
+  // Vertical cut-line in the zoom (between letter cutInWin and cutInWin+1)
+  const cutXZoom = zoomX0 + (cutInWin + 1) * CHAR_W;
+  const zoomCut = `<line x1="${cutXZoom.toFixed(2)}" y1="${healthyY - 4}" x2="${cutXZoom.toFixed(2)}" y2="${truncY + H + 4}"
+    stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <text x="${cutXZoom.toFixed(2)}" y="${healthyY - 6}" text-anchor="middle" fill="var(--bad)"
+      font-size="9" font-weight="700">cut @ ${consensus}</text>`;
+  // Position ticks every 10 aa (below the truncation letters)
+  let zoomTicks = '';
+  for (let i = 0; i < ZOOM_N; i += 10) {
+    const x = zoomScale(i);
+    const r = winStart + i;
+    zoomTicks += `<text x="${x.toFixed(2)}" y="${truncY + H + 12}" text-anchor="middle"
+      fill="var(--ink-3)" font-size="7">${r}</text>`;
+  }
+
+  const svg = `<svg width="${totalW}" viewBox="-2 0 ${totalW + 2} ${totalH}"
+                   style="display:block" preserveAspectRatio="xMinYMid meet">
+    ${healthyLabel}
+    ${domainSegs(healthyY, null)}
+    ${truncLabel}
+    ${domainSegs(truncY, consensus)}
+    ${truncatedPhantom(truncY, consensus)}
+    ${cutLine}
+    ${healthyCount}
+    ${truncCount}
+    ${meMarker}
+    ${escapeMks}
+    ${zoomLabel}
+    ${healthyLetters}
+    ${truncLetters}
+    ${zoomCut}
+    ${zoomTicks}
+  </svg>`;
+
+  // Key — colored domains + truncated phantom + cut marker
+  const domainKey = DOMAINS.map(d => `
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--ink-2);margin-right:10px;white-space:nowrap">
+      <span style="display:inline-block;width:10px;height:9px;background:${d.color};border-radius:1px"></span>
+      ${esc(d.short)}
+    </span>`).join('');
+  const key = `${domainKey}
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--ink-2);margin-right:10px">
+      <span style="display:inline-block;width:10px;height:9px;background:white;border:1px dashed ${TRUNC_OUTLINE};border-radius:1px"></span>
+      truncated
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--bad)">
+      <span style="display:inline-block;width:2px;height:10px;background:var(--bad)"></span>
+      cut
+    </span>`;
+
+  const lostSummary = fullyLost.length
+    ? `${fullyLost.length} full domain${fullyLost.length === 1 ? '' : 's'} (${fullyLost.map(d => d.short).join(', ')})`
+    : `partial ${cutDom?.short || 'C-term'} (${lostAA} aa)`;
+
+  const patientCallout = meNmdEscape && meResidue
+    ? `<b style="color:var(--accent)">${esc(patientLabel(p))}</b> is itself an NMD-escape variant @ aa ${meResidue}`
+    : `<b style="color:var(--ink-2)">${esc(patientLabel(p))}</b> triggers NMD → no protein made (bar shows escape consensus, not this patient)`;
+
+  return `<div class="lauren-tile" style="grid-column:span 3;overflow-x:auto">
+    <div class="lauren-tile-h">Protein Impact</div>
+    ${svg}
+    <div style="margin-top:6px;font-size:11px;color:var(--ink-2);line-height:1.5">
+      <b style="color:var(--bad)">Lost C-terminal domain:</b> ${lostSummary}
+    </div>
+    <div style="margin-top:4px">${key}</div>
+    <div style="border-top:1px dashed var(--line-2);margin-top:6px;padding-top:6px;font-size:10px;color:var(--ink-3);line-height:1.4">
+      ${patientCallout}${meImpact != null ? ` · ESM3 impact ${meImpact.toFixed(2)}` : ''}
+    </div>
+  </div>`;
+}
+
+// ---- Tile 4: Most Affected Cell Type ----
+function laurenTileMostAffectedCells(p) {
+  const cells = [...(p.cellTypeImpact || [])].sort((a, b) => b.score - a.score);
+  const hit = cells.filter(c => c.status === 'hit');
+  const top = cells.slice(0, 5);
+  const rows = top.map(c => {
+    const color = c.status === 'hit' ? 'var(--bad)'
+               : c.status === 'spared' ? 'var(--good)' : 'var(--warn)';
+    return `<div class="lauren-mini-bar">
+      <span class="lb-lbl" title="${esc(c.tissue)}">${esc(c.name)}</span>
+      <span class="lb-bar"><span class="lb-bar-fill" style="width:${(c.score * 10).toFixed(0)}%;background:${color}"></span></span>
+      <span class="lb-val" style="color:${color}">${c.status[0].toUpperCase()}</span>
+    </div>`;
+  }).join('');
+  return `<div class="lauren-tile">
+    <div class="lauren-tile-h">Most Affected Cell Types</div>
+    <div>
+      <span class="lauren-tile-big bad">${hit.length}/${cells.length}</span>
+      <div class="lauren-tile-sub">cell types hit by this variant · HPA</div>
+    </div>
+    <div class="lauren-tile-body">${rows}</div>
+  </div>`;
+}
+
+// ---- Sidebar: Top Pathways ----
+function laurenTileTopPathways(p) {
+  const ot = MECH_DATA?.openTargets;
+  const paths = (ot?.pathways || []).slice(0, 5);
+  const items = paths.length ? paths.map(pw =>
+    `<li style="margin-bottom:6px;line-height:1.35"><b>${esc(pw.name)}</b><br>
+      <span style="color:var(--ink-3);font-size:10px">${esc(pw.topLevel || '')}</span></li>`
+  ).join('') : '<li style="color:var(--ink-3)">no pathways loaded</li>';
+  return `<div class="lauren-tile">
+    <div class="lauren-tile-h">Top Pathways</div>
+    <ul style="padding-left:14px;margin:6px 0 0;font-size:11px;color:var(--ink-2)">
+      ${items}
+    </ul>
+  </div>`;
+}
+
+// ---- Bottom: Mechanistic Hypotheses table ----
+function laurenHypothesesTable(p) {
+  const meta = Object.fromEntries((MECH_DATA?.hypotheses || []).map(h => [h.id, h]));
+  const ranked = [...(p.hypothesisRanking || [])].sort((a, b) => (a.rank || 99) - (b.rank || 99));
+  if (!ranked.length) return `<div class="lauren-hyp-table" style="color:var(--ink-3)">No hypotheses for this patient.</div>`;
+  const axisBar = (v, color) => {
+    const w = Math.max(0, Math.min(100, (v || 0) * 100));
+    return `<div class="lauren-axis-bar">
+      <span class="lb-bar"><span class="lb-bar-fill" style="display:block;height:100%;width:${w.toFixed(0)}%;background:${color}"></span></span>
+      <span class="lb-val">${(v || 0).toFixed(2)}</span>
+    </div>`;
+  };
+  const header = `<div class="lauren-hyp-row head">
+    <span>#</span>
+    <span>Hypothesis</span>
+    <span>Confidence</span>
+    <span>Severity</span>
+    <span>Treatability</span>
+    <span>Top therapy</span>
+  </div>`;
+  const rows = ranked.map(h => {
+    const m = meta[h.id] || {};
+    const sv = h.scoreVector || {};
+    const therapy = (h.therapeutics || [])[0];
+    const therapyStr = therapy
+      ? `<b>${esc(therapy.modality)}</b><br><span style="color:var(--ink-3);font-size:10px">${esc(therapy.design?.transgene || therapy.design?.agent || therapy.design?.target_exon || therapy.eligibilityStatus || '')}</span>`
+      : '<span style="color:var(--ink-3)">—</span>';
+    const idCls = h.rank === 1 ? 'lauren-hyp-id top' : 'lauren-hyp-id';
+    const topPrem = [...(h.premises || [])]
+      .filter(x => x.sourceId !== 'zhang_2024')
+      .sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight))[0];
+    const supStr = topPrem
+      ? `${esc(topPrem.sourceId)} · <span style="color:${topPrem.weight > 0 ? 'var(--good)' : 'var(--bad)'}">${topPrem.weight >= 0 ? '+' : ''}${topPrem.weight.toFixed(2)}</span>`
+      : '';
+    return `<div class="lauren-hyp-row">
+      <span class="${idCls}">H${esc(h.id)}</span>
+      <div>
+        <div class="lauren-hyp-name">${esc(m.name || `Hypothesis ${h.id}`)}</div>
+        <div class="lauren-hyp-sub">score ${(h.score || 0).toFixed(1)}/10 · top premise: ${supStr}</div>
+      </div>
+      ${axisBar(sv.confidence, 'var(--accent)')}
+      ${axisBar(sv.severity, 'var(--bad)')}
+      ${axisBar(sv.treatability, 'var(--good)')}
+      <div style="font-size:11px">${therapyStr}</div>
+    </div>`;
+  }).join('');
+  return `<div class="lauren-hyp-table">${header}${rows}</div>`;
+}
+
+function renderDataView(p) {
+  const chipsHtml = DATA_CHIPS.map(section => {
+    const key = section.pillar.toLowerCase();
+    const expanded = dataExpandedPillars.has(key);
+    const caret = expanded ? '▾' : '▸';
+    const body = section.items.map(c => `
+        <button class="pc-data-chip ${c.status === 'roadmap' ? 'roadmap' : ''}"
+                data-chip-qid="${esc(c.qid)}"
+                data-chip-renderer="${esc(c.renderer)}"
+                data-chip-status="${esc(c.status)}"
+                data-chip-label="${esc(c.label)}"
+                title="${esc(c.note)}">
+          <span class="pc-data-chip-tag">${esc(c.qid)}</span>${esc(c.label)}
+        </button>`).join('');
+    return `<div class="pc-data-pillar ${expanded ? '' : 'collapsed'}" data-pillar="${esc(key)}">
+      <button class="pc-data-pillar-h" data-pillar-toggle="${esc(key)}"
+              aria-expanded="${expanded}">
+        <span class="pc-data-pillar-caret">${caret}</span>
+        ${esc(section.pillar)}
+        <span class="pc-data-pillar-sub">${esc(section.sub)}</span>
+        <span class="pc-data-pillar-count">${section.items.length}</span>
+      </button>
+      <div class="pc-data-pillar-body">${body}</div>
+    </div>`;
+  }).join('');
+
+  const streamHtml = dataStream.length
+    ? dataStream.map((entry, i) => renderDataStreamEntry(entry, i, p)).join('')
+    : `<div class="pc-data-empty">
+         Ask a question above, or click a chip on the left. Charts stack here, newest first.
+       </div>`;
+
+  const statusCls = dataChatStatus.startsWith('error') ? 'pc-data-chat-status err' : 'pc-data-chat-status';
+  return `<div class="pc-data">
+    <div class="pc-data-chips">${chipsHtml}</div>
+    <div class="pc-data-right">
+      <div class="pc-data-chat">
+        <form class="pc-data-chat-form" id="data-chat-form">
+          <input type="text" class="pc-data-chat-input" id="data-chat-input"
+                 placeholder="Ask about this patient — e.g. 'show me AbSplice and cell types for skeletal muscle'"
+                 autocomplete="off" ${dataChatBusy ? 'disabled' : ''}/>
+          <button type="submit" class="pc-data-chat-btn" id="data-chat-send"
+                  ${dataChatBusy ? 'disabled' : ''}>${dataChatBusy ? '…' : 'Send'}</button>
+          <button type="button" class="pc-data-chat-btn secondary" id="data-chat-reset"
+                  title="Clear conversation + stream">Reset</button>
+        </form>
+        <div class="${statusCls}">${esc(dataChatStatus || `Backend: ${CHAT_ENDPOINT}`)}</div>
+      </div>
+      <div class="pc-data-stream" id="data-stream">${streamHtml}</div>
+    </div>
+  </div>`;
+}
+
+function renderDataStreamEntry(entry, idx, p) {
+  if (entry.type === 'user') {
+    return `<div class="pc-data-msg user">
+      <div class="pc-data-msg-role">you</div>${esc(entry.text)}
+    </div>`;
+  }
+  if (entry.type === 'agent') {
+    return `<div class="pc-data-msg agent">
+      <div class="pc-data-msg-role">agent</div>${esc(entry.text)}
+    </div>`;
+  }
+  if (entry.type === 'group') {
+    const n = entry.artifacts.length;
+    const gridCls = n === 1 ? 'n1' : n === 2 ? 'n2' : 'n3plus';
+    const label = entry.artifacts.length === 1
+      ? DATA_CHIPS.flatMap(s => s.items).find(c => c.qid === entry.artifacts[0].qid)?.label || entry.artifacts[0].qid
+      : `${n} artifacts fired together`;
+    const filterSummary = entry.artifacts
+      .map(a => Object.keys(a.filter || {}).length ? `${a.qid}[${Object.entries(a.filter).map(([k,v]) => `${k}=${v}`).join(',')}]` : a.qid)
+      .join(' + ');
+    const bodies = entry.artifacts.map(a => renderDataArtifact(a, -1, p, {inGroup: true})).join('');
+    return `<div class="pc-data-group">
+      <div class="pc-data-group-h">
+        <span>${esc(filterSummary)}</span>
+        <button class="close" data-stream-remove="${idx}" title="Remove this group">×</button>
+      </div>
+      <div class="pc-data-group-grid ${gridCls}">${bodies}</div>
+    </div>`;
+  }
+  if (entry.type === 'artifact') {
+    return renderDataArtifact(entry, idx, p);
+  }
+  return '';
+}
+
+function wireDataView(p) {
+  document.querySelectorAll('[data-pillar-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.pillarToggle;
+      if (dataExpandedPillars.has(key)) dataExpandedPillars.delete(key);
+      else dataExpandedPillars.add(key);
+      renderPage();
+    });
+  });
+
+  // Chip click → route through the chat backend as a natural-language turn.
+  // Uses the chip's label as the query so the transcript reads like the
+  // user asked it. Falls back to a local direct-render if the backend is
+  // unreachable, so the workbench is still usable without ANTHROPIC_API_KEY.
+  document.querySelectorAll('[data-chip-qid]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const label = btn.dataset.chipLabel || btn.dataset.chipQid;
+      sendChatTurn(p, label);
+    });
+  });
+
+  document.querySelectorAll('[data-stream-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.streamRemove, 10);
+      dataStream.splice(idx, 1);
+      renderPage();
+    });
+  });
+
+  // Q5 synthesis / route_to_mech → jump to Mechanism tab
+  document.querySelectorAll('[data-jump-mechanism]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentView = 'mechanism';
+      renderPage();
+    });
+  });
+
+  // Lollipop marker click → open variant detail modal. Delegated because
+  // markers are re-rendered on every renderPage.
+  const stream = document.getElementById('data-stream');
+  if (stream) stream.addEventListener('click', (ev) => {
+    const el = ev.target.closest('[data-variant-id]');
+    if (!el) return;
+    variantModalId = el.dataset.variantId;
+    renderPage();
+  });
+
+  // Chat form: submit → POST /chat
+  const form = document.getElementById('data-chat-form');
+  if (form) form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const input = document.getElementById('data-chat-input');
+    const q = (input?.value || '').trim();
+    if (!q || dataChatBusy) return;
+    if (input) input.value = '';
+    sendChatTurn(p, q);
+  });
+  const reset = document.getElementById('data-chat-reset');
+  if (reset) reset.addEventListener('click', () => {
+    dataStream = [];
+    dataConversation = [];
+    dataChatStatus = '';
+    renderPage();
+  });
+}
+
+// Send one turn to the chat backend. Prepends the user message immediately,
+// then the agent's response (text + composed artifact group) when it lands.
+async function sendChatTurn(p, userText) {
+  if (dataChatBusy) return;
+  dataChatBusy = true;
+  dataChatStatus = 'thinking…';
+  dataStream.unshift({ type: 'user', text: userText });
+  dataConversation.push({ role: 'user', content: userText });
+  renderPage();
+
+  // Compact patient blob for the backend — just what the system prompt uses.
+  const patientBlob = {
+    id: p.id,
+    phenotype: p.phenotype,
+    variant: p.variant,
+  };
+
+  try {
+    const r = await fetch(CHAT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: dataConversation, patient: patientBlob }),
+    });
+    if (!r.ok) {
+      const errBody = await r.text();
+      throw new Error(`HTTP ${r.status}: ${errBody.slice(0, 200)}`);
+    }
+    const resp = await r.json();
+    if (resp.error) throw new Error(resp.error);
+
+    if (resp.text) {
+      dataStream.unshift({ type: 'agent', text: resp.text });
+      dataConversation.push({ role: 'assistant', content: resp.text });
+    }
+    if (resp.artifacts && resp.artifacts.length) {
+      dataStream.unshift({
+        type: 'group',
+        artifacts: resp.artifacts.map(a => ({ ...a, id: Date.now() + Math.random() })),
+      });
+    }
+    dataChatStatus = resp.usage
+      ? `${ANTHROPIC_MODEL_SHORT(resp.model)} · in ${resp.usage.input_tokens}t · out ${resp.usage.output_tokens}t · ${resp.artifacts?.length || 0} chart(s)`
+      : `${resp.artifacts?.length || 0} chart(s) composed`;
+  } catch (err) {
+    dataChatStatus = `error · ${err.message || err}`;
+    dataStream.unshift({
+      type: 'agent',
+      text: `Chat backend unreachable (${err.message || err}). Start it with:  ANTHROPIC_API_KEY=… ~/venv/bin/python -m prototype.workbench.chat_server`,
+    });
+  } finally {
+    dataChatBusy = false;
+    renderPage();
+    requestAnimationFrame(() => {
+      const stream = document.getElementById('data-stream');
+      if (stream) stream.scrollTop = 0;
+    });
+  }
+}
+
+function ANTHROPIC_MODEL_SHORT(m) {
+  return (m || '').replace(/-\d{8}$/, '').replace(/^claude-/, '');
+}
+
+// ================================================================
+// VARIANT DETAIL MODAL (opens when a lollipop marker is clicked)
+// ================================================================
+function renderVariantModal() {
+  if (!variantModalId) return '';
+  const q = (DATA.patients || []).find(x => x.id === variantModalId);
+  if (!q) return '';
+  const v = q.variant || {};
+  const rows = [
+    ['Patient',        q.id],
+    ['Cohort ID',      q.cohortPatientId || ''],
+    ['Phenotype',      q.phenotype || ''],
+    ['Age',            q.age != null ? `${q.age} y` : ''],
+    ['Ambulatory',     q.ambulatory || ''],
+    ['Exon',           v.exon ?? '?'],
+    ['HGVSc',          v.nucleotide ?? '?'],
+    ['HGVSp',          v.aaChange ?? '?'],
+    ['Consequence',    v.consequence ?? '?'],
+    ['ACMG',           v.acmg ?? '?'],
+  ].map(([k, val]) => `<tr><td>${esc(k)}</td><td>${esc(val)}</td></tr>`).join('');
+  return `<div class="pc-var-modal-backdrop" data-var-modal-close="1">
+    <div class="pc-var-modal">
+      <div class="pc-var-modal-h">
+        <span class="pat-id">${esc(q.id)}</span>
+        <span style="color:var(--ink-3);font-size:11px">variant detail</span>
+        <button class="close" data-var-modal-close="1">×</button>
+      </div>
+      <table>${rows}</table>
+      <div class="pc-var-modal-actions">
+        <button class="pc-var-modal-btn primary" data-var-modal-jump="${esc(q.id)}">
+          Open in Mechanism tab →
+        </button>
+        <button class="pc-var-modal-btn secondary" data-var-modal-close="1">Close</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderDataArtifact(a, idx, p, opts) {
+  const chip = DATA_CHIPS.flatMap(s => s.items).find(c => c.qid === a.qid);
+  const label = chip?.label || a.qid;
+  const isRoadmap = chip?.status === 'roadmap';
+  const badgeCls = isRoadmap ? 'badge roadmap' : 'badge';
+  const badgeText = isRoadmap ? 'roadmap' : 'chart';
+  const inGroup = opts && opts.inGroup;
+  const closeBtn = inGroup ? '' :
+    `<button class="close" data-stream-remove="${idx}">×</button>`;
+  const filterStr = a.filter && Object.keys(a.filter).length
+    ? ' · ' + Object.entries(a.filter).map(([k, v]) => `${k}=${v}`).join(' · ')
+    : '';
+  return `<div class="pc-data-artifact">
+    <div class="pc-data-artifact-h">
+      <span class="${badgeCls}">${badgeText}</span>
+      ${esc(label)}
+      <span class="qref">${esc(a.qid)}${esc(filterStr)}</span>
+      ${closeBtn}
+    </div>
+    ${renderDataArtifactBody(a, p)}
+  </div>`;
+}
+
+// Small helper: horizontal bar row. `max` normalizes width; `hint` prints
+// after the value. Uses accent color unless overridden.
+function dataBarRow(label, val, max, opts) {
+  const o = opts || {};
+  const w = max > 0 ? Math.max(0, Math.min(100, (val / max) * 100)) : 0;
+  const color = o.color || 'var(--accent)';
+  const hint  = o.hint || '';
+  const fmt   = o.fmt || (v => (typeof v === 'number' ? v.toFixed(2) : String(v)));
+  return `<div style="display:grid;grid-template-columns:180px 1fr 90px;gap:8px;align-items:center;font-size:11px;margin-bottom:3px">
+    <span style="color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(label)}">${esc(label)}</span>
+    <span style="background:var(--tile);height:10px;border-radius:2px;position:relative;overflow:hidden">
+      <span style="position:absolute;left:0;top:0;bottom:0;width:${w.toFixed(1)}%;background:${color}"></span>
+    </span>
+    <span style="color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums">${esc(fmt(val))}${hint ? ' ' + esc(hint) : ''}</span>
+  </div>`;
+}
+
+// Pull the highest-|weight| premise of a given sourceId across the top-3
+// hypotheses for this patient — every source is chain-attributed but the
+// blob content is the same regardless of which hypothesis it fired on.
+function dataPatientPremise(p, sourceId) {
+  for (const h of (p.hypothesisRanking || [])) {
+    for (const pr of (h.premises || [])) {
+      if (pr.sourceId === sourceId) return pr;
+    }
+  }
+  return null;
+}
+
+// Dispatch. All renderers return HTML fragments. Real ones read from
+// the patient blob + MECH_DATA; roadmap ones return a describes-what-
+// would-appear stub (per JARVIS "honest stubs" convention).
+function renderDataArtifactBody(a, p) {
+  switch (a.renderer) {
+    // ---------------- LA.1 — labs summary (patient) ----------------
+    case 'labs_summary': {
+      const labs = p.labs || [];
+      if (!labs.length) return `<div class="pc-data-roadmap-body">No labs for this patient.</div>`;
+      const f = a.filter || {};
+      const layerF = (f.layer || '').toLowerCase();
+      const flagF  = (f.flag  || '').toLowerCase();
+      const abn = labs
+        .filter(l => l.flag !== 'normal')
+        .filter(l => !layerF || (l.layer || '').toLowerCase() === layerF)
+        .filter(l => !flagF  || (l.flag  || '').toLowerCase() === flagF);
+      const byLayer = {};
+      for (const l of abn) (byLayer[l.layer || 'other'] ||= []).push(l);
+      const layerRows = Object.entries(byLayer).map(([layer, ls]) => {
+        const rows = ls.map(l => {
+          const fold = (l.flag === 'high' && l.refHigh) ? `${(l.value / l.refHigh).toFixed(1)}× ULN`
+                     : (l.flag === 'low' && l.refLow)   ? `${(l.refLow / l.value).toFixed(1)}× < LLN` : '';
+          const color = l.flag === 'high' ? 'var(--bad)' : l.flag === 'low' ? 'var(--warn)' : 'var(--ink-2)';
+          return `<tr>
+            <td style="padding:4px 6px;font-weight:600">${esc(l.label)}</td>
+            <td style="padding:4px 6px;font-variant-numeric:tabular-nums">${esc(l.value)} ${esc(l.unit || '')}</td>
+            <td style="padding:4px 6px;color:${color};font-weight:600">${esc(l.flag)}</td>
+            <td style="padding:4px 6px;color:var(--ink-3);font-size:11px">${esc(fold)}</td>
+            <td style="padding:4px 6px;color:var(--ink-3);font-size:11px">${esc(l.tissue || '')}</td>
+          </tr>`;
+        }).join('');
+        return `<div style="margin-bottom:10px">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3);font-weight:700;margin-bottom:4px">${esc(layer)}</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">${rows}</table>
+        </div>`;
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        <b>${abn.length}</b> abnormal of <b>${labs.length}</b> synthetic labs. Grouped by biological-organization layer the lab probes.
+      </div>${layerRows || '<div class="pc-data-roadmap-body">All labs within reference range.</div>'}`;
+    }
+
+    // ---------------- VA.3 — variant composition (dashboard tile) ----------------
+    case 'variant_composition': {
+      const groupBy = ((a.filter?.group_by) || 'consequence').toLowerCase();
+      const patients = DATA.patients || [];
+      const total = patients.length;
+      const meVal = groupBy === 'acmg'
+        ? (p.variant?.acmg || '?')
+        : (p.variant?.consequence || '?');
+      const counts = {};
+      for (const x of patients) {
+        const k = groupBy === 'acmg'
+          ? (x.variant?.acmg || 'unknown')
+          : (x.variant?.consequence || 'unknown');
+        counts[k] = (counts[k] || 0) + 1;
+      }
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const max = entries[0]?.[1] || 1;
+      const COL = { 'Frameshift': '#c94a4a', 'Nonsense': '#7a5cd6',
+                    'Splice-site': '#d78a2b', 'Missense': '#4d96d1',
+                    'P': '#c94a4a', 'LP': '#d78a2b', 'VUS': '#8895a7' };
+      const rows = entries.map(([k, n]) => {
+        const pct = ((n / total) * 100).toFixed(0);
+        const isMine = k === meVal;
+        const color = COL[k] || 'var(--accent)';
+        return `<div style="display:grid;grid-template-columns:130px 1fr 60px;gap:8px;align-items:center;font-size:12px;margin-bottom:5px${isMine ? ';background:var(--accent-soft);padding:2px 4px;border-radius:3px' : ''}">
+          <span style="color:var(--ink);font-weight:${isMine ? '700' : '500'}">${esc(k)}${isMine ? ' <span style=\"color:var(--accent);font-size:10px\">← this patient</span>' : ''}</span>
+          <span style="background:var(--tile);height:12px;border-radius:2px;position:relative;overflow:hidden">
+            <span style="position:absolute;left:0;top:0;bottom:0;width:${((n / max) * 100).toFixed(1)}%;background:${color}"></span>
+          </span>
+          <span style="color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums;font-weight:600">${n} <span style="color:var(--ink-3);font-weight:400">(${pct}%)</span></span>
+        </div>`;
+      }).join('');
+      const alt = groupBy === 'acmg' ? 'consequence' : 'acmg';
+      return `<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px">
+        <div style="font-size:36px;font-weight:800;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums">${total}</div>
+        <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700">pathogenic variants<br><span style="text-transform:none;letter-spacing:0;color:var(--ink-2);font-weight:500">Zhang cohort · curated for workbench</span></div>
+      </div>
+      <div style="font-size:10px;text-transform:uppercase;color:var(--ink-3);font-weight:700;letter-spacing:0.06em;margin-bottom:6px">by ${esc(groupBy)}</div>
+      ${rows}
+      <div style="margin-top:10px;color:var(--ink-3);font-size:11px">
+        Full pathogenic-variant corpus (LOVD, ClinVar) is a roadmap bake. Try <code>group_by=${alt}</code> to regroup.
+      </div>`;
+    }
+
+    // ---------------- VA.2 — variant lollipop (genotype × phenotype) ----------------
+    case 'variant_lollipop': {
+      const widget = window.WIDGETS?.variantLollipop;
+      if (!widget) return `<div class="pc-data-roadmap-body">Widget <code>variantLollipop</code> not loaded.</div>`;
+
+      const PHEN_ROW = { 'DMD': 0, 'Duchenne': 0, 'BMD': 1, 'Becker': 1,
+                         'IMD': 2, 'intermediate': 2, 'DCM': 3, 'Cardiac': 3,
+                         'Cognitive': 4, 'CNS': 4 };
+      const COL_ACCENT = '#0a84ff';   // this patient
+      const COL_COHORT = '#2c3e50';   // other Zhang patients
+
+      // Start from the widget's illustrative distribution (documented as a
+      // stub — but it encodes the known DMD hotspot geography correctly).
+      const example = widget.example;
+      const cohortVariants = [];
+      for (const x of (DATA.patients || [])) {
+        const v = x.variant || {};
+        const exonN = v.exonNum ?? parseInt(v.exon, 10);
+        if (!Number.isFinite(exonN)) continue;
+        const rowKey = Object.keys(PHEN_ROW).find(k => (x.phenotype || '').includes(k));
+        const y = rowKey == null ? 0 : PHEN_ROW[rowKey];
+        const isMe = x.id === p.id;
+        cohortVariants.push({
+          id: x.id,                             // makes the marker clickable
+          x: exonN, y,
+          r: isMe ? 8 : 5,
+          color: isMe ? COL_ACCENT : COL_COHORT,
+          label: `${x.id}${isMe ? ' (this patient)' : ''} · exon ${exonN} · ${v.consequence || '?'} · ${v.acmg || '?'} · ${x.phenotype || '?'} · click for details`,
+        });
+      }
+
+      // Optional phenotype-row filter
+      const pf = (a.filter?.phenotype || '').toLowerCase();
+      let cats = example.yCategories;
+      let bgVariants = example.variants;
+      let filteredCohort = cohortVariants;
+      if (pf) {
+        const rowIdx = cats.findIndex(c => c.toLowerCase().includes(pf));
+        if (rowIdx >= 0) {
+          cats = [cats[rowIdx]];
+          bgVariants   = example.variants.filter(v => v.y === rowIdx).map(v => ({ ...v, y: 0 }));
+          filteredCohort = cohortVariants.filter(v => v.y === rowIdx).map(v => ({ ...v, y: 0 }));
+        }
+      }
+
+      const props = {
+        ...example,
+        yCategories: cats,
+        variants: [...bgVariants, ...filteredCohort],   // cohort on top
+        colorLegend: [
+          { label: 'This patient',         color: COL_ACCENT },
+          { label: 'Other Zhang patients', color: COL_COHORT },
+          ...example.colorLegend,
+        ],
+        footer: `Background lollipops (colored by phenotype) are illustrative — encode the known DMD hotspot geography (exon 44-55 belt, proximal DCM, distal Dp140/Dp71). Foreground <b style="color:${COL_ACCENT}">blue</b> = ${patientLabel(p)}'s variant, <b style="color:${COL_COHORT}">dark</b> = other Zhang cohort patients (n=${cohortVariants.length - 1}). Real ClinVar/LOVD projection is a roadmap bake.`,
+      };
+      return widget.render(props);
+    }
+
+    // ---------------- VA.1 — variant details card ----------------
+    case 'variant_card': {
+      const v = p.variant || {};
+      const rows = [
+        ['Cohort ID',      p.cohortPatientId || p.id],
+        ['Exon',           v.exon ?? '?'],
+        ['Nucleotide (HGVSc)', v.nucleotide ?? '?'],
+        ['AA change (HGVSp)',  v.aaChange ?? '?'],
+        ['Consequence',    v.consequence ?? '?'],
+        ['ACMG',           v.acmg ?? '?'],
+        ['Phenotype',      p.phenotype ?? '?'],
+        ['Age',            p.age != null ? `${p.age} y` : '?'],
+        ['Ambulatory',     p.ambulatory ?? '?'],
+      ].map(([k, val]) => `<tr>
+        <td style="padding:5px 8px;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:0.04em;width:130px">${esc(k)}</td>
+        <td style="padding:5px 8px;font-family:${/HGVSc|HGVSp|Nucleotide|AA change/.test(k) ? '"SF Mono",Menlo,monospace' : 'inherit'};font-weight:600">${esc(val)}</td>
+      </tr>`).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        The variant that triggers the mechanism cascade for this patient. Downstream chips (Transcript / Protein / Downstream / Cell Type / Tissue Type / Phenotype) propagate from these values.
+      </div>
+      <table style="width:100%;border-collapse:collapse;background:var(--tile);border-radius:4px;overflow:hidden">${rows}</table>`;
+    }
+
+    // ---------------- Q1.1 — variants table across cohort ----------------
+    case 'variants_table': {
+      const f = a.filter || {};
+      const patients = (DATA.patients || []).filter(x => {
+        const v = x.variant || {};
+        if (f.consequence && !(v.consequence || '').toLowerCase().includes(f.consequence.toLowerCase())) return false;
+        if (f.acmg && (v.acmg || '').toUpperCase() !== f.acmg.toUpperCase()) return false;
+        return true;
+      });
+      const rows = patients.map(x => {
+        const v = x.variant || {};
+        const isMe = x.id === p.id;
+        return `<tr style="${isMe ? 'background:var(--accent-soft)' : ''}">
+          <td style="font-family:'SF Mono',Menlo,monospace;color:var(--ink-2)">${esc(x.id)}${isMe ? ' <span style="color:var(--accent);font-weight:700">← this patient</span>' : ''}</td>
+          <td>${esc(v.exon ?? '?')}</td>
+          <td style="font-family:'SF Mono',Menlo,monospace">${esc(v.nucleotide ?? '?')}</td>
+          <td>${esc(v.aaChange ?? '')}</td>
+          <td>${esc(v.consequence ?? '?')}</td>
+          <td style="text-align:center;font-weight:600">${esc(v.acmg ?? '')}</td>
+          <td style="color:var(--ink-3);font-size:11px">${esc(x.phenotype ?? '')}</td>
+        </tr>`;
+      }).join('');
+      const filterLbl = Object.keys(f).length
+        ? ` · filtered: ${Object.entries(f).map(([k,v]) => `${k}=${v}`).join(', ')}`
+        : '';
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:6px">
+        ${patients.length} of ${(DATA.patients || []).length} pathogenic variants${esc(filterLbl)}. Each row is one patient's index variant. Source: <b>ClinVar + Zhang cohort</b>.
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="border-bottom:1px solid var(--line-2);color:var(--ink-3);text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.05em">
+            <th style="padding:6px 4px">Patient</th>
+            <th style="padding:6px 4px">Exon</th>
+            <th style="padding:6px 4px">HGVSc</th>
+            <th style="padding:6px 4px">AA change</th>
+            <th style="padding:6px 4px">Consequence</th>
+            <th style="padding:6px 4px;text-align:center">ACMG</th>
+            <th style="padding:6px 4px">Phenotype</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    // ---------------- Q2.1 — NMD trigger vs escape ----------------
+    case 'nmd_status': {
+      const v = p.variant || {};
+      const cons = (v.consequence || '').toLowerCase();
+      // Heuristic mirroring the aenmd rules baked upstream: PTC-generating
+      // variants in non-terminal exons trigger NMD; splice + missense
+      // typically don't. Backed by the nmd_cohort premise where present.
+      const nmdPrem = dataPatientPremise(p, 'nmd_cohort');
+      const isPTC = /frameshift|nonsense/.test(cons);
+      const isSplice = /splice/.test(cons);
+      const verdict = isPTC ? 'triggers NMD (loss-of-transcript)'
+                   : isSplice ? 'may cause aberrant splicing — NMD depends on downstream frame'
+                   : 'unlikely to trigger NMD';
+      const verdictColor = isPTC ? 'var(--bad)' : isSplice ? 'var(--warn)' : 'var(--good)';
+      const rationale = nmdPrem?.rationale
+        || `Consequence <b>${esc(v.consequence || '?')}</b> at exon <b>${esc(v.exon || '?')}</b>. Terminal-exon PTCs typically escape NMD; non-terminal-exon PTCs typically trigger it.`;
+      return `<div style="font-size:12px;line-height:1.5">
+        <div style="padding:10px;background:var(--tile);border-left:3px solid ${verdictColor};border-radius:4px;margin-bottom:8px">
+          <b style="color:${verdictColor}">${esc(verdict)}</b>
+        </div>
+        <b>Variant:</b> ${esc(v.nucleotide || '?')} · exon ${esc(v.exon || '?')} · ${esc(v.consequence || '?')} · ACMG ${esc(v.acmg || '?')}<br>
+        <b>Reasoning:</b> ${rationale}
+        ${nmdPrem ? `<br><br><span style="color:var(--ink-3);font-size:11px">Source: <b>${esc(nmdPrem.sourceId)}</b> · premise <code>${esc(nmdPrem.premiseId)}</code></span>` : ''}
+      </div>`;
+    }
+
+    // ---------------- Q2.2 — AbSplice per-tissue predictions ----------------
+    case 'absplice': {
+      const prem = dataPatientPremise(p, 'absplice');
+      if (!prem) return roadmapStub('AbSplice per-tissue predictions',
+        'No AbSplice premise attached to this patient — likely because the curated TSV does not contain a row for this variant.', 'AbSplice v1.0');
+      const f = a.filter || {};
+      const tissueFilter = (f.tissue || '').toLowerCase();
+      const scores = prem.evidence?.tissue_scores || {};
+      const max = Math.max(0.5, ...Object.values(scores));
+      const entries = Object.entries(scores)
+        .filter(([tissue]) => !tissueFilter || tissue.toLowerCase().includes(tissueFilter))
+        .sort((a, b) => b[1] - a[1]);
+      const rows = entries.map(([tissue, v]) => dataBarRow(tissue, v, max, {
+          color: v >= 0.5 ? 'var(--bad)' : v >= 0.2 ? 'var(--warn)' : 'var(--accent)',
+        })).join('');
+      const filterLbl = tissueFilter
+        ? ` · filtered to tissues matching "${tissueFilter}" (${entries.length} of ${Object.keys(scores).length})`
+        : '';
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Category <b>${esc(prem.evidence?.category || '?')}</b>${esc(filterLbl)}. Threshold: <span style="color:var(--bad)">≥ 0.5</span> = high splice-disruption confidence, <span style="color:var(--warn)">0.2 – 0.5</span> = moderate, <span style="color:var(--accent)">&lt; 0.2</span> = negligible.
+      </div>${rows || '<div class="pc-data-roadmap-body">No tissues match the filter.</div>'}
+      <div style="margin-top:8px;color:var(--ink-3);font-size:11px">Rationale: ${esc(prem.rationale)}</div>`;
+    }
+
+    // ---------------- Q2.3 — HPA cell type expression rank ----------------
+    case 'hpa_cells': {
+      const f = a.filter || {};
+      const tf = (f.tissue || '').toLowerCase();
+      const sf = (f.status || '').toLowerCase();
+      const all = [...(p.cellTypeImpact || [])];
+      const cells = all
+        .filter(c => !tf || (c.tissue || '').toLowerCase().includes(tf))
+        .filter(c => !sf || (c.status || '').toLowerCase() === sf)
+        .sort((x, y) => y.score - x.score);
+      if (!cells.length) return `<div class="pc-data-roadmap-body">No cell types match this filter (tissue="${esc(tf)}" status="${esc(sf)}"). Cohort has ${all.length} cell types total.</div>`;
+      const max = cells[0].score;
+      const rows = cells.map(c => {
+        const color = c.status === 'hit'    ? 'var(--bad)'
+                    : c.status === 'spared' ? 'var(--good)'
+                    : 'var(--warn)';
+        return dataBarRow(`${c.name} · ${c.tissue}`, c.score, max, {
+          color, hint: `[${c.status}]`,
+          fmt: v => v.toFixed(1),
+        });
+      }).join('');
+      const filterLbl = (tf || sf)
+        ? ` · filtered${tf ? ` tissue~"${tf}"` : ''}${sf ? ` status="${sf}"` : ''} (${cells.length} of ${all.length})`
+        : '';
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        ${cells.length} DMD-expressing cell types${esc(filterLbl)}. Bars = curated expression score. Color = per-patient impact (<span style="color:var(--bad)">hit</span> · <span style="color:var(--warn)">partial</span> · <span style="color:var(--good)">spared</span>).
+      </div>${rows}`;
+    }
+
+    // ---------------- Q2.4 — Bulk tissue expression (GTEx-adjacent) ----------------
+    case 'gtex_tissues': {
+      const f = a.filter || {};
+      const only = (f.hit_status || '').toLowerCase();
+      const hit = only && only !== 'hit' ? [] : [...(p.tissuesHit || [])].sort();
+      const spared = only && only !== 'spared' ? [] : [...(p.tissuesSpared || [])].sort();
+      const total = hit.length + spared.length;
+      if (!total) return `<div class="pc-data-roadmap-body">No tissue data matches filter <code>hit_status=${esc(only)}</code>.</div>`;
+      const chip = (t, cls) => `<span style="display:inline-block;padding:3px 8px;margin:2px;border-radius:4px;font-size:11px;background:${cls === 'hit' ? 'var(--bad-soft, #fce4e4)' : 'var(--good-soft, #d9f0dc)'};color:${cls === 'hit' ? 'var(--bad)' : 'var(--good)'}">${esc(t)}</span>`;
+      const filterLbl = only ? ` · filtered hit_status=${only}` : '';
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Tissue projection derived from the isoform × tissue table (curated)${esc(filterLbl)}. Rank-by-expression is <b>roadmap</b> — needs a GTEx bulk index.
+      </div>
+      ${hit.length ? `<b style="color:var(--bad);font-size:11px">Hit (${hit.length})</b><br>${hit.map(t => chip(t, 'hit')).join('')}<br><br>` : ''}
+      ${spared.length ? `<b style="color:var(--good);font-size:11px">Spared (${spared.length})</b><br>${spared.map(t => chip(t, 'spared')).join('')}` : ''}`;
+    }
+
+    // ---------------- Q2.5 — Isoform × tissue coverage grid ----------------
+    case 'isoform_grid': {
+      const f = a.filter || {};
+      const isof = (f.isoform || '').toLowerCase();
+      const tisf = (f.tissue  || '').toLowerCase();
+      const isos = (p.isoformImpact || []).filter(i => !isof || i.id.toLowerCase().includes(isof));
+      if (!isos.length) return `<div class="pc-data-roadmap-body">No isoforms match filter <code>isoform~"${esc(isof)}"</code>.</div>`;
+      const allTissues = Array.from(new Set(isos.flatMap(i => i.tissues || [])))
+        .filter(t => !tisf || t.toLowerCase().includes(tisf))
+        .sort();
+      if (!allTissues.length) return `<div class="pc-data-roadmap-body">No tissues match filter <code>tissue~"${esc(tisf)}"</code>.</div>`;
+      const header = `<tr>
+        <th style="padding:6px 4px;text-align:left;font-size:10px;text-transform:uppercase;color:var(--ink-3)">Isoform</th>
+        <th style="padding:6px 4px;text-align:left;font-size:10px;text-transform:uppercase;color:var(--ink-3)">Hit?</th>
+        ${allTissues.map(t => `<th style="padding:6px 4px;font-size:9px;color:var(--ink-3);writing-mode:vertical-rl;text-orientation:mixed;height:80px">${esc(t)}</th>`).join('')}
+      </tr>`;
+      const rows = isos.map(i => {
+        const hitCells = allTissues.map(t => {
+          const carries = (i.tissues || []).includes(t);
+          if (!carries) return `<td style="padding:4px;text-align:center;color:var(--ink-3)">–</td>`;
+          const color = i.hit ? 'var(--bad)' : 'var(--good)';
+          const glyph = i.hit ? '●' : '○';
+          return `<td style="padding:4px;text-align:center;color:${color};font-size:14px" title="${esc(i.id)} carries ${esc(t)} — isoform ${i.hit ? 'hit' : 'spared'}">${glyph}</td>`;
+        }).join('');
+        return `<tr>
+          <td style="padding:4px 6px;font-family:'SF Mono',Menlo,monospace;font-weight:600">${esc(i.id)}</td>
+          <td style="padding:4px 6px;color:${i.hit ? 'var(--bad)' : 'var(--good)'};font-weight:600">${i.hit ? 'hit' : 'spared'}</td>
+          ${hitCells}
+        </tr>`;
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        ${isos.length} DMD isoforms × ${allTissues.length} tissues. <span style="color:var(--bad)">●</span> = isoform hit by variant AND expressed here; <span style="color:var(--good)">○</span> = isoform spared but expressed here; <span style="color:var(--ink-3)">–</span> = isoform not expressed in this tissue.
+      </div>
+      <div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:12px">${header}${rows}</table></div>`;
+    }
+
+    // ---------------- Q2.6 — NMD status vs symptom count (cohort) ----------------
+    case 'nmd_vs_symptom': {
+      const buckets = { 'NMD-trigger': [], 'splice': [], 'other': [] };
+      for (const x of (DATA.patients || [])) {
+        const cons = (x.variant?.consequence || '').toLowerCase();
+        const bucket = /frameshift|nonsense/.test(cons) ? 'NMD-trigger'
+                     : /splice/.test(cons)                ? 'splice'
+                     : 'other';
+        const abn = (x.labs || []).filter(l => l.flag !== 'normal').length;
+        buckets[bucket].push({ id: x.id, abn });
+      }
+      const rows = Object.entries(buckets).map(([grp, xs]) => {
+        if (!xs.length) return `<tr><td style="padding:6px;color:var(--ink-3)">${esc(grp)}</td><td colspan="3" style="color:var(--ink-3)">no patients in this bucket</td></tr>`;
+        const mean = xs.reduce((s, x) => s + x.abn, 0) / xs.length;
+        const dots = xs.map(x => `<span title="${esc(x.id)}: ${x.abn} abnormal labs" style="display:inline-block;width:14px;text-align:center;color:var(--accent);font-family:'SF Mono',Menlo,monospace">${x.abn}</span>`).join('');
+        return `<tr>
+          <td style="padding:6px;font-weight:600">${esc(grp)}</td>
+          <td style="padding:6px;color:var(--ink-2)">n = ${xs.length}</td>
+          <td style="padding:6px;color:var(--ink-2)">mean ${mean.toFixed(1)}</td>
+          <td style="padding:6px">${dots}</td>
+        </tr>`;
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Per-patient abnormal-lab count grouped by predicted NMD outcome. Bucketing is derived from variant consequence (frameshift/nonsense → trigger; splice → conditional). <b>Cohort n = ${(DATA.patients || []).length}</b> — data-thin, statistical test not run.
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="border-bottom:1px solid var(--line-2);color:var(--ink-3);text-align:left;font-size:10px;text-transform:uppercase">
+          <th style="padding:6px">Bucket</th><th style="padding:6px">Patients</th><th style="padding:6px">Mean abnormal labs</th><th style="padding:6px">Per-patient count</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    }
+
+    // ---------------- Q3.1 — ESM3 fold ----------------
+    case 'esm3_fold': {
+      // Would render a 3Dmol view of the cached PDB for this patient's
+      // variant. Cache is host-populated; on this box it's empty, so
+      // degrade honestly with a description of what would appear.
+      const v = p.variant || {};
+      return `<div class="pc-data-roadmap-body">
+        <b>ESM3 fold — not cached on this host.</b><br><br>
+        Would render a <b>3Dmol side-by-side viewer</b> of:<br>
+        &nbsp;&nbsp;· Wild-type dystrophin (P11532)<br>
+        &nbsp;&nbsp;· Truncated variant predicted from ${esc(v.aaChange || v.nucleotide || 'this variant')}<br>
+        with the variant residue highlighted red and pLDDT + pTM confidence overlaid.<br><br>
+        <b>Would come from:</b> <span style="color:var(--ink-3)">ESM3 Forge · cached under <code>cache/esm3/&lt;uniprot&gt;/</code></span>. The compute happens off-box; this workbench only reads cached PDBs.
+      </div>`;
+    }
+
+    // ---------------- Q4.1 — Open Targets ----------------
+    case 'opentargets': {
+      const ot = MECH_DATA?.openTargets;
+      if (!ot) return roadmapStub('Open Targets molecular interactors',
+        'openTargets block missing from mechanism_data.json — re-run hydrate_mechanism_view.', 'Open Targets GraphQL');
+      const section = (a.filter?.section || '').toLowerCase();
+      const showDrugs        = !section || section === 'drugs';
+      const showInteractions = !section || section === 'interactions';
+      const showPathways     = !section || section === 'pathways';
+      const approved = (ot.drugs || []).filter(d => d.maxStage === 'APPROVAL').slice(0, 10);
+      const drugsBlock = !showDrugs ? '' : `
+        <div style="font-size:10px;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px;font-weight:700">Approved drugs (${approved.length})</div>
+        <ul style="padding-left:16px;margin:0 0 12px 0">${approved.length
+          ? approved.map(d => `<li style="margin-bottom:2px"><b>${esc(d.name)}</b> <span style="color:var(--ink-3)">· ${esc(d.type)} · ${esc(d.maxStage)}</span></li>`).join('')
+          : '<li style="color:var(--ink-3)">no approved drugs found</li>'}</ul>`;
+      const pathwaysBlock = !showPathways ? '' : `
+        <div style="font-size:10px;text-transform:uppercase;color:var(--ink-3);margin:0 0 4px 0;font-weight:700">Reactome pathways (${(ot.pathways || []).length})</div>
+        <ul style="padding-left:16px;margin:0">${(ot.pathways || []).slice(0, 10)
+          .map(p => `<li style="margin-bottom:2px"><b>${esc(p.name)}</b> <span style="color:var(--ink-3)">· ${esc(p.topLevel)}</span></li>`).join('')}</ul>`;
+      const interactorsBlock = !showInteractions ? '' : `
+        <div style="font-size:10px;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;font-weight:700">Top molecular interactors (${(ot.interactions || []).length})</div>
+        ${(ot.interactions || []).slice(0, 10).map(x =>
+          dataBarRow(`${x.symbol} (${x.source})`, x.score, 1.0, { color: 'var(--accent)' })).join('')}`;
+      const twoCol = showDrugs && showInteractions;
+      const grid = twoCol
+        ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px"><div>${drugsBlock}${pathwaysBlock}</div><div>${interactorsBlock}</div></div>`
+        : `<div style="font-size:12px">${drugsBlock}${interactorsBlock}${pathwaysBlock}</div>`;
+      const filterLbl = section ? ` · filtered to <b>${esc(section)}</b>` : '';
+      return `${grid}
+      <div style="margin-top:10px;color:var(--ink-3);font-size:11px">
+        Source: <b>Open Targets</b>${filterLbl} · target <code>${esc(ot.ensemblId || '')}</code> · refreshed <code>${esc(ot.refreshedAt || '?')}</code>
+      </div>`;
+    }
+
+    // ---------------- Q5 — synthesis: route to Mechanism tab ----------------
+    case 'route_to_mech': {
+      const nHyp = (p.hypothesisRanking || []).length;
+      return `<div style="font-size:12px;line-height:1.6">
+        Synthesis is the job of the <b>Explore Mechanism</b> tab. Data views (chart-first) can tell you <em>what</em> is disrupted — mechanism views tell you <em>how</em> the disruption chain reaches the observed symptoms.<br><br>
+        This patient's mechanism space: <b>${nHyp} surviving hypotheses</b> (pruned from 4 templates, one-per-mechanism-family). Each is a chain: variant → protein → pathway → cell type → tissue → phenotype, with per-link premises + Pareto ranking on confidence × severity × treatability.<br><br>
+        <button data-jump-mechanism style="background:var(--accent);color:white;border:none;padding:8px 14px;border-radius:6px;font:inherit;font-weight:600;font-size:12px;cursor:pointer">
+          Switch to Explore Mechanism →
+        </button>
+      </div>`;
+    }
+    // Roadmap stubs — final for iteration 1
+    case 'esm2_llr':
+      return roadmapStub('ESM2 log-likelihood ratio (LLR)',
+        'Would show a bar of LLR at this patient\'s variant position vs the WT baseline distribution across all dystrophin residues. Requires an ESM2 masked-marginal pass per variant.',
+        'ESM2 (Meta AI)');
+    case 'llr_vs_symptom':
+      return roadmapStub('LLR vs syndromic score',
+        'Cross-cohort scatter of per-variant LLR against symptom count, with age as a covariate. Blocked on Q3.2.',
+        'ESM2 · patient labs');
+    case 'archs4':
+      return roadmapStub('ARCHS4 co-expression',
+        'Top DMD co-expressed genes + module memberships + pathway enrichment. Would surface secondary targets that move together with dystrophin across ~380k human samples.',
+        'ARCHS4');
+    case 'string':
+      return roadmapStub('STRING interaction network',
+        'DMD\'s direct protein interactors + complex members + pathway neighbors. Would render as a small node-edge diagram with confidence-weighted edges.',
+        'STRING v12');
+    case 'geneformer':
+      return roadmapStub('Geneformer perturbation',
+        'In-silico DMD knockout in muscle-relevant cell states, ranked by downstream expression shift. Would surface cell types most sensitive to loss of dystrophin.',
+        'Geneformer');
+    case 'cmap':
+      return roadmapStub('CMap rescue candidates',
+        'Small molecules + genetic perturbations whose transcriptional signature reverses the DMD-loss signature. Would surface repurposable candidates.',
+        'Connectivity Map (Broad)');
+    default:
+      return `<div class="pc-data-roadmap-body">
+        Unknown renderer <code>${esc(a.renderer)}</code>. Add it to the switch in <code>renderDataArtifactBody</code>.
+      </div>`;
+  }
+}
+
+function roadmapStub(title, description, source) {
+  return `<div class="pc-data-roadmap-body">
+    <b>${esc(title)}</b> — not baked yet.<br><br>
+    ${esc(description)}<br><br>
+    <b>Would come from:</b> <span style="color:var(--ink-3)">${esc(source)}</span>
+  </div>`;
+}
+
+// ================================================================
 // TOP STRIP — selector + identity
 // ================================================================
 function renderTopStrip(p) {
-  // Patient selector was moved up to mechanism.html's global patient
-  // strip (right under the title). Nothing to render here.
-  return '';
+  const opts = (DATA.patients || []).map(x => {
+    const v = x.variant || {};
+    const label = `${x.id} · ${v.exon != null ? 'exon ' + v.exon + ' · ' : ''}${v.consequence || '?'} · ${x.phenotype || '?'}`;
+    return `<option value="${esc(x.id)}" ${x.id === p.id ? 'selected' : ''}>${esc(label)}</option>`;
+  }).join('');
+  return `<div class="pc-top">
+    <div class="pc-top-title">
+      <span class="pc-top-title-gene">DMD</span>: personalized mechanistic hypotheses &amp; therapeutic recommendations
+    </div>
+    <div class="pc-top-pat">
+      <label class="pc-top-pat-lbl" for="pat-picker">Patient</label>
+      <select id="pat-picker" class="pc-picker">${opts}</select>
+    </div>
+  </div>`;
 }
 
 // ================================================================
@@ -2600,6 +4223,38 @@ function planChat(query, p) {
         hypToOpen: hid,
       };
     }
+    // H0X was scored but didn't survive the top-3-diverse prune for this patient.
+    if (h) {
+      const survivors = (p.hypothesisRanking || [])
+        .map(x => `H${x.id} (score ${x.score.toFixed(1)})`).join(', ');
+      return {
+        text: `<b>H${hid} — ${esc(h.name)}</b> was scored for ${patientLabel(p)} but did not survive the top-3-diverse prune. ` +
+              `The three surviving hypotheses for this patient are: ${survivors}. ` +
+              `Ask <i>"which hypothesis got pruned for this patient, and why?"</i> for the head-to-head.`,
+      };
+    }
+  }
+
+  // ---- 3b. "Which hypothesis got pruned for this patient?" ----
+  if (/prune|drop|discard|which.*hypothes.*(?:not|missing|left out|out)/.test(q)) {
+    const surviving = new Set((p.hypothesisRanking || []).map(x => x.id));
+    const all = ['01', '02', '03', '04'];
+    const dropped = all.filter(id => !surviving.has(id));
+    if (!dropped.length) return { text: `All 4 templates survived for ${patientLabel(p)} — no prune.` };
+    const droppedDesc = dropped.map(id => {
+      const meta = byId[id] || {};
+      return `<b>H${id} — ${esc(meta.name || '')}</b>`;
+    }).join(', ');
+    const survivorLine = (p.hypothesisRanking || [])
+      .map(x => `H${x.id} (score ${x.score.toFixed(1)})`).join(', ');
+    return {
+      text: `${droppedDesc} scored too low against ${patientLabel(p)}'s premise bundle to make the top-3-diverse cut. ` +
+            `Surviving hypotheses: ${survivorLine}. ` +
+            `The prune keeps at most one hypothesis per mechanism family; in Phase 1 each of H01-H04 IS its own family, ` +
+            `so top-3-diverse just means "drop the lowest-scoring template". ` +
+            `Phase 2 adds LLM-generated mutations that inherit their family from a seed template, ` +
+            `at which point diversity does real work.`,
+    };
   }
 
   // ---- 4. Reasoning chain / mechanism ----
@@ -2651,11 +4306,14 @@ function planChat(query, p) {
   }
 
   // ---- 6b. Compare hypotheses — opens the 4-column compare artifact ----
-  const cmpMatch = q.match(/compar.*(?:hypothes|h0?\d|rank|top)|h(0?\d).*(?:vs|versus|or)\s*h(0?\d)|side.?by.?side|four.column|4.column|all four hypothes/)
+  const cmpMatch = q.match(/compar.*(?:hypothes|h0?\d|rank|top|surviv)|h(0?\d).*(?:vs|versus|or)\s*h(0?\d)|side.?by.?side|four.column|4.column|all four hypothes|surviv.*hypothes/)
                 || (q.startsWith('compare') && /hypothes|rank/.test(q));
   if (cmpMatch) {
+    const nVars = Object.keys(p.hypothesisRankingByVariant || {}).length || 1;
+    const nHyps = (p.hypothesisRanking || []).length;
+    const perVarNote = nVars > 1 ? ` across ${nVars} pathogenic variants` : '';
     return {
-      text: `Opening cross-hypothesis compare artifact for ${patientLabel(p)} — 4 columns showing H01…H04 side-by-side, each with its Pareto axes and top premise contributions.`,
+      text: `Opening cross-hypothesis compare artifact for ${patientLabel(p)} — top ${nHyps} mechanism-diverse hypotheses${perVarNote}, each column showing its Pareto axes and top premise contributions.`,
       artifactToOpen: { type: 'compare_hypotheses' },
     };
   }
@@ -2798,6 +4456,24 @@ function seedStream() {
 }
 
 // ================================================================
+// TOP-LEVEL VIEW TABS (Data | Mechanism)
+// ================================================================
+function renderViewTabs() {
+  const tabs = [
+    ['data',      'Explore Data',      'chart-first'],
+    ['mechanism', 'Explore Mechanism', 'overview · focus · detail'],
+    ['lauren',    "Lauren's tab",      'dashboard-style'],
+  ];
+  return `<div class="pc-viewtabs">
+    ${tabs.map(([v, lbl, badge]) => `
+      <button class="pc-viewtab ${currentView === v ? 'active' : ''}"
+              data-view="${v}">
+        ${esc(lbl)} <span class="pc-viewtab-badge">${esc(badge)}</span>
+      </button>`).join('')}
+  </div>`;
+}
+
+// ================================================================
 // MAIN RENDER
 // ================================================================
 function renderPage() {
@@ -2807,15 +4483,34 @@ function renderPage() {
   const bodyCls = overviewMode === 'full'      ? 'overview-full'
                  : overviewMode === 'collapsed' ? 'overview-collapsed' : '';
 
+  const bodyHtml = currentView === 'data'
+    ? renderDataView(p)
+    : currentView === 'lauren'
+    ? renderLaurenView(p)
+    : `<div class="pc-body ${bodyCls}">
+         ${renderLeftPanel(p)}
+         ${renderRightPanel(p)}
+       </div>`;
+
   document.getElementById('app').innerHTML = `
     ${renderTopStrip(p)}
-    <div class="pc-body ${bodyCls}">
-      ${renderLeftPanel(p)}
-      ${renderRightPanel(p)}
-    </div>
+    ${renderViewTabs()}
+    ${bodyHtml}
     ${renderOverviewReopen()}
     ${renderEdgeModal(p)}
+    ${renderVariantModal()}
   `;
+
+  // Wire top-level view tabs
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentView = btn.dataset.view;
+      renderPage();
+    });
+  });
+
+  // Explore Data click handlers only exist when its view is mounted
+  if (currentView === 'data') wireDataView(p);
 
   // Newest artifacts are at the top of the stream, so scroll the
   // right-panel body to the top when new artifacts arrive. Skip on
@@ -2928,6 +4623,25 @@ function renderPage() {
     const cbtn = document.getElementById('edge-modal-close');
     if (cbtn) cbtn.addEventListener('click', () => { currentEdgeId = null; renderPage(); });
   }
+
+  // ---- variant detail modal (opened from lollipop marker clicks) ----
+  document.querySelectorAll('[data-var-modal-close]').forEach(el =>
+    el.addEventListener('click', (ev) => {
+      // Only close on backdrop click or explicit close btn — not inner clicks
+      if (el.classList.contains('pc-var-modal-backdrop') && ev.target !== el) return;
+      variantModalId = null;
+      renderPage();
+    }));
+  document.querySelectorAll('[data-var-modal-jump]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      const pid = btn.dataset.varModalJump;
+      if (pid && DATA.patients.some(x => x.id === pid)) {
+        currentPatientId = pid;
+      }
+      variantModalId = null;
+      currentView = 'mechanism';
+      renderPage();
+    }));
 
   // ---- chat input + suggestion chips + more-panel questions ----
   document.querySelectorAll('.pc-suggest, .pc-cat-item').forEach(b =>

@@ -307,6 +307,51 @@ def cell_status(iso_hit_map: dict[str, bool], required_isoforms: list[str]) -> s
     return "partial"
 
 
+def load_protein_impact() -> dict[str, dict]:
+    """Load the ESM3 protein-impact bake (data/variants/protein_impact.tsv).
+
+    Returns { "S1_novel#2": {residue, mean_wt_plddt, wt_ptm,
+              truncation_fraction, impact_score, status, ...}, ... }
+    keyed by "cohort#patient_id". Empty dict if the bake hasn't run.
+    """
+    path = Path(__file__).resolve().parent.parent.parent / "data" / "variants" / "protein_impact.tsv"
+    if not path.exists():
+        return {}
+    rows: dict[str, dict] = {}
+    with path.open() as f:
+        header = None
+        for line in f:
+            line = line.rstrip("\n")
+            if not line or line.startswith("#"): continue
+            if header is None:
+                header = line.split("\t")
+                continue
+            vals = line.split("\t")
+            r = dict(zip(header, vals))
+            def _num(k):
+                v = r.get(k, "")
+                if v in ("", "None"): return None
+                try: return float(v)
+                except (ValueError, TypeError): return None
+            key = f"{r.get('cohort','')}#{r.get('patient_id','')}"
+            rows[key] = {
+                "residue":             int(float(r["residue"])) if r.get("residue") not in ("", "None") else None,
+                "windowStart":         int(float(r["window_start"])) if r.get("window_start") not in ("", "None") else None,
+                "windowEnd":           int(float(r["window_end"])) if r.get("window_end") not in ("", "None") else None,
+                "meanWtPlddt":         _num("mean_wt_plddt"),
+                "wtPtm":               _num("wt_ptm"),
+                "truncationFraction":  _num("truncation_fraction"),
+                "impactScore":         _num("impact_score"),
+                "consequence":         r.get("consequence", ""),
+                "hgvsp":               r.get("hgvsp", ""),
+                "hgvsc":               r.get("hgvsc", ""),
+                "uniprot":             r.get("uniprot", ""),
+                "status":              r.get("status", ""),
+                "notes":               r.get("notes", ""),
+            }
+    return rows
+
+
 def load_gene(conn) -> dict:
     r = conn.execute(
         "SELECT symbol, full_name, uniprot, locus, n_exons, locus_size_mb, isoform_names "
@@ -354,31 +399,49 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
         rows = conn.execute("""
             SELECT hypothesis_id, mechanism_template, rank, score, confidence,
                    claim, rationale, generator_id, generator_version, generated_at,
-                   score_vector, refined_claim
+                   score_vector, refined_claim,
+                   variant_key, parent_hypothesis_id, mutation_trace, mechanism_family
             FROM patient_hypothesis
             WHERE patient_id = ?
-            ORDER BY rank
+            ORDER BY variant_key, rank
         """, (pid_raw,)).fetchall()
     except sqlite3.OperationalError:
-        # Fall back to the old shape if refined_claim column doesn't exist yet
+        # Fall back to the old shape if newer columns don't exist yet
         try:
             rows = conn.execute("""
                 SELECT hypothesis_id, mechanism_template, rank, score, confidence,
                        claim, rationale, generator_id, generator_version, generated_at,
-                       score_vector, NULL AS refined_claim
+                       score_vector, refined_claim,
+                       NULL AS variant_key, NULL AS parent_hypothesis_id,
+                       NULL AS mutation_trace, mechanism_template AS mechanism_family
                 FROM patient_hypothesis
                 WHERE patient_id = ?
                 ORDER BY rank
             """, (pid_raw,)).fetchall()
         except sqlite3.OperationalError:
-            return None
+            try:
+                rows = conn.execute("""
+                    SELECT hypothesis_id, mechanism_template, rank, score, confidence,
+                           claim, rationale, generator_id, generator_version, generated_at,
+                           score_vector, NULL AS refined_claim,
+                           NULL AS variant_key, NULL AS parent_hypothesis_id,
+                           NULL AS mutation_trace, mechanism_template AS mechanism_family
+                    FROM patient_hypothesis
+                    WHERE patient_id = ?
+                    ORDER BY rank
+                """, (pid_raw,)).fetchall()
+            except sqlite3.OperationalError:
+                return None
     if not rows:
         return None
 
     hyps = []
     for r in rows:
         (hid, tmpl, rank, score, conf, claim, rationale, gen_id, gen_ver, gen_at,
-         sv_json, rc_json) = r
+         sv_json, rc_json, variant_key, parent_hyp_id, mutation_trace_json,
+         mechanism_family) = r
+        try: mutation_trace = json.loads(mutation_trace_json) if mutation_trace_json else None
+        except Exception: mutation_trace = None
         # Load premises supporting this hypothesis
         premises = [{
             "premiseId": p[0], "sourceId": p[1], "weight": p[2],
@@ -436,6 +499,10 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
         hyps.append({
             "id": tmpl,                    # legacy: keep template id as 'id' for GUI compat
             "hypothesisId": hid,           # new: full stored-hypothesis id
+            "variantKey": variant_key,     # NEW: variant this hypothesis is scoped to
+            "parentHypothesisId": parent_hyp_id,   # NEW: Phase 2 mutation lineage (NULL for seeds)
+            "mutationTrace": mutation_trace,        # NEW: Phase 2 mutation trace (NULL for seeds)
+            "mechanismFamily": mechanism_family,     # NEW: diversity key (= template for seeds)
             "rank": rank,
             "score": score,
             "confidence": conf,
@@ -461,7 +528,8 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
 
 
 def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
-                   conn: sqlite3.Connection) -> dict:
+                   conn: sqlite3.Connection,
+                   protein_impact_by_key: dict[str, dict] | None = None) -> dict:
     (cohort, pid_raw, phen, age, amb, exon_str, nuc, aa, cons, acmg) = row
     uid = make_uid(seq_num)
     exon_n = parse_exon(exon_str)
@@ -567,6 +635,24 @@ def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
             r["patientEvidence"] = patient_evidence_for_hypothesis(r["id"], p, labs)
     p["hypothesisRanking"] = hyp_ranking
 
+    # Group by variant so the UI can render a per-variant "compare 3" block.
+    # Phase 1: each patient in the Zhang cohort carries one pathogenic
+    # variant, so there is exactly one bucket per patient. Phase 2 will
+    # populate multiple buckets naturally when a patient carries ≥ 2 variants.
+    by_variant: dict[str, list[dict]] = {}
+    for r in hyp_ranking:
+        vk = r.get("variantKey") or (p["variant"].get("nucleotide") or "unknown")
+        by_variant.setdefault(vk, []).append(r)
+    for vk in by_variant:
+        by_variant[vk].sort(key=lambda h: h.get("rank", 99))
+    p["hypothesisRankingByVariant"] = by_variant
+
+    # Attach ESM3 protein-impact (baked by prototype/ingest/bake_esm3_impact.py).
+    # Present only if the bake has been run; else key is absent (frontend
+    # renders a "not baked" tile).
+    if protein_impact_by_key:
+        p["proteinImpact"] = protein_impact_by_key.get(f"{cohort}#{pid_raw}")
+
     return p
 
 
@@ -595,16 +681,30 @@ def main() -> None:
     for row in conn.execute(query, flat):
         rows_by_key[(row[0], row[1])] = row
 
+    # Load ESM3 protein-impact bake once (may be empty if the bake hasn't run).
+    protein_impact_by_key = load_protein_impact()
+    if protein_impact_by_key:
+        print(f"[protein_impact] loaded {len(protein_impact_by_key)} variant scores from bake")
+    else:
+        print(f"[protein_impact] no bake found — Lauren's Protein Impact tile will show a stub")
+
     patients = []
     for i, (cohort, pid) in enumerate(roster_keys, start=1):
         row = rows_by_key.get((cohort, pid))
         if not row:
             print(f"[warn] roster miss: {cohort}#{pid}")
             continue
-        patients.append(build_patient(i, row, isoforms, cells, conn))
+        patients.append(build_patient(i, row, isoforms, cells, conn, protein_impact_by_key))
 
     # Featured chips = all roster patients (there are only 10).
     featured_ids = [p["id"] for p in patients]
+
+    # Expose the whole cohort's protein-impact table once at top level for the
+    # Lauren tab's distribution tile. Keyed by patient uid ("P1", "P2", ...).
+    protein_impact_cohort = {}
+    for i, (cohort, pid) in enumerate(roster_keys, start=1):
+        row = protein_impact_by_key.get(f"{cohort}#{pid}")
+        if row: protein_impact_cohort[make_uid(i)] = row
 
     payload = {
         "gene":     gene,
@@ -612,6 +712,7 @@ def main() -> None:
         "cellTypes": cells,
         "patients": patients,
         "featured": featured_ids,
+        "proteinImpactCohort": protein_impact_cohort,
         "phenoBreakdown": pheno_breakdown,
         "notes": {
             "impactRule": ("isoform hit iff first_shared_exon ≤ variant exon. "

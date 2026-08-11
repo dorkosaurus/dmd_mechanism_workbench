@@ -32,14 +32,33 @@ def q_one(conn, sql, *args):
     return r[0] if r else None
 
 
+def fetch_dystrophin_tail(n: int = 200) -> str:
+    """Fetch the C-terminal N residues of Dp427m (P11532) from UniProt.
+    Cached to disk so hydrate isn't network-bound on every re-run."""
+    from pathlib import Path as _P
+    import urllib.request as _u
+    cache = _P(__file__).resolve().parent.parent.parent / "cache" / "uniprot_P11532.fasta"
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    if not cache.exists():
+        with _u.urlopen("https://rest.uniprot.org/uniprotkb/P11532.fasta", timeout=30) as r:
+            cache.write_text(r.read().decode())
+    text = cache.read_text()
+    seq = "".join(l.strip() for l in text.splitlines() if not l.startswith(">"))
+    return seq[-n:]
+
+
 def build_gene(conn):
     r = conn.execute(
         "SELECT symbol, full_name, uniprot, locus, n_exons, locus_size_mb, isoform_names "
         "FROM gene_meta WHERE symbol='DMD'"
     ).fetchone()
+    tail = fetch_dystrophin_tail(200)
     return {
         "symbol": r[0], "fullName": r[1], "uniprot": r[2], "locus": r[3],
         "nExons": r[4], "locusSizeMb": r[5], "isoformNames": json.loads(r[6]),
+        "proteinLength": DMD_PROTEIN_LEN,
+        "sequenceTail": tail,                             # last 200 aa
+        "sequenceTailStart": DMD_PROTEIN_LEN - len(tail) + 1,   # 1-based residue index
     }
 
 
@@ -248,6 +267,89 @@ def classify_variant_nmd(clin_sig: str | None, variant_name: str | None) -> tupl
     return acmg, 'transcript_dependent'
 
 
+def _classify_consequence(variant_name: str | None) -> str:
+    """Classify a ClinVar variant_name into a consequence class.
+
+    Order matters — the most specific patterns match first. Returns one of:
+      nonsense · frameshift · splice · missense · inframe_indel · large_del · other
+    """
+    name = variant_name or ''
+    # HGVSp-based signals (most reliable)
+    if re.search(r'p\.\(?[A-Za-z]{3}\d+(?:Ter|\*)\)?', name):
+        return 'nonsense'
+    if re.search(r'fs\*?\d*', name):
+        return 'frameshift'
+    # Canonical splice sites (c.NNN+/-1..2, or intron in variant_name)
+    if re.search(r'c\.\d+[+-][12](?![0-9])', name) or 'IVS' in name:
+        return 'splice'
+    # Large gross deletions — spanning-exon syntax or multi-kb dels
+    if re.search(r'ex(?:on)?\s*\d+.*(del|dup)', name, re.I) or re.search(r'c\.[-\d]+_[-\d]+del', name):
+        return 'large_del'
+    # HGVSc-based single-nt deletion/duplication without HGVSp → frameshift
+    if re.search(r'c\.\d+[+_-]?\d*(?:del|dup)', name) and 'p.' not in name:
+        return 'frameshift'
+    # Missense: p.XxxNNNYyy where Yyy is a different amino acid (not Ter/fs)
+    if re.search(r'p\.\(?[A-Za-z]{3}\d+[A-Za-z]{3}\)?', name):
+        return 'missense'
+    return 'other'
+
+
+def build_clinvar_composition(conn) -> dict:
+    """Aggregate ClinVar Pathogenic + Likely Pathogenic DMD variants by
+    consequence class. Powers Lauren's Genetic Variants tile."""
+    CATS = ['nonsense', 'frameshift', 'splice', 'missense', 'inframe_indel',
+            'large_del', 'other']
+    counts = {c: 0 for c in CATS}
+    for (cs, name) in conn.execute(
+        "SELECT clin_sig, variant_name FROM clinvar_phenotype "
+        "WHERE data_source='clinvar' AND clin_sig IN "
+        "('Pathogenic', 'Likely pathogenic', 'Pathogenic/Likely pathogenic')"
+    ):
+        counts[_classify_consequence(name)] += 1
+    total = sum(counts.values())
+    breakdown = [{"label": k, "n": v, "pct": round(100.0 * v / total, 1) if total else 0.0}
+                 for k, v in sorted(counts.items(), key=lambda kv: -kv[1]) if v > 0]
+    return {
+        "source":  "ClinVar (variation_id where DMD gene, P + LP + P/LP)",
+        "total":   total,
+        "breakdown": breakdown,
+        "categories": CATS,
+    }
+
+
+def _nmd_escape_variants(conn) -> list[dict]:
+    """List the specific pathogenic NMD-escape variants + their residue positions.
+    Powers Lauren's Protein Impact tile (consensus-truncated protein bar).
+    Filters: ClinVar Pathogenic/LP + PTC-generating + residue >= threshold."""
+    out: list[dict] = []
+    ptc_re = re.compile(r'p\.\(?[A-Za-z]{3}(\d+)(?:Ter|\*)\)?')
+    fs_re  = re.compile(r'p\.\(?[A-Za-z]{3}(\d+)[A-Za-z]{3}fs')
+    for (name, cs) in conn.execute(
+        "SELECT variant_name, clin_sig FROM clinvar_phenotype "
+        "WHERE data_source='clinvar' AND clin_sig IN "
+        "('Pathogenic','Likely pathogenic','Pathogenic/Likely pathogenic')"
+    ):
+        name = name or ''
+        m = ptc_re.search(name)
+        r, cls = (None, None)
+        if m:
+            r, cls = int(m.group(1)), 'nonsense'
+        else:
+            m = fs_re.search(name)
+            if m:
+                r, cls = int(m.group(1)), 'frameshift'
+        if r is None or r < NMD_ESCAPE_AA_THRESHOLD:
+            continue
+        out.append({
+            "variantName": name,
+            "residue":     r,
+            "consequence": cls,
+            "clinSig":     cs,
+        })
+    out.sort(key=lambda x: x["residue"])
+    return out
+
+
 def build_nmd_cohort(conn) -> dict:
     NMD_CATS = ('triggering', 'transcript_dependent', 'escape')
     ACMG_CATS = ('benign', 'uncertain', 'pathogenic')
@@ -269,6 +371,7 @@ def build_nmd_cohort(conn) -> dict:
         "acmgTotals": acmg_totals,
         "nmdTotals":  nmd_totals,
         "grid": grid,
+        "escapeVariants": _nmd_escape_variants(conn),
         "rules": {
             "nmd_escape_aa_threshold": NMD_ESCAPE_AA_THRESHOLD,
             "protein_length": DMD_PROTEIN_LEN,
@@ -394,6 +497,7 @@ def main() -> None:
             "unit":  "hypotheses shown",
         },
         "nmdCohort":     build_nmd_cohort(conn),
+        "clinvarComposition": build_clinvar_composition(conn),
         "openTargets":   build_open_targets(conn),
         "premiseSources": build_premise_sources(conn),
     }

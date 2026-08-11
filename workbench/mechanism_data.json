@@ -14,7 +14,10 @@
       "Dp140",
       "Dp116",
       "Dp71"
-    ]
+    ],
+    "proteinLength": 3685,
+    "sequenceTail": "SQPRSPAQILISLESEERGELERILADLEEENRNLQAEYDRLKQQHEHKGLSPLPSPPEMMPTSPQSPRDAELIAEAKLLRQHKGRLEARMQILEDHNKQLESQLHRLRQLLEQPQAEAKVNGTTVSSPSTSLQRSDSSQPMLLRVVGSQTSDSMGEEDLLSPPQDTSTGLEEVMEQLNNSFPSSRGRNTPGKPMREDTM",
+    "sequenceTailStart": 3486
   },
   "header": {
     "variantsAnalyzed": 41566,
@@ -1205,11 +1208,82 @@
         "escape": 4
       }
     },
+    "escapeVariants": [
+      {
+        "variantName": "NM_004006.3(DMD):c.10807G>T (p.Glu3603Ter)",
+        "residue": 3603,
+        "consequence": "nonsense",
+        "clinSig": "Likely pathogenic"
+      },
+      {
+        "variantName": "NM_004006.3(DMD):c.10813A>T (p.Lys3605Ter)",
+        "residue": 3605,
+        "consequence": "nonsense",
+        "clinSig": "Pathogenic"
+      },
+      {
+        "variantName": "NM_004006.3(DMD):c.10855C>T (p.Gln3619Ter)",
+        "residue": 3619,
+        "consequence": "nonsense",
+        "clinSig": "Pathogenic"
+      },
+      {
+        "variantName": "NM_004006.3(DMD):c.10888C>T (p.Arg3630Ter)",
+        "residue": 3630,
+        "consequence": "nonsense",
+        "clinSig": "Likely pathogenic"
+      }
+    ],
     "rules": {
       "nmd_escape_aa_threshold": 3600,
       "protein_length": 3685,
       "notes": "Approximation of Popp & Maquat 2013: PTCs upstream of the last exon-exon junction trigger NMD; late PTCs escape. Splice-site variants are assumed to trigger NMD via exon skipping. In-frame and missense variants are 'transcript-dependent' — no PTC generated."
     }
+  },
+  "clinvarComposition": {
+    "source": "ClinVar (variation_id where DMD gene, P + LP + P/LP)",
+    "total": 3478,
+    "breakdown": [
+      {
+        "label": "other",
+        "n": 1444,
+        "pct": 41.5
+      },
+      {
+        "label": "frameshift",
+        "n": 795,
+        "pct": 22.9
+      },
+      {
+        "label": "nonsense",
+        "n": 781,
+        "pct": 22.5
+      },
+      {
+        "label": "splice",
+        "n": 366,
+        "pct": 10.5
+      },
+      {
+        "label": "large_del",
+        "n": 51,
+        "pct": 1.5
+      },
+      {
+        "label": "missense",
+        "n": 41,
+        "pct": 1.2
+      }
+    ],
+    "categories": [
+      "nonsense",
+      "frameshift",
+      "splice",
+      "missense",
+      "inframe_indel",
+      "large_del",
+      "other"
+    ]
   },
   "openTargets": {
     "ensemblId": "ENSG00000198947",

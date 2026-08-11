@@ -298,14 +298,19 @@
       ticks += `<line x1="${x}" y1="${topMar}" x2="${x}" y2="${topMar + plotH}" stroke="var(--line)" stroke-width="0.5"/>
                 <text x="${x}" y="${topMar + plotH + 12}" text-anchor="middle" fill="var(--ink-3)" font-size="10" font-variant-numeric="tabular-nums">${t}</text>`;
     });
-    // Lollipop markers: stem from row baseline to circle center, then circle
+    // Lollipop markers: stem from row baseline to circle center, then circle.
+    // If a variant has an `id`, the circle is tagged with data-variant-id so
+    // callers can wire a click handler; the cursor changes to pointer.
     let marks = '';
     vs.forEach(v => {
       const x = xScale(v.x);
       const yBase = topMar + v.y * rowH + rowH - 4;
       const yCirc = rowY(v.y) - Math.min(rowH / 2 - 6, v.r + 2);
+      const clickable = v.id != null;
+      const cursor = clickable ? 'cursor:pointer;' : '';
+      const idAttr = clickable ? ` data-variant-id="${esc(v.id)}"` : '';
       marks += `<line x1="${x}" y1="${yBase}" x2="${x}" y2="${yCirc}" stroke="${v.color}" stroke-width="0.8" opacity="0.55"/>
-                <circle cx="${x}" cy="${yCirc}" r="${v.r}" fill="${v.color}" fill-opacity="0.55" stroke="${v.color}" stroke-width="1"><title>${esc(v.label || '')}</title></circle>`;
+                <circle cx="${x}" cy="${yCirc}" r="${v.r}" fill="${v.color}" fill-opacity="0.55" stroke="${v.color}" stroke-width="1" style="${cursor}"${idAttr}><title>${esc(v.label || '')}</title></circle>`;
     });
     // Exon band strip (drawn under the X-axis tick labels)
     let exonBand = '';
