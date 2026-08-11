@@ -32,33 +32,14 @@ def q_one(conn, sql, *args):
     return r[0] if r else None
 
 
-def fetch_dystrophin_tail(n: int = 200) -> str:
-    """Fetch the C-terminal N residues of Dp427m (P11532) from UniProt.
-    Cached to disk so hydrate isn't network-bound on every re-run."""
-    from pathlib import Path as _P
-    import urllib.request as _u
-    cache = _P(__file__).resolve().parent.parent.parent / "cache" / "uniprot_P11532.fasta"
-    cache.parent.mkdir(parents=True, exist_ok=True)
-    if not cache.exists():
-        with _u.urlopen("https://rest.uniprot.org/uniprotkb/P11532.fasta", timeout=30) as r:
-            cache.write_text(r.read().decode())
-    text = cache.read_text()
-    seq = "".join(l.strip() for l in text.splitlines() if not l.startswith(">"))
-    return seq[-n:]
-
-
 def build_gene(conn):
     r = conn.execute(
         "SELECT symbol, full_name, uniprot, locus, n_exons, locus_size_mb, isoform_names "
         "FROM gene_meta WHERE symbol='DMD'"
     ).fetchone()
-    tail = fetch_dystrophin_tail(200)
     return {
         "symbol": r[0], "fullName": r[1], "uniprot": r[2], "locus": r[3],
         "nExons": r[4], "locusSizeMb": r[5], "isoformNames": json.loads(r[6]),
-        "proteinLength": DMD_PROTEIN_LEN,
-        "sequenceTail": tail,                             # last 200 aa
-        "sequenceTailStart": DMD_PROTEIN_LEN - len(tail) + 1,   # 1-based residue index
     }
 
 

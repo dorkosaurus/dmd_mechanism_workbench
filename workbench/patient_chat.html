@@ -2754,18 +2754,11 @@ function laurenTileProteinImpact(p) {
   const cutDom = DOMAINS.find(d => consensus >= d.start && consensus <= d.end);
   const fullyLost = DOMAINS.filter(d => d.start > consensus);
 
-  // Combined SVG: two full-length domain bars on the LEFT, a zoomed
-  // "last 100 aa" letter view on the RIGHT. Both share the same y rows
-  // so the letters sit exactly level with each bar.
-  const W = 220, H = 18, GAP = 22, LABEL_H = 14, AA_LABEL_W = 56;
-  const ZOOM_N = 100;
-  const CHAR_W = 5.2;                 // monospace char width in SVG
-  const ZOOM_W = ZOOM_N * CHAR_W;     // ~520px
-  const ZOOM_GAP = 24;                // space between bar-area and zoom
-  const zoomX0  = W + AA_LABEL_W + ZOOM_GAP;
-  const totalW  = zoomX0 + ZOOM_W + 8;
-  const totalH  = 2 * H + GAP + 2 * LABEL_H + 22;
-  const scale   = r => (r - 1) / (LEN - 1) * W;
+  // Combined SVG so the truncation cut-line can span BOTH bars vertically.
+  // Same horizontal scale for both bars: aa 1..LEN → x=0..W.
+  const W = 280, H = 18, GAP = 22, LABEL_H = 14, AA_LABEL_W = 60;
+  const totalH = 2 * H + GAP + 2 * LABEL_H + 12;
+  const scale  = r => (r - 1) / (LEN - 1) * W;
   const TRUNC_OUTLINE = '#9ca3af';
 
   const domainSegs = (yTop, truncatedAt) => {
@@ -2818,50 +2811,8 @@ function laurenTileProteinImpact(p) {
   const healthyLabel = `<text x="0" y="${healthyY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Healthy dystrophin</text>`;
   const truncLabel   = `<text x="0" y="${truncY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Truncation · consensus of ${ev.length} NMD-escape variants</text>`;
 
-  // ── Zoomed "last 100 aa" letter view (right side of the SVG) ──────
-  // Uses the full-protein sequence tail exposed in mechanism_data.gene.
-  const tail   = MECH_DATA?.gene?.sequenceTail || '';
-  const tailStart = MECH_DATA?.gene?.sequenceTailStart || (LEN - tail.length + 1);
-  // Window we're going to render: last ZOOM_N residues
-  const winStart = LEN - ZOOM_N + 1;                // e.g. 3586
-  const winEnd   = LEN;                             // 3685
-  const offset   = winStart - tailStart;            // slice offset into tail
-  const winSeq   = tail.slice(offset, offset + ZOOM_N);
-  const zoomScale = i => zoomX0 + (i + 0.5) * CHAR_W;   // x-center of the i-th letter (0-based)
-
-  const zoomLabel = `<text x="${zoomX0}" y="${healthyY - 4}" fill="var(--ink-2)" font-size="10" font-weight="600">Last 100 aa (residues ${winStart}–${winEnd})</text>`;
-
-  // Row 1 (healthy) — all 100 letters
-  const healthyLetters = Array.from(winSeq).map((ch, i) =>
-    `<text x="${zoomScale(i).toFixed(2)}" y="${healthyY + H / 2 + 3}" text-anchor="middle"
-       font-family="'SF Mono',Menlo,Consolas,monospace" font-size="9"
-       fill="var(--ink)">${esc(ch)}</text>`
-  ).join('');
-  // Row 2 (truncation) — letters preserved only up to consensus; empty after
-  const cutInWin  = consensus - winStart;   // index into winSeq of last kept residue (0-based)
-  const truncLetters = Array.from(winSeq).map((ch, i) => {
-    const kept = i <= cutInWin;
-    return `<text x="${zoomScale(i).toFixed(2)}" y="${truncY + H / 2 + 3}" text-anchor="middle"
-              font-family="'SF Mono',Menlo,Consolas,monospace" font-size="9"
-              fill="${kept ? 'var(--ink)' : '#d1d5db'}">${esc(kept ? ch : '·')}</text>`;
-  }).join('');
-  // Vertical cut-line in the zoom (between letter cutInWin and cutInWin+1)
-  const cutXZoom = zoomX0 + (cutInWin + 1) * CHAR_W;
-  const zoomCut = `<line x1="${cutXZoom.toFixed(2)}" y1="${healthyY - 4}" x2="${cutXZoom.toFixed(2)}" y2="${truncY + H + 4}"
-    stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="3 3"/>
-    <text x="${cutXZoom.toFixed(2)}" y="${healthyY - 6}" text-anchor="middle" fill="var(--bad)"
-      font-size="9" font-weight="700">cut @ ${consensus}</text>`;
-  // Position ticks every 10 aa (below the truncation letters)
-  let zoomTicks = '';
-  for (let i = 0; i < ZOOM_N; i += 10) {
-    const x = zoomScale(i);
-    const r = winStart + i;
-    zoomTicks += `<text x="${x.toFixed(2)}" y="${truncY + H + 12}" text-anchor="middle"
-      fill="var(--ink-3)" font-size="7">${r}</text>`;
-  }
-
-  const svg = `<svg width="${totalW}" viewBox="-2 0 ${totalW + 2} ${totalH}"
-                   style="display:block" preserveAspectRatio="xMinYMid meet">
+  const svg = `<svg width="100%" viewBox="-2 0 ${W + AA_LABEL_W} ${totalH}"
+                   style="display:block;max-width:${W + AA_LABEL_W + 4}px" preserveAspectRatio="xMinYMid meet">
     ${healthyLabel}
     ${domainSegs(healthyY, null)}
     ${truncLabel}
@@ -2872,11 +2823,6 @@ function laurenTileProteinImpact(p) {
     ${truncCount}
     ${meMarker}
     ${escapeMks}
-    ${zoomLabel}
-    ${healthyLetters}
-    ${truncLetters}
-    ${zoomCut}
-    ${zoomTicks}
   </svg>`;
 
   // Key — colored domains + truncated phantom + cut marker
@@ -2903,7 +2849,7 @@ function laurenTileProteinImpact(p) {
     ? `<b style="color:var(--accent)">${esc(patientLabel(p))}</b> is itself an NMD-escape variant @ aa ${meResidue}`
     : `<b style="color:var(--ink-2)">${esc(patientLabel(p))}</b> triggers NMD → no protein made (bar shows escape consensus, not this patient)`;
 
-  return `<div class="lauren-tile" style="grid-column:span 3;overflow-x:auto">
+  return `<div class="lauren-tile">
     <div class="lauren-tile-h">Protein Impact</div>
     ${svg}
     <div style="margin-top:6px;font-size:11px;color:var(--ink-2);line-height:1.5">
