@@ -307,6 +307,52 @@ def cell_status(iso_hit_map: dict[str, bool], required_isoforms: list[str]) -> s
     return "partial"
 
 
+def load_lab_phenotype_map() -> dict[str, dict]:
+    """Load data/variants/lab_phenotype_map.tsv → { lab_key: {phenotype_node,
+    interpretation} }. Empty dict if the curation file is missing."""
+    path = Path(__file__).resolve().parent.parent.parent / "data" / "variants" / "lab_phenotype_map.tsv"
+    if not path.exists():
+        return {}
+    out: dict[str, dict] = {}
+    header = None
+    for line in path.read_text().splitlines():
+        if not line or line.startswith("#"): continue
+        parts = line.split("\t")
+        if header is None:
+            header = parts; continue
+        r = dict(zip(header, parts))
+        if r.get("lab_key"):
+            out[r["lab_key"]] = {
+                "phenotypeNode": r.get("phenotype_node", ""),
+                "interpretation": r.get("interpretation", ""),
+            }
+    return out
+
+
+def compute_phenotypes_observed(labs: list[dict], lab_map: dict[str, dict]) -> dict:
+    """From a patient's labs + the curated lab→phenotype map, return
+    { phenotype_node: {supportingLabs: [...], nAbnormal: N, nEvaluated: N} }.
+    A phenotype is 'observed' if at least one lab pointing to it is abnormal."""
+    by_phen: dict[str, dict] = {}
+    for l in labs or []:
+        m = lab_map.get(l.get("key"))
+        if not m: continue
+        pn = m["phenotypeNode"]
+        b = by_phen.setdefault(pn, {"supportingLabs": [], "nAbnormal": 0, "nEvaluated": 0})
+        is_abn = l.get("flag") not in ("normal", None, "")
+        b["nEvaluated"] += 1
+        if is_abn: b["nAbnormal"] += 1
+        b["supportingLabs"].append({
+            "labKey":  l.get("key"),
+            "label":   l.get("label"),
+            "value":   l.get("value"),
+            "unit":    l.get("unit"),
+            "flag":    l.get("flag"),
+            "abnormal": is_abn,
+        })
+    return by_phen
+
+
 def load_protein_impact() -> dict[str, dict]:
     """Load the ESM3 protein-impact bake (data/variants/protein_impact.tsv).
 
@@ -529,7 +575,8 @@ def load_stored_hypotheses(conn: sqlite3.Connection, cohort: str, pid_raw: str
 
 def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
                    conn: sqlite3.Connection,
-                   protein_impact_by_key: dict[str, dict] | None = None) -> dict:
+                   protein_impact_by_key: dict[str, dict] | None = None,
+                   lab_phenotype_map: dict[str, dict] | None = None) -> dict:
     (cohort, pid_raw, phen, age, amb, exon_str, nuc, aa, cons, acmg) = row
     uid = make_uid(seq_num)
     exon_n = parse_exon(exon_str)
@@ -626,6 +673,10 @@ def build_patient(seq_num: int, row, isoforms: list[dict], cells: list[dict],
     # `labs` is [] and the UI shows an empty tile.
     labs = load_labs(conn, cohort, pid_raw)
     p["labs"] = labs
+    # Project labs onto phenotype nodes so downstream views can render lab
+    # data as evidence for the phenotype layer of the mechanism chain.
+    if lab_phenotype_map:
+        p["phenotypesObserved"] = compute_phenotypes_observed(labs, lab_phenotype_map)
 
     # Attach per-hypothesis patient-specific evidence to the ranking.
     # Stored hypotheses already include patientEvidence (built from lab
@@ -688,13 +739,19 @@ def main() -> None:
     else:
         print(f"[protein_impact] no bake found — Lauren's Protein Impact tile will show a stub")
 
+    # Load the curated lab → phenotype-node mapping.
+    lab_phenotype_map = load_lab_phenotype_map()
+    if lab_phenotype_map:
+        print(f"[lab_phen] loaded {len(lab_phenotype_map)} lab → phenotype-node mappings")
+
     patients = []
     for i, (cohort, pid) in enumerate(roster_keys, start=1):
         row = rows_by_key.get((cohort, pid))
         if not row:
             print(f"[warn] roster miss: {cohort}#{pid}")
             continue
-        patients.append(build_patient(i, row, isoforms, cells, conn, protein_impact_by_key))
+        patients.append(build_patient(i, row, isoforms, cells, conn,
+                                       protein_impact_by_key, lab_phenotype_map))
 
     # Featured chips = all roster patients (there are only 10).
     featured_ids = [p["id"] for p in patients]
@@ -706,6 +763,36 @@ def main() -> None:
         row = protein_impact_by_key.get(f"{cohort}#{pid}")
         if row: protein_impact_cohort[make_uid(i)] = row
 
+    # Cohort phenotype matrix: rows = patients, cols = phenotype nodes,
+    # cell = # abnormal labs supporting that phenotype. Powers the
+    # "variants grouped by observed phenotype" viz.
+    all_phenotypes = sorted({
+        pn for p in patients for pn in (p.get("phenotypesObserved") or {}).keys()
+    })
+    phenotype_matrix = {
+        "phenotypes": all_phenotypes,
+        "patients": [
+            {
+                "id":         p["id"],
+                "variant":    {
+                    "exon":        p["variant"].get("exon"),
+                    "consequence": p["variant"].get("consequence"),
+                    "acmg":        p["variant"].get("acmg"),
+                },
+                "phenotype":  p.get("phenotype"),
+                "abnormalByPhenotype": {
+                    pn: (p.get("phenotypesObserved") or {}).get(pn, {}).get("nAbnormal", 0)
+                    for pn in all_phenotypes
+                },
+                "totalByPhenotype": {
+                    pn: (p.get("phenotypesObserved") or {}).get(pn, {}).get("nEvaluated", 0)
+                    for pn in all_phenotypes
+                },
+            }
+            for p in patients
+        ],
+    }
+
     payload = {
         "gene":     gene,
         "isoforms": isoforms,
@@ -713,6 +800,8 @@ def main() -> None:
         "patients": patients,
         "featured": featured_ids,
         "proteinImpactCohort": protein_impact_cohort,
+        "phenotypeMatrix":     phenotype_matrix,
+        "labPhenotypeMap":     lab_phenotype_map,
         "phenoBreakdown": pheno_breakdown,
         "notes": {
             "impactRule": ("isoform hit iff first_shared_exon ≤ variant exon. "

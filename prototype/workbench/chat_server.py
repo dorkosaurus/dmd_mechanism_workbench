@@ -103,6 +103,10 @@ TOOLS = [
      "description": "Cohort-wide: NMD status vs abnormal-lab count. Groups the 10 patients by predicted NMD outcome (trigger / splice / other) and shows per-group means. Statistical test not run (n=10 too thin).",
      "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}},
 
+    {"name": "render_labs_by_consequence",
+     "description": "Cohort lab-profile heatmap grouped by variant consequence class (Frameshift / Nonsense / Splice-site). Rows = patients, columns = 15 labs (CK, LDH, aldolase, MRI_ff_VL, FVC_pct, PCF, NT_proBNP, LVEF, LGE, ERG_bwave, IQ, UACR, NSAA, m6MWT, TTS). Cells show high/low/normal flag with color; group header row summarizes fraction abnormal per lab.",
+     "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}},
+
     {"name": "render_esm3_fold",
      "description": "ESM3-predicted 3D fold of dystrophin with this variant vs wild-type. Reads a cached PDB from cache/esm3/. On dev boxes without the cache this degrades to an honest 'not cached' stub.",
      "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}},
@@ -155,6 +159,7 @@ _TOOL_META = {
     "render_gtex_tissues":    ("gtex_tissues",    "Q2.4"),
     "render_isoform_grid":    ("isoform_grid",    "Q2.5"),
     "render_nmd_vs_symptom":  ("nmd_vs_symptom",  "Q2.6"),
+    "render_labs_by_consequence": ("labs_by_consequence", "PH.1"),
     "render_esm3_fold":       ("esm3_fold",       "Q3.1"),
     "render_esm2_llr":        ("esm2_llr",        "Q3.2"),
     "render_llr_vs_symptom":  ("llr_vs_symptom",  "Q3.3"),

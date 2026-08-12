@@ -555,6 +555,169 @@ def build_isoform_variant_counts(conn) -> dict:
     }
 
 
+def build_celltype_ranking(conn) -> dict | None:
+    """Rank cell types by DGC-COMPLETENESS × CLINICAL-RELEVANCE.
+
+    DGC-completeness alone (# of DMD's 13 partners co-expressed) surfaces
+    cells where the DGC is molecularly complete — but that includes false
+    positives like thymic myoid cells (which recapitulate muscle protein
+    expression for T-cell tolerance, not because they need the DGC to
+    function). Weighting by TISSUE_RELEVANCE keeps molecular completeness
+    but demotes cells whose tissue is not clinically implicated in DMD.
+    """
+    DGC_MEMBERS = ['DMD', 'DAG1', 'SNTA1', 'SNTB1', 'SNTB2', 'SGCA', 'SGCB',
+                   'SGCD', 'SGCG', 'DTNA', 'DTNB', 'UTRN', 'CAV3', 'SSPN']
+    # Clinical relevance to DMD/BMD symptoms per tissue (curated from Muntoni
+    # 2003 + DMD symptom literature). Weight 1.0 = primary clinical driver,
+    # 0.0 = molecular presence but no known DMD role.
+    TISSUE_RELEVANCE = {
+        "skeletal_muscle":  1.00,   # progressive weakness, wheelchair — the disease
+        "heart":            0.95,   # cardiomyopathy is the leading cause of death in DMD
+        "cns":              0.60,   # cognitive comorbidity (Dp140, Dp427c/p)
+        "retina":           0.55,   # ERG changes; Dp260 loss
+        "peripheral_nerve": 0.30,   # Schwann cells; Dp116 loss (subclinical usually)
+        "smooth_muscle":    0.30,   # some GI dysmotility in DMD
+        "vascular":         0.25,   # vessel wall utrophin; indirect
+        "kidney":           0.20,   # Dp71 in podocytes; subclinical
+        "liver":            0.15,   # Dp71 present; no clear DMD role
+        "adipose":          0.10,   # metabolic changes; role unclear
+        "salivary_gland":   0.05,   # muscle-adjacent, clinically silent for DMD
+        "breast":           0.05,
+        "prostate":         0.05,
+        "thymus":           0.00,   # thymic myoid cells → myasthenia gravis, NOT DMD
+        "other":            0.15,   # unknown default
+    }
+    placeholders = ",".join(["?"] * len(DGC_MEMBERS))
+    rows = conn.execute(
+        f"""
+        SELECT cell_type, tissue,
+               COUNT(DISTINCT gene_symbol) AS n_dgc_members,
+               AVG(score)                  AS mean_score
+        FROM celltype_expression
+        WHERE gene_symbol IN ({placeholders}) AND source='hpa'
+        GROUP BY cell_type, tissue
+        """,
+        DGC_MEMBERS,
+    ).fetchall()
+    # For each cell type, list which DGC members are present (helpful in the UI)
+    members_by_cell: dict[str, list[str]] = {}
+    for (ct, gene) in conn.execute(
+        f"SELECT cell_type, gene_symbol FROM celltype_expression "
+        f"WHERE gene_symbol IN ({placeholders}) AND source='hpa'",
+        DGC_MEMBERS,
+    ):
+        members_by_cell.setdefault(ct, []).append(gene)
+
+    # Fix a small bug in the partner bake's tissue classifier: cardiomyocytes
+    # got tagged as skeletal_muscle because "cardiomyocyte" contains "myocyte".
+    # Reclassify from the cell_type name to the correct tissue for scoring.
+    def _fix_tissue(cell_type: str, tissue: str) -> str:
+        n = (cell_type or '').lower()
+        if 'cardiomyocyte' in n:                              return 'heart'
+        if any(k in n for k in ('astrocyte', 'purkinje',
+                'cerebell', 'bergmann', 'choroid plexus',
+                'neuron', 'glia')):                           return 'cns'
+        if 'schwann' in n:                                    return 'peripheral_nerve'
+        return tissue
+
+    entries = []
+    for (ct, tissue, n_dgc, mean_score) in rows:
+        pct = 100.0 * n_dgc / len(DGC_MEMBERS)
+        tissue_fixed = _fix_tissue(ct, tissue)
+        relevance = TISSUE_RELEVANCE.get(tissue_fixed, TISSUE_RELEVANCE["other"])
+        # Weighted score: DGC-completeness × clinical relevance. Magnitude
+        # kept as a very-small tiebreaker so cells with identical (n, relevance)
+        # rank consistently.
+        weighted = round(n_dgc * relevance + (mean_score / 1000.0 if mean_score else 0.0), 3)
+        entries.append({
+            "cellType":         ct,
+            "tissue":           tissue_fixed,
+            "nDgcMembers":      n_dgc,
+            "totalDgcMembers":  len(DGC_MEMBERS),
+            "completenessPct":  round(pct, 1),
+            "meanScore":        round(mean_score, 2) if mean_score is not None else None,
+            "clinicalRelevance": relevance,
+            "weightedScore":    weighted,
+            "members":          sorted(members_by_cell.get(ct, [])),
+            "hasDmd":           'DMD' in members_by_cell.get(ct, []),
+        })
+    entries.sort(key=lambda x: -x["weightedScore"])
+    return {
+        "method":           "DGC-completeness × clinical-tissue-relevance",
+        "dgcMembers":       DGC_MEMBERS,
+        "nDgcMembers":      len(DGC_MEMBERS),
+        "tissueRelevance":  TISSUE_RELEVANCE,
+        "cellTypes":        entries,
+    }
+
+
+def build_pathway_ranking(conn) -> dict | None:
+    """Rank pathways containing DMD by INTERACTOR-COVERAGE DENSITY, not by
+    pathway size. For each Reactome pathway containing DMD, count how many
+    of DMD's top STRING/Open-Targets interactors are also members. Density =
+    interactors_in_pathway / total_members. Higher density = pathway is
+    more DMD-embedded (the pathway IS the DGC neighborhood, not a
+    coincidental umbrella term)."""
+    # Interactor list: DMD itself + top STRING/OT interactors.
+    interactor_row = conn.execute(
+        "SELECT evidence FROM premise WHERE source_id='open_targets' LIMIT 1"
+    ).fetchone()
+    interactors: list[str] = ['DMD']
+    if interactor_row:
+        try:
+            ev = json.loads(interactor_row[0])
+            for x in (ev.get('interactions') or []):
+                sym = x.get('symbol')
+                if sym and sym not in interactors:
+                    interactors.append(sym)
+        except Exception:
+            pass
+    if len(interactors) < 2:
+        return {"error": "openTargets interactor list missing — re-bake"}
+
+    # Attach to the pathways.sqlite side database
+    conn.execute("ATTACH DATABASE ? AS pw",
+                 [str(Path(__file__).resolve().parent.parent.parent / "data" / "pathways.sqlite")])
+    try:
+        placeholders = ",".join(["?"] * len(interactors))
+        rows = conn.execute(
+            f"""
+            SELECT
+              gp.pathway_id, gp.pathway_name,
+              COUNT(DISTINCT gp.gene_symbol) AS n_interactors_in_path,
+              (SELECT COUNT(*) FROM pw.gene_pathway WHERE pathway_id=gp.pathway_id) AS n_members
+            FROM pw.gene_pathway gp
+            WHERE gp.pathway_id IN (
+              SELECT pathway_id FROM pw.gene_pathway WHERE gene_symbol='DMD'
+            )
+            AND gp.gene_symbol IN ({placeholders})
+            GROUP BY gp.pathway_id, gp.pathway_name
+            """,
+            interactors,
+        ).fetchall()
+    finally:
+        conn.execute("DETACH DATABASE pw")
+
+    entries = []
+    for (pid, pname, n_int, n_mem) in rows:
+        density = n_int / n_mem if n_mem else 0.0
+        entries.append({
+            "pathwayId":         pid,
+            "name":              pname,
+            "nInteractors":      n_int,
+            "nMembers":          n_mem,
+            "densityPct":        round(density * 100, 1),
+            "coveragePctOfInteractors": round(100.0 * n_int / len(interactors), 1),
+        })
+    entries.sort(key=lambda x: (-x["densityPct"], -x["nInteractors"]))
+    return {
+        "method":     "interactor-coverage density (n_interactors_in_path / n_pathway_members)",
+        "interactors": interactors,
+        "nInteractors": len(interactors),
+        "pathways":   entries,
+    }
+
+
 def build_open_targets(conn) -> dict | None:
     """Return the Open Targets DMD summary if the bake has been run;
     None otherwise. Emits a compact shape sized for direct rendering."""
@@ -644,6 +807,8 @@ def main() -> None:
         "clinvarComposition": build_clinvar_composition(conn),
         "isoformVariantCounts": build_isoform_variant_counts(conn),
         "openTargets":   build_open_targets(conn),
+        "pathwayRanking": build_pathway_ranking(conn),
+        "celltypeRanking": build_celltype_ranking(conn),
         "premiseSources": build_premise_sources(conn),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

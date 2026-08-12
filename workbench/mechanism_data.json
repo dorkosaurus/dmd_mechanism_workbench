@@ -1836,6 +1836,696 @@
       }
     ]
   },
+  "pathwayRanking": {
+    "method": "interactor-coverage density (n_interactors_in_path / n_pathway_members)",
+    "interactors": [
+      "DMD",
+      "SNTA1",
+      "SSPN",
+      "SGCD",
+      "SNTB1",
+      "SGCA",
+      "SGCB",
+      "SNTG1",
+      "UTRN",
+      "SNTG2",
+      "CAV3",
+      "DTNA",
+      "SNTB2"
+    ],
+    "nInteractors": 13,
+    "pathways": [
+      {
+        "pathwayId": "R-HSA-9913351",
+        "name": "Formation of the dystrophin-glycoprotein complex (DGC)",
+        "nInteractors": 11,
+        "nMembers": 36,
+        "densityPct": 30.6,
+        "coveragePctOfInteractors": 84.6
+      },
+      {
+        "pathwayId": "R-HSA-3000171",
+        "name": "Non-integrin membrane-ECM interactions",
+        "nInteractors": 11,
+        "nMembers": 80,
+        "densityPct": 13.8,
+        "coveragePctOfInteractors": 84.6
+      },
+      {
+        "pathwayId": "R-HSA-1474244",
+        "name": "Extracellular matrix organization",
+        "nInteractors": 11,
+        "nMembers": 321,
+        "densityPct": 3.4,
+        "coveragePctOfInteractors": 84.6
+      },
+      {
+        "pathwayId": "R-HSA-390522",
+        "name": "Striated Muscle Contraction",
+        "nInteractors": 1,
+        "nMembers": 36,
+        "densityPct": 2.8,
+        "coveragePctOfInteractors": 7.7
+      },
+      {
+        "pathwayId": "R-HSA-397014",
+        "name": "Muscle contraction",
+        "nInteractors": 2,
+        "nMembers": 204,
+        "densityPct": 1.0,
+        "coveragePctOfInteractors": 15.4
+      }
+    ]
+  },
+  "celltypeRanking": {
+    "method": "DGC-completeness × clinical-tissue-relevance",
+    "dgcMembers": [
+      "DMD",
+      "DAG1",
+      "SNTA1",
+      "SNTB1",
+      "SNTB2",
+      "SGCA",
+      "SGCB",
+      "SGCD",
+      "SGCG",
+      "DTNA",
+      "DTNB",
+      "UTRN",
+      "CAV3",
+      "SSPN"
+    ],
+    "nDgcMembers": 14,
+    "tissueRelevance": {
+      "skeletal_muscle": 1.0,
+      "heart": 0.95,
+      "cns": 0.6,
+      "retina": 0.55,
+      "peripheral_nerve": 0.3,
+      "smooth_muscle": 0.3,
+      "vascular": 0.25,
+      "kidney": 0.2,
+      "liver": 0.15,
+      "adipose": 0.1,
+      "salivary_gland": 0.05,
+      "breast": 0.05,
+      "prostate": 0.05,
+      "thymus": 0.0,
+      "other": 0.15
+    },
+    "cellTypes": [
+      {
+        "cellType": "Myonuclei",
+        "tissue": "skeletal_muscle",
+        "nDgcMembers": 6,
+        "totalDgcMembers": 14,
+        "completenessPct": 42.9,
+        "meanScore": 7.22,
+        "clinicalRelevance": 1.0,
+        "weightedScore": 6.007,
+        "members": [
+          "CAV3",
+          "DMD",
+          "DTNA",
+          "SGCD",
+          "SGCG",
+          "SNTA1"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Cardiomyocytes",
+        "tissue": "heart",
+        "nDgcMembers": 6,
+        "totalDgcMembers": 14,
+        "completenessPct": 42.9,
+        "meanScore": 6.52,
+        "clinicalRelevance": 0.95,
+        "weightedScore": 5.707,
+        "members": [
+          "CAV3",
+          "DMD",
+          "DTNA",
+          "SGCD",
+          "SGCG",
+          "SNTA1"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Astrocytes",
+        "tissue": "cns",
+        "nDgcMembers": 3,
+        "totalDgcMembers": 14,
+        "completenessPct": 21.4,
+        "meanScore": 6.84,
+        "clinicalRelevance": 0.6,
+        "weightedScore": 1.807,
+        "members": [
+          "DTNA",
+          "SGCD",
+          "SNTA1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Choroid plexus epithelial cells",
+        "tissue": "cns",
+        "nDgcMembers": 3,
+        "totalDgcMembers": 14,
+        "completenessPct": 21.4,
+        "meanScore": 5.9,
+        "clinicalRelevance": 0.6,
+        "weightedScore": 1.806,
+        "members": [
+          "SNTA1",
+          "SNTB1",
+          "SNTB2"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Rod photoreceptor cells",
+        "tissue": "retina",
+        "nDgcMembers": 3,
+        "totalDgcMembers": 14,
+        "completenessPct": 21.4,
+        "meanScore": 6.16,
+        "clinicalRelevance": 0.55,
+        "weightedScore": 1.656,
+        "members": [
+          "DMD",
+          "SNTA1",
+          "SNTB2"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Bergmann glia",
+        "tissue": "cns",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 6.8,
+        "clinicalRelevance": 0.6,
+        "weightedScore": 1.207,
+        "members": [
+          "DTNA",
+          "SNTA1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Müller glia",
+        "tissue": "cns",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 5.11,
+        "clinicalRelevance": 0.6,
+        "weightedScore": 1.205,
+        "members": [
+          "SNTA1",
+          "SNTB2"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Cone photoreceptor cells",
+        "tissue": "retina",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 7.63,
+        "clinicalRelevance": 0.55,
+        "weightedScore": 1.108,
+        "members": [
+          "DMD",
+          "SGCD"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Smooth muscle cells",
+        "tissue": "smooth_muscle",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 5.31,
+        "clinicalRelevance": 0.3,
+        "weightedScore": 0.605,
+        "members": [
+          "SNTB2",
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Retinal horizontal cells",
+        "tissue": "retina",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.15,
+        "clinicalRelevance": 0.55,
+        "weightedScore": 0.557,
+        "members": [
+          "SGCD"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Retinal ganglion cells",
+        "tissue": "retina",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 3.7,
+        "clinicalRelevance": 0.55,
+        "weightedScore": 0.554,
+        "members": [
+          "CAV3"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Late spermatids",
+        "tissue": "other",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 6.62,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.307,
+        "members": [
+          "SGCA",
+          "SGCB"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Epicardial cells",
+        "tissue": "other",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 4.59,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.305,
+        "members": [
+          "CAV3",
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Schwann cells",
+        "tissue": "peripheral_nerve",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.01,
+        "clinicalRelevance": 0.3,
+        "weightedScore": 0.305,
+        "members": [
+          "SGCB"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Vascular smooth muscle cells",
+        "tissue": "smooth_muscle",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 4.47,
+        "clinicalRelevance": 0.3,
+        "weightedScore": 0.304,
+        "members": [
+          "SNTA1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Adipocytes",
+        "tissue": "adipose",
+        "nDgcMembers": 2,
+        "totalDgcMembers": 14,
+        "completenessPct": 14.3,
+        "meanScore": 6.64,
+        "clinicalRelevance": 0.1,
+        "weightedScore": 0.207,
+        "members": [
+          "DMD",
+          "SGCG"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Adrenal cortex cells",
+        "tissue": "kidney",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.32,
+        "clinicalRelevance": 0.2,
+        "weightedScore": 0.207,
+        "members": [
+          "SNTB1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Adrenal medulla cells",
+        "tissue": "kidney",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 6.94,
+        "clinicalRelevance": 0.2,
+        "weightedScore": 0.207,
+        "members": [
+          "SGCD"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Renal collecting duct intercalated cells",
+        "tissue": "kidney",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.21,
+        "clinicalRelevance": 0.2,
+        "weightedScore": 0.207,
+        "members": [
+          "SNTB1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Ependymal cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.69,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.158,
+        "members": [
+          "DTNA"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Alveolar cells type 1",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.46,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "UTRN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Melanocytes",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 6.86,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "SGCD"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Neutrophils",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 6.69,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "DTNB"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Oligodendrocyte progenitor cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.21,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "SGCD"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Pancreatic acinar cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.42,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "DTNA"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Pituicytes/FSCs",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.16,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "DTNA"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Somatotrophs",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.25,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.157,
+        "members": [
+          "SGCD"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Mucous neck cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 6.41,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.156,
+        "members": [
+          "SNTB1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Neutrophil progenitors",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.94,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.156,
+        "members": [
+          "DTNB"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Peritubular myoid cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.75,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.156,
+        "members": [
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "B-cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.24,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.155,
+        "members": [
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Leydig cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.15,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.155,
+        "members": [
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Plasma cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.09,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.155,
+        "members": [
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Early spermatids",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 3.35,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.153,
+        "members": [
+          "CAV3"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Myosatellite cells",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 3.07,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.153,
+        "members": [
+          "CAV3"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Platelets",
+        "tissue": "other",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 3.11,
+        "clinicalRelevance": 0.15,
+        "weightedScore": 0.153,
+        "members": [
+          "CAV3"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Salivary myoepithelial cells",
+        "tissue": "salivary_gland",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 8.19,
+        "clinicalRelevance": 0.05,
+        "weightedScore": 0.058,
+        "members": [
+          "DMD"
+        ],
+        "hasDmd": true
+      },
+      {
+        "cellType": "Salivary ionocytes",
+        "tissue": "salivary_gland",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 7.11,
+        "clinicalRelevance": 0.05,
+        "weightedScore": 0.057,
+        "members": [
+          "SNTB1"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Breast myoepithelial cells",
+        "tissue": "breast",
+        "nDgcMembers": 1,
+        "totalDgcMembers": 14,
+        "completenessPct": 7.1,
+        "meanScore": 5.5,
+        "clinicalRelevance": 0.05,
+        "weightedScore": 0.056,
+        "members": [
+          "SSPN"
+        ],
+        "hasDmd": false
+      },
+      {
+        "cellType": "Thymic myoid cells",
+        "tissue": "thymus",
+        "nDgcMembers": 8,
+        "totalDgcMembers": 14,
+        "completenessPct": 57.1,
+        "meanScore": 6.4,
+        "clinicalRelevance": 0.0,
+        "weightedScore": 0.006,
+        "members": [
+          "CAV3",
+          "DAG1",
+          "DMD",
+          "SGCB",
+          "SGCD",
+          "SGCG",
+          "SNTA1",
+          "SSPN"
+        ],
+        "hasDmd": true
+      }
+    ]
+  },
   "premiseSources": [
     {
       "sourceId": "absplice",

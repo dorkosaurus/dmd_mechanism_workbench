@@ -521,6 +521,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 14348.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 560.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 43.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 3.0,
+              "unit": "score/34",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 30.0,
+              "unit": "seconds",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 0.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 87.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 1.0,
+              "unit": "presence",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 59.0,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 94.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 10.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 70.4,
+              "unit": "% predicted",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 359.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 174.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 52.0,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "01",
@@ -8639,6 +8821,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 15153.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 601.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 47.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 26.0,
+              "unit": "score/34",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 4.3,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 378.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 2,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 96.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 61.1,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 90.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 9.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 90.7,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 462.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 250.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 35.6,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -16498,6 +16862,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 14104.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 594.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 39.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 3.0,
+              "unit": "score/34",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 30.0,
+              "unit": "seconds",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 0.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 78.0,
+              "unit": "FSIQ",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 63.8,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 65.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 52.0,
+              "unit": "mg/g",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 87.5,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 425.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 142.0,
+              "unit": "µV",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 39.7,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -24726,6 +25272,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 10605.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 518.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 35.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 34.0,
+              "unit": "score/34",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 2.5,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 474.0,
+              "unit": "meters",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 100.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 68.8,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 70.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 6.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 102.3,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 646.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 253.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 23.0,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "01",
@@ -32455,6 +33183,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 15259.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 492.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 44.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 2.0,
+              "unit": "score/34",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 30.0,
+              "unit": "seconds",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 0.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 79.0,
+              "unit": "FSIQ",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 1.0,
+              "unit": "presence",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 51.1,
+              "unit": "%",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 283.0,
+              "unit": "pg/mL",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 42.0,
+              "unit": "mg/g",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 51.8,
+              "unit": "% predicted",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 302.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 179.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 41.7,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "01",
@@ -40783,6 +41693,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 12111.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 440.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 34.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 26.0,
+              "unit": "score/34",
+              "flag": "low",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 3.5,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 377.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 2,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 93.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 67.9,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 89.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 7.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 91.3,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 499.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 263.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 31.4,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "01",
@@ -48675,6 +49767,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 13493.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 572.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 37.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 30.0,
+              "unit": "score/34",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 4.0,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 397.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 88.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 69.0,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 69.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 9.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 99.6,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 567.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 182.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 20.9,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -56699,6 +57973,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 16378.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 511.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 52.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 32.0,
+              "unit": "score/34",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 3.1,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 462.0,
+              "unit": "meters",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 82.0,
+              "unit": "FSIQ",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 66.9,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 85.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 7.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 98.8,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 519.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 157.0,
+              "unit": "µV",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 23.9,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -64757,6 +66213,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 10225.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 384.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 26.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 35.0,
+              "unit": "score/34",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 2.0,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 469.0,
+              "unit": "meters",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 95.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 67.7,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 63.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 7.0,
+              "unit": "mg/g",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 102.8,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 486.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 142.0,
+              "unit": "µV",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 19.7,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -72750,6 +74388,188 @@
           "flag": "high"
         }
       ],
+      "phenotypesObserved": {
+        "skeletal_muscle_myonecrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "CK",
+              "label": "Creatine kinase",
+              "value": 13081.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "LDH",
+              "label": "Lactate dehydrogenase",
+              "value": 444.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            },
+            {
+              "labKey": "aldolase",
+              "label": "Aldolase",
+              "value": 41.0,
+              "unit": "U/L",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 3,
+          "nEvaluated": 3
+        },
+        "functional_impairment_ambulatory": {
+          "supportingLabs": [
+            {
+              "labKey": "NSAA",
+              "label": "North Star Ambulatory Assessment",
+              "value": 29.0,
+              "unit": "score/34",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "TTS",
+              "label": "Time to stand from supine",
+              "value": 4.1,
+              "unit": "seconds",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "m6MWT",
+              "label": "6-minute walk test",
+              "value": 380.0,
+              "unit": "meters",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 3
+        },
+        "cns_cognitive": {
+          "supportingLabs": [
+            {
+              "labKey": "IQ",
+              "label": "Full-scale IQ",
+              "value": 87.0,
+              "unit": "FSIQ",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_fibrosis": {
+          "supportingLabs": [
+            {
+              "labKey": "LGE",
+              "label": "Late gadolinium enhancement (fibrosis)",
+              "value": 0.0,
+              "unit": "presence",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "LVEF",
+              "label": "Left ventricular ejection fraction",
+              "value": 65.8,
+              "unit": "%",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "cardiac_muscle_injury": {
+          "supportingLabs": [
+            {
+              "labKey": "NT_proBNP",
+              "label": "NT-proBNP",
+              "value": 93.0,
+              "unit": "pg/mL",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 1
+        },
+        "renal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "UACR",
+              "label": "Urine albumin/creatinine ratio",
+              "value": 44.0,
+              "unit": "mg/g",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "respiratory_failure": {
+          "supportingLabs": [
+            {
+              "labKey": "FVC_pct",
+              "label": "FVC (% predicted)",
+              "value": 93.6,
+              "unit": "% predicted",
+              "flag": "normal",
+              "abnormal": false
+            },
+            {
+              "labKey": "PCF",
+              "label": "Peak cough flow",
+              "value": 512.0,
+              "unit": "L/min",
+              "flag": "normal",
+              "abnormal": false
+            }
+          ],
+          "nAbnormal": 0,
+          "nEvaluated": 2
+        },
+        "retinal_dysfunction": {
+          "supportingLabs": [
+            {
+              "labKey": "ERG_bwave",
+              "label": "ERG b-wave amplitude",
+              "value": 140.0,
+              "unit": "µV",
+              "flag": "low",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        },
+        "skeletal_muscle_fibro_fatty_replacement": {
+          "supportingLabs": [
+            {
+              "labKey": "MRI_ff_VL",
+              "label": "MRI fat fraction (vastus lateralis)",
+              "value": 27.7,
+              "unit": "%",
+              "flag": "high",
+              "abnormal": true
+            }
+          ],
+          "nAbnormal": 1,
+          "nEvaluated": 1
+        }
+      },
       "hypothesisRanking": [
         {
           "id": "03",
@@ -80631,6 +82451,414 @@
       "uniprot": "P11532",
       "status": "skipped_no_residue",
       "notes": "consequence=splice-site; no residue parsed from HGVSp"
+    }
+  },
+  "phenotypeMatrix": {
+    "phenotypes": [
+      "cardiac_dysfunction",
+      "cardiac_fibrosis",
+      "cardiac_muscle_injury",
+      "cns_cognitive",
+      "functional_impairment_ambulatory",
+      "renal_dysfunction",
+      "respiratory_failure",
+      "retinal_dysfunction",
+      "skeletal_muscle_fibro_fatty_replacement",
+      "skeletal_muscle_myonecrosis"
+    ],
+    "patients": [
+      {
+        "id": "P1",
+        "variant": {
+          "exon": "45",
+          "consequence": "Frameshift",
+          "acmg": "LP"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 1,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P2",
+        "variant": {
+          "exon": "10",
+          "consequence": "Nonsense",
+          "acmg": "LP"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 2,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P3",
+        "variant": {
+          "exon": "63",
+          "consequence": "Nonsense",
+          "acmg": "P"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P4",
+        "variant": {
+          "exon": "8",
+          "consequence": "Frameshift",
+          "acmg": "LP"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 0,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P5",
+        "variant": {
+          "exon": "75",
+          "consequence": "Frameshift",
+          "acmg": "LP"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 1,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P6",
+        "variant": {
+          "exon": "20",
+          "consequence": "Frameshift",
+          "acmg": "LP"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 2,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P7",
+        "variant": {
+          "exon": "45",
+          "consequence": "Nonsense",
+          "acmg": "P"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 1,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P8",
+        "variant": {
+          "exon": "53",
+          "consequence": "Nonsense",
+          "acmg": "P"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 0,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 0,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P9",
+        "variant": {
+          "exon": "53",
+          "consequence": "Nonsense",
+          "acmg": "P"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 1,
+          "renal_dysfunction": 0,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      },
+      {
+        "id": "P10",
+        "variant": {
+          "exon": "int64",
+          "consequence": "Splice-site",
+          "acmg": "P"
+        },
+        "phenotype": "DMD",
+        "abnormalByPhenotype": {
+          "cardiac_dysfunction": 0,
+          "cardiac_fibrosis": 0,
+          "cardiac_muscle_injury": 0,
+          "cns_cognitive": 0,
+          "functional_impairment_ambulatory": 1,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 0,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        },
+        "totalByPhenotype": {
+          "cardiac_dysfunction": 1,
+          "cardiac_fibrosis": 1,
+          "cardiac_muscle_injury": 1,
+          "cns_cognitive": 1,
+          "functional_impairment_ambulatory": 3,
+          "renal_dysfunction": 1,
+          "respiratory_failure": 2,
+          "retinal_dysfunction": 1,
+          "skeletal_muscle_fibro_fatty_replacement": 1,
+          "skeletal_muscle_myonecrosis": 3
+        }
+      }
+    ]
+  },
+  "labPhenotypeMap": {
+    "CK": {
+      "phenotypeNode": "skeletal_muscle_myonecrosis",
+      "interpretation": "CK leak from damaged sarcolemma; hallmark of active myofiber necrosis"
+    },
+    "LDH": {
+      "phenotypeNode": "skeletal_muscle_myonecrosis",
+      "interpretation": "nonspecific tissue lysis; in DMD context reflects muscle damage"
+    },
+    "aldolase": {
+      "phenotypeNode": "skeletal_muscle_myonecrosis",
+      "interpretation": "muscle enzyme leak; corroborates CK"
+    },
+    "MRI_ff_VL": {
+      "phenotypeNode": "skeletal_muscle_fibro_fatty_replacement",
+      "interpretation": "MRI fat fraction — chronic replacement of muscle with fibro-fatty tissue"
+    },
+    "FVC_pct": {
+      "phenotypeNode": "respiratory_failure",
+      "interpretation": "forced vital capacity decline — diaphragm + intercostal weakness"
+    },
+    "PCF": {
+      "phenotypeNode": "respiratory_failure",
+      "interpretation": "peak cough flow — bulbar / respiratory muscle strength"
+    },
+    "NT_proBNP": {
+      "phenotypeNode": "cardiac_muscle_injury",
+      "interpretation": "ventricular stress / injury signal"
+    },
+    "LVEF": {
+      "phenotypeNode": "cardiac_dysfunction",
+      "interpretation": "global cardiac contractile function"
+    },
+    "LGE": {
+      "phenotypeNode": "cardiac_fibrosis",
+      "interpretation": "late gadolinium enhancement = replacement fibrosis (endomysial → chamber-level)"
+    },
+    "ERG_bwave": {
+      "phenotypeNode": "retinal_dysfunction",
+      "interpretation": "Dp260 loss → altered scotopic b-wave amplitude"
+    },
+    "IQ": {
+      "phenotypeNode": "cns_cognitive",
+      "interpretation": "Dp427c / Dp140 loss → cognitive comorbidity"
+    },
+    "UACR": {
+      "phenotypeNode": "renal_dysfunction",
+      "interpretation": "Dp71 loss in podocytes → glomerular filtration signal"
+    },
+    "NSAA": {
+      "phenotypeNode": "functional_impairment_ambulatory",
+      "interpretation": "North Star Ambulatory Assessment — composite functional score"
+    },
+    "m6MWT": {
+      "phenotypeNode": "functional_impairment_ambulatory",
+      "interpretation": "6-minute walk test — endurance / gait function"
+    },
+    "TTS": {
+      "phenotypeNode": "functional_impairment_ambulatory",
+      "interpretation": "time to stand from supine — Gowers-adjacent functional endpoint"
     }
   },
   "phenoBreakdown": {

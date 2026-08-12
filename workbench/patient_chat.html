@@ -91,7 +91,8 @@
     padding: 12px 6px 8px; margin-top: 4px; }
   .lauren-overview { display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 8px; }
-  @media (max-width: 1280px) { .lauren-overview { grid-template-columns: repeat(2, 1fr); } }
+  /* No responsive fallback — keep the 4-col grid at all viewport widths so
+     span-2 always means half-row. Tiles that overflow scroll internally. */
   .lauren-tile { background: var(--panel); border: 1px solid var(--line);
     border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column;
     min-height: 160px; }
@@ -2541,6 +2542,8 @@ const DATA_CHIPS = [
     items: [
       { qid: 'Q2.6', label: 'NMD status vs symptom count across the cohort',
         status: 'chart',   renderer: 'nmd_vs_symptom', note: 'cohort n=10 · thin' },
+      { qid: 'PH.1', label: 'Group patient lab profiles by variant consequence',
+        status: 'chart',   renderer: 'labs_by_consequence', note: 'cohort heatmap · rows grouped by frameshift/nonsense/splice-site' },
       { qid: 'Q5',   label: 'How do these mechanisms link this variant to symptoms?',
         status: 'chart',   renderer: 'route_to_mech',  note: 'switches to Mechanism tab' },
     ]},
@@ -2564,9 +2567,20 @@ function renderLaurenView(p) {
       ${laurenTileIsoforms(p)}
       ${laurenTileTopPathways(p)}
     </div>
+    <div class="lauren-section-h">Cohort Lab Profile — grouped by variant consequence</div>
+    ${laurenTileLabsByConsequence(p)}
     <div class="lauren-section-h">Mechanistic Hypotheses</div>
     ${laurenHypothesesTable(p)}
   </div>`;
+}
+
+// ---- Cohort labs heatmap grouped by variant consequence (reuses PH.1) ----
+function laurenTileLabsByConsequence(p) {
+  const inner = renderDataArtifactBody(
+    { renderer: 'labs_by_consequence', filter: {} },
+    p
+  );
+  return `<div class="lauren-hyp-table">${inner}</div>`;
 }
 
 // ---- Tile: Isoform × (tissues + variant categories), patient-agnostic ----
@@ -2641,15 +2655,25 @@ function laurenTileIsoforms(p) {
 
   // Bottom labels row — each label td matches its data-column width so the
   // vertical text sits exactly centered under its column of dots/numbers.
-  const labelStyleTissue = `padding:6px 0 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap;text-align:center;width:${TISSUE_COL_W}px;min-width:${TISSUE_COL_W}px`;
-  const labelStyleNum    = `padding:6px 0 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap;text-align:center;width:${NUM_COL_W}px;min-width:${NUM_COL_W}px`;
+  // Height reserved for the labels is generous so long strings like
+  // "Transcript-dep." at font-size 12 don't bleed off the tile.
+  // writing-mode: sideways-rl → text starts at the TOP of the label cell
+  // (which sits at the bottom edge of the data rows) and reads DOWNWARD
+  // through the cell. Letters stay upright. Wrapping allowed so multi-word
+  // tissue names ("skeletal muscle") can flow onto two vertical lines.
+  const labelStyleTissue = `padding:8px 2px;font-size:12px;color:var(--ink-2);vertical-align:top;writing-mode:sideways-rl;height:150px;text-align:left;width:${TISSUE_COL_W}px;min-width:${TISSUE_COL_W}px`;
+  const labelStyleNum    = `padding:8px 2px;font-size:12px;color:var(--ink-2);vertical-align:top;writing-mode:sideways-rl;height:150px;text-align:left;width:${NUM_COL_W}px;min-width:${NUM_COL_W}px`;
+
+  const prettyTissue = (t) => t.replace(/_/g, ' ');
+  const prettyCat    = (s) => (catLabel[s] || s).replace(/_/g, ' ');
+  const prettyNmd    = (s) => (nmdLabel[s] || s).replace(/_/g, ' ');
   const labelRow = `<tr>
     <td></td>
-    ${allTissues.map(t => `<td style="${labelStyleTissue}">${esc(t)}</td>`).join('')}
+    ${allTissues.map(t => `<td style="${labelStyleTissue}">${esc(prettyTissue(t))}</td>`).join('')}
     <td></td>
-    ${cats.map(c => `<td style="${labelStyleNum}">${esc(catLabel[c] || c)}</td>`).join('')}
+    ${cats.map(c => `<td style="${labelStyleNum}">${esc(prettyCat(c))}</td>`).join('')}
     <td></td>
-    ${nmdCats.map(n => `<td style="${labelStyleNum}">${esc(nmdLabel[n] || n)}</td>`).join('')}
+    ${nmdCats.map(n => `<td style="${labelStyleNum}">${esc(prettyNmd(n))}</td>`).join('')}
   </tr>`;
 
   // Section-header row (inside the same table so cells align with actual columns)
@@ -2664,7 +2688,7 @@ function laurenTileIsoforms(p) {
   </tr>`;
 
   return `<div class="lauren-tile" style="grid-column:span 3">
-    <div class="lauren-tile-h">Isoforms × Tissues + Variants + NMD</div>
+    <div class="lauren-tile-h">Isoforms</div>
     <div style="overflow-x:auto">
       <table style="border-collapse:collapse;font-size:12px">
         <tbody>
@@ -2808,7 +2832,7 @@ function laurenTileNMD(p) {
   const pct = (n) => total ? ((n / total) * 100).toFixed(0) + '%' : '0%';
 
   return `<div class="lauren-tile">
-    <div class="lauren-tile-h">NMD Prediction</div>
+    <div class="lauren-tile-h">Nonsense Mediated Decay (NMD)</div>
     <div>
       <span class="lauren-tile-big bad">${trigger.toLocaleString()}</span>
       <div class="lauren-tile-sub">predicted NMD-triggering of ${total.toLocaleString()} pathogenic (ClinVar)</div>
@@ -2972,41 +2996,73 @@ function laurenTileProteinImpact(p) {
 }
 
 // ---- Tile 4: Most Affected Cell Type ----
+// ---- Tile: Most Affected Cell Types (ranked by DGC-completeness) ----
+// Patient-agnostic. Cells ranked by how many DGC members (DMD + 13
+// partners) are co-expressed there. The higher the completeness, the
+// more the DGC is actually being assembled in that cell — so DMD loss
+// has more mechanism to disrupt.
 function laurenTileMostAffectedCells(p) {
-  const cells = [...(p.cellTypeImpact || [])].sort((a, b) => b.score - a.score);
-  const hit = cells.filter(c => c.status === 'hit');
-  const top = cells.slice(0, 5);
+  const cr = MECH_DATA?.celltypeRanking;
+  if (!cr || !cr.cellTypes?.length) {
+    return `<div class="lauren-tile">
+      <div class="lauren-tile-h">Most Affected Cell Types</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">celltypeRanking missing — run bake_hpa_partners + hydrate_mechanism_view</div>
+    </div>`;
+  }
+  const N = cr.nDgcMembers;
+  const top = cr.cellTypes.slice(0, 6);
   const rows = top.map(c => {
-    const color = c.status === 'hit' ? 'var(--bad)'
-               : c.status === 'spared' ? 'var(--good)' : 'var(--warn)';
-    return `<div class="lauren-mini-bar">
-      <span class="lb-lbl" title="${esc(c.tissue)}">${esc(c.name)}</span>
-      <span class="lb-bar"><span class="lb-bar-fill" style="width:${(c.score * 10).toFixed(0)}%;background:${color}"></span></span>
-      <span class="lb-val" style="color:${color}">${c.status[0].toUpperCase()}</span>
+    const w = Math.max(4, (c.nDgcMembers / N) * 100).toFixed(0);
+    return `<div style="margin-bottom:6px">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:6px;font-size:11px;align-items:baseline">
+        <span title="${esc(c.tissue)}"><b>${esc(c.cellType)}</b></span>
+        <span style="color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:600">${c.nDgcMembers}/${N}</span>
+      </div>
+      <div style="background:var(--tile);height:7px;border-radius:2px;overflow:hidden;margin-top:2px">
+        <span style="display:block;height:100%;width:${w}%;background:var(--accent)"></span>
+      </div>
+      <div style="color:var(--ink-3);font-size:9px;margin-top:1px">${esc(c.tissue)}${c.hasDmd ? '' : ' · <span style="color:var(--warn)">DMD absent</span>'}</div>
     </div>`;
   }).join('');
   return `<div class="lauren-tile">
     <div class="lauren-tile-h">Most Affected Cell Types</div>
-    <div>
-      <span class="lauren-tile-big bad">${hit.length}/${cells.length}</span>
-      <div class="lauren-tile-sub">cell types hit by this variant · HPA</div>
+    <div style="font-size:10px;color:var(--ink-3);margin-bottom:6px">
+      DGC-completeness × clinical relevance
     </div>
     <div class="lauren-tile-body">${rows}</div>
   </div>`;
 }
 
-// ---- Sidebar: Top Pathways ----
+// ---- Sidebar: Top Pathways (ranked by DMD-interactor coverage density) ----
 function laurenTileTopPathways(p) {
-  const ot = MECH_DATA?.openTargets;
-  const paths = (ot?.pathways || []).slice(0, 5);
-  const items = paths.length ? paths.map(pw =>
-    `<li style="margin-bottom:6px;line-height:1.35"><b>${esc(pw.name)}</b><br>
-      <span style="color:var(--ink-3);font-size:10px">${esc(pw.topLevel || '')}</span></li>`
-  ).join('') : '<li style="color:var(--ink-3)">no pathways loaded</li>';
+  const pr = MECH_DATA?.pathwayRanking;
+  if (!pr || !pr.pathways?.length) {
+    return `<div class="lauren-tile">
+      <div class="lauren-tile-h">Top Pathways</div>
+      <div class="lauren-tile-body" style="color:var(--ink-3);font-size:11px">pathwayRanking missing — re-run hydrate_mechanism_view</div>
+    </div>`;
+  }
+  const N = pr.nInteractors;
+  const rows = pr.pathways.slice(0, 5).map(pw => {
+    const bar = Math.max(2, Math.min(100, pw.densityPct * 3)).toFixed(0);   // visual amplifier
+    return `<li style="margin-bottom:8px;line-height:1.35">
+      <b style="font-size:12px">${esc(pw.name)}</b><br>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin-top:2px">
+        <span style="background:var(--tile);height:8px;border-radius:2px;overflow:hidden">
+          <span style="display:block;height:100%;width:${bar}%;background:var(--accent)"></span>
+        </span>
+        <span style="font-variant-numeric:tabular-nums;font-size:11px;color:var(--ink-2);font-weight:600">${pw.densityPct}%</span>
+      </div>
+      <span style="color:var(--ink-3);font-size:10px">${pw.nInteractors}/${N} interactors · ${pw.nMembers} members</span>
+    </li>`;
+  }).join('');
   return `<div class="lauren-tile">
     <div class="lauren-tile-h">Top Pathways</div>
+    <div style="font-size:10px;color:var(--ink-3);margin-bottom:6px">
+      ranked by DMD-interactor density<br>(<i>interactors ∩ pathway / pathway_size</i>)
+    </div>
     <ul style="padding-left:14px;margin:6px 0 0;font-size:11px;color:var(--ink-2)">
-      ${items}
+      ${rows}
     </ul>
   </div>`;
 }
@@ -3708,6 +3764,94 @@ function renderDataArtifactBody(a, p) {
         ${isos.length} DMD isoforms × ${allTissues.length} tissues. <span style="color:var(--bad)">●</span> = isoform hit by variant AND expressed here; <span style="color:var(--good)">○</span> = isoform spared but expressed here; <span style="color:var(--ink-3)">–</span> = isoform not expressed in this tissue.
       </div>
       <div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:12px">${header}${rows}</table></div>`;
+    }
+
+    // ---------------- PH.1 — Group patient lab profiles by variant consequence ----------------
+    case 'labs_by_consequence': {
+      const patients = DATA.patients || [];
+      if (!patients.length) return `<div class="pc-data-roadmap-body">No patients.</div>`;
+      // Collect all lab keys seen across the cohort, ordered by layer.
+      const labMeta = new Map();
+      for (const x of patients) {
+        for (const l of (x.labs || [])) {
+          if (!labMeta.has(l.key)) {
+            labMeta.set(l.key, { label: l.label || l.key, layer: l.layer || 'other', tissue: l.tissue || '' });
+          }
+        }
+      }
+      const labKeys = [...labMeta.keys()].sort((a, b) => {
+        const la = labMeta.get(a).layer, lb = labMeta.get(b).layer;
+        const order = ['cellType', 'tissueType', 'phenotype', 'other'];
+        return (order.indexOf(la) - order.indexOf(lb)) || a.localeCompare(b);
+      });
+      // Group patients by variant consequence
+      const groups = {};
+      for (const x of patients) {
+        const c = x.variant?.consequence || 'unknown';
+        (groups[c] ||= []).push(x);
+      }
+      const groupOrder = ['Frameshift', 'Nonsense', 'Splice-site', 'Missense']
+        .filter(g => groups[g]);
+      for (const g of Object.keys(groups)) if (!groupOrder.includes(g)) groupOrder.push(g);
+
+      const CELL_W = 34, LABEL_H = 100;
+      const cellFor = (labKey, patient) => {
+        const lab = (patient.labs || []).find(l => l.key === labKey);
+        if (!lab) return `<td style="width:${CELL_W}px;padding:3px;background:var(--tile)" title="not measured"></td>`;
+        const flag = lab.flag || 'normal';
+        const bg = flag === 'high'   ? 'rgba(201,74,74,0.85)'
+                 : flag === 'low'    ? 'rgba(215,138,43,0.85)'
+                 : 'rgba(200,200,205,0.35)';
+        const glyph = flag === 'high' ? '▲' : flag === 'low' ? '▼' : '';
+        const color = flag !== 'normal' ? 'white' : 'var(--ink-3)';
+        const tip = `${patient.id} · ${lab.label}: ${lab.value} ${lab.unit || ''} [${flag}]`;
+        return `<td style="width:${CELL_W}px;padding:3px;background:${bg};color:${color};text-align:center;font-size:11px;font-weight:700" title="${esc(tip)}">${glyph}</td>`;
+      };
+
+      // Group summary row: % of patients in this group with any abnormal for that lab
+      const summaryFor = (labKey, group) => {
+        const n = group.length;
+        const abn = group.filter(x => {
+          const lab = (x.labs || []).find(l => l.key === labKey);
+          return lab && lab.flag && lab.flag !== 'normal';
+        }).length;
+        if (!n) return `<td style="width:${CELL_W}px"></td>`;
+        const frac = abn / n;
+        const alpha = 0.1 + 0.7 * frac;
+        return `<td style="width:${CELL_W}px;padding:4px 3px;text-align:center;font-size:10px;font-weight:700;color:${frac > 0.5 ? 'white' : 'var(--ink-2)'};background:rgba(37,99,235,${alpha.toFixed(2)})"
+                  title="${abn}/${n} abnormal in group">${abn}/${n}</td>`;
+      };
+
+      const headerRow = `<tr>
+        <th style="text-align:left;padding:4px 8px;font-size:10px;text-transform:uppercase;color:var(--ink-3);letter-spacing:0.05em">group / patient</th>
+        <th style="text-align:left;padding:4px 8px;font-size:10px;text-transform:uppercase;color:var(--ink-3);letter-spacing:0.05em">exon</th>
+        ${labKeys.map(k => `<th style="width:${CELL_W}px;height:${LABEL_H}px;vertical-align:bottom;padding:2px 0;font-size:10px;color:var(--ink-2);text-align:center"><div style="writing-mode:sideways-rl;white-space:nowrap;text-align:left">${esc(labMeta.get(k).label)}</div></th>`).join('')}
+      </tr>`;
+
+      const groupBlocks = groupOrder.map(g => {
+        const pats = groups[g];
+        const summaryCells = labKeys.map(k => summaryFor(k, pats)).join('');
+        const summaryRow = `<tr style="background:var(--tile)">
+          <td colspan="2" style="padding:5px 8px;font-weight:700;color:var(--ink);text-transform:uppercase;font-size:11px;letter-spacing:0.05em;border-top:2px solid var(--accent)">${esc(g)} · n=${pats.length}</td>
+          ${summaryCells}
+        </tr>`;
+        const patientRows = pats.map(x => `<tr>
+          <td style="padding:3px 8px;font-family:'SF Mono',Menlo,monospace;font-size:11px">${esc(x.id)}</td>
+          <td style="padding:3px 8px;font-size:11px;color:var(--ink-2)">${esc(x.variant?.exon || '?')}</td>
+          ${labKeys.map(k => cellFor(k, x)).join('')}
+        </tr>`).join('');
+        return summaryRow + patientRows;
+      }).join('');
+
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        10 patients grouped by variant consequence. <span style="background:rgba(201,74,74,0.85);color:white;padding:1px 5px;border-radius:2px">▲ high</span> · <span style="background:rgba(215,138,43,0.85);color:white;padding:1px 5px;border-radius:2px">▼ low</span> · empty = within reference range. Group-header row shows <b>fraction abnormal</b> for that lab in the group (blue tint intensity = fraction).
+      </div>
+      <div style="overflow-x:auto">
+        <table style="border-collapse:collapse;font-size:11px">
+          <thead>${headerRow}</thead>
+          <tbody>${groupBlocks}</tbody>
+        </table>
+      </div>`;
     }
 
     // ---------------- Q2.6 — NMD status vs symptom count (cohort) ----------------
