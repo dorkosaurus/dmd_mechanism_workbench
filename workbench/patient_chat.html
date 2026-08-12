@@ -89,7 +89,7 @@
   .lauren-section-h { font-size: 11px; text-transform: uppercase;
     letter-spacing: 0.08em; font-weight: 700; color: var(--ink-3);
     padding: 12px 6px 8px; margin-top: 4px; }
-  .lauren-overview { display: grid; grid-template-columns: repeat(4, 1fr) 220px;
+  .lauren-overview { display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 8px; }
   @media (max-width: 1280px) { .lauren-overview { grid-template-columns: repeat(2, 1fr); } }
   .lauren-tile { background: var(--panel); border: 1px solid var(--line);
@@ -2561,8 +2561,8 @@ function renderLaurenView(p) {
       ${laurenTileNMD(p)}
       ${laurenTileProteinImpact(p)}
       ${laurenTileMostAffectedCells(p)}
-      ${laurenTileTopPathways(p)}
       ${laurenTileIsoforms(p)}
+      ${laurenTileTopPathways(p)}
     </div>
     <div class="lauren-section-h">Mechanistic Hypotheses</div>
     ${laurenHypothesesTable(p)}
@@ -2585,10 +2585,13 @@ function laurenTileIsoforms(p) {
   }
   const allTissues = Array.from(new Set(isos.flatMap(i => i.tissues || []))).sort();
   const cats       = iv?.categories || [];
+  const nmdCats    = iv?.nmdCategories || [];
   const catLabel   = { nonsense: 'Nonsense', frameshift: 'Frameshift',
                        splice: 'Splice-site', missense: 'Missense',
                        inframe_indel: 'In-frame indel', large_del: 'Large deletion',
                        other: 'Other' };
+  const nmdLabel   = { triggering: 'Trigger', escape: 'Escape',
+                       transcript_dependent: 'Transcript-dep.' };
   const ivByIso    = Object.fromEntries((iv?.isoforms || []).map(x => [x.id, x]));
 
   // Map count → cell background intensity (log-scaled) for the variant cells,
@@ -2602,48 +2605,66 @@ function laurenTileIsoforms(p) {
     return `rgba(37, 99, 235, ${alpha.toFixed(2)})`;        // accent-blue
   };
 
+  // Fixed cell widths per section keep dots directly under their bottom labels.
+  const TISSUE_COL_W = 22;
+  const NUM_COL_W    = 44;
   const rows = isos.map(i => {
     const tissueCells = allTissues.map(t => {
       const carries = (i.tissues || []).includes(t);
       const glyph  = carries ? '●' : '–';
       const color  = carries ? 'var(--accent)' : 'var(--ink-3)';
-      return `<td style="padding:4px;text-align:center;color:${color};font-size:14px"
+      return `<td style="padding:4px 0;text-align:center;color:${color};font-size:14px;width:${TISSUE_COL_W}px;min-width:${TISSUE_COL_W}px"
                 title="${esc(i.id)} ${carries ? 'is expressed in' : 'is NOT expressed in'} ${esc(t)}">${glyph}</td>`;
     }).join('');
     const isoCounts = ivByIso[i.id];
     const variantCells = cats.map(c => {
       const n = isoCounts?.byCategory?.[c] ?? 0;
-      return `<td style="padding:4px 6px;text-align:center;font-variant-numeric:tabular-nums;background:${bgFor(n)};color:${n ? 'var(--ink)' : 'var(--ink-3)'};font-weight:${n ? 600 : 400}"
+      return `<td style="padding:4px 6px;text-align:center;font-variant-numeric:tabular-nums;background:${bgFor(n)};color:${n ? 'var(--ink)' : 'var(--ink-3)'};font-weight:${n ? 600 : 400};width:${NUM_COL_W}px;min-width:${NUM_COL_W}px"
                 title="${esc(i.id)} × ${esc(catLabel[c] || c)}: ${n} pathogenic variant${n === 1 ? '' : 's'}">${n || '–'}</td>`;
     }).join('');
-    // Skinny visual separator between tissue and variant halves
+    const nmdCells = nmdCats.map(n => {
+      const cnt = isoCounts?.byNmd?.[n] ?? 0;
+      return `<td style="padding:4px 6px;text-align:center;font-variant-numeric:tabular-nums;background:${bgFor(cnt)};color:${cnt ? 'var(--ink)' : 'var(--ink-3)'};font-weight:${cnt ? 600 : 400};width:${NUM_COL_W}px;min-width:${NUM_COL_W}px"
+                title="${esc(i.id)} × ${esc(nmdLabel[n] || n)}: ${cnt} variant${cnt === 1 ? '' : 's'}">${cnt || '–'}</td>`;
+    }).join('');
+    // Skinny visual separators between the three halves
     const sep = `<td style="padding:0;width:12px"></td>`;
     return `<tr>
       <td style="padding:4px 8px;font-family:'SF Mono',Menlo,monospace;font-weight:600;white-space:nowrap">${esc(i.id)}</td>
       ${tissueCells}
       ${sep}
       ${variantCells}
+      ${sep}
+      ${nmdCells}
     </tr>`;
   }).join('');
 
-  // Bottom labels row for both halves
+  // Bottom labels row — each label td matches its data-column width so the
+  // vertical text sits exactly centered under its column of dots/numbers.
+  const labelStyleTissue = `padding:6px 0 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap;text-align:center;width:${TISSUE_COL_W}px;min-width:${TISSUE_COL_W}px`;
+  const labelStyleNum    = `padding:6px 0 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap;text-align:center;width:${NUM_COL_W}px;min-width:${NUM_COL_W}px`;
   const labelRow = `<tr>
     <td></td>
-    ${allTissues.map(t => `<td style="padding:6px 4px 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap">${esc(t)}</td>`).join('')}
+    ${allTissues.map(t => `<td style="${labelStyleTissue}">${esc(t)}</td>`).join('')}
     <td></td>
-    ${cats.map(c => `<td style="padding:6px 4px 0;font-size:9px;color:var(--ink-3);vertical-align:top;writing-mode:vertical-rl;text-orientation:mixed;height:80px;white-space:nowrap">${esc(catLabel[c] || c)}</td>`).join('')}
+    ${cats.map(c => `<td style="${labelStyleNum}">${esc(catLabel[c] || c)}</td>`).join('')}
+    <td></td>
+    ${nmdCats.map(n => `<td style="${labelStyleNum}">${esc(nmdLabel[n] || n)}</td>`).join('')}
   </tr>`;
 
   // Section-header row (inside the same table so cells align with actual columns)
+  const hdrStyle = 'text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;padding:4px 0 6px;border-bottom:1px solid var(--line-2)';
   const headerRow = `<tr>
     <td></td>
-    <td colspan="${allTissues.length}" style="text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;padding:4px 0 6px;border-bottom:1px solid var(--line-2)">Isoform × Tissue</td>
+    <td colspan="${allTissues.length}" style="${hdrStyle}">Isoform × Tissue</td>
     <td></td>
-    <td colspan="${cats.length}" style="text-align:center;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700;padding:4px 0 6px;border-bottom:1px solid var(--line-2)">Isoform × Pathogenic variant</td>
+    <td colspan="${cats.length}"       style="${hdrStyle}">Isoform × Pathogenic variant</td>
+    <td></td>
+    <td colspan="${nmdCats.length}"    style="${hdrStyle}">Isoform × NMD Prediction</td>
   </tr>`;
 
   return `<div class="lauren-tile" style="grid-column:span 3">
-    <div class="lauren-tile-h">Isoforms × Tissues + Variants</div>
+    <div class="lauren-tile-h">Isoforms × Tissues + Variants + NMD</div>
     <div style="overflow-x:auto">
       <table style="border-collapse:collapse;font-size:12px">
         <tbody>

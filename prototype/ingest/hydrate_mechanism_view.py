@@ -506,16 +506,40 @@ def build_isoform_variant_counts(conn) -> dict:
     cat_totals = {c: sum(1 for (_e, cc) in variant_rows if cc == c) for c in all_cats}
     active_cats = [c for c in all_cats if cat_totals[c] > 0]
 
+    # Re-parse each variant for its NMD outcome using the same classifier
+    # that drives the NMD tile (classify_variant_nmd). Cache by variant name.
+    nmd_rows: list[tuple[int, str]] = []
+    for (name,) in conn.execute(
+        "SELECT variant_name FROM clinvar_phenotype "
+        "WHERE data_source='clinvar' AND clin_sig IN "
+        "('Pathogenic','Likely pathogenic','Pathogenic/Likely pathogenic')"
+    ):
+        if not name: continue
+        m = _CDOT_RE.search(name)
+        if not m: continue
+        try:
+            c_pos = int(m.group(1))
+        except ValueError:
+            continue
+        exon = _c_pos_to_exon(c_pos, exon_coords)
+        if exon is None: continue
+        _acmg, nmd_outcome = classify_variant_nmd('Pathogenic', name)
+        nmd_rows.append((exon, nmd_outcome))
+    NMD_CATS = ['triggering', 'escape', 'transcript_dependent']
+    nmd_totals = {n: sum(1 for (_e, nn) in nmd_rows if nn == n) for n in NMD_CATS}
+
     iso_rows: list[dict] = []
     for iso in isoforms:
         f = iso["firstSharedExon"]
         n_hits = sum(1 for (e, _c) in variant_rows if e >= f)
         by_cat = {c: sum(1 for (e, cc) in variant_rows if e >= f and cc == c) for c in active_cats}
+        by_nmd = {n: sum(1 for (e, nn) in nmd_rows  if e >= f and nn == n) for n in NMD_CATS}
         iso_rows.append({
             **iso,
             "nHits":       n_hits,
             "pct":         round(100.0 * n_hits / n_parsed, 1) if n_parsed else 0.0,
             "byCategory":  by_cat,
+            "byNmd":       by_nmd,
         })
     return {
         "source":       "ClinVar (P + LP + P/LP) × dmd_exon_coords · nested per-isoform hits",
@@ -525,6 +549,8 @@ def build_isoform_variant_counts(conn) -> dict:
         "note":         "counts are nested — variant hits isoform iff variant_exon ≥ first_shared_exon",
         "categories":   active_cats,
         "categoryTotals": {c: cat_totals[c] for c in active_cats},
+        "nmdCategories": NMD_CATS,
+        "nmdTotals":    nmd_totals,
         "isoforms":     iso_rows,
     }
 

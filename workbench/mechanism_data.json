@@ -1304,6 +1304,16 @@
       "large_del": 50,
       "other": 121
     },
+    "nmdCategories": [
+      "triggering",
+      "escape",
+      "transcript_dependent"
+    ],
+    "nmdTotals": {
+      "triggering": 1932,
+      "escape": 4,
+      "transcript_dependent": 218
+    },
     "isoforms": [
       {
         "id": "Dp427m",
@@ -1318,6 +1328,11 @@
           "missense": 41,
           "large_del": 50,
           "other": 121
+        },
+        "byNmd": {
+          "triggering": 1932,
+          "escape": 4,
+          "transcript_dependent": 218
         }
       },
       {
@@ -1333,6 +1348,11 @@
           "missense": 41,
           "large_del": 50,
           "other": 121
+        },
+        "byNmd": {
+          "triggering": 1932,
+          "escape": 4,
+          "transcript_dependent": 218
         }
       },
       {
@@ -1348,6 +1368,11 @@
           "missense": 41,
           "large_del": 50,
           "other": 121
+        },
+        "byNmd": {
+          "triggering": 1932,
+          "escape": 4,
+          "transcript_dependent": 218
         }
       },
       {
@@ -1363,6 +1388,11 @@
           "missense": 18,
           "large_del": 30,
           "other": 65
+        },
+        "byNmd": {
+          "triggering": 1085,
+          "escape": 4,
+          "transcript_dependent": 116
         }
       },
       {
@@ -1378,6 +1408,11 @@
           "missense": 15,
           "large_del": 23,
           "other": 42
+        },
+        "byNmd": {
+          "triggering": 669,
+          "escape": 4,
+          "transcript_dependent": 82
         }
       },
       {
@@ -1393,6 +1428,11 @@
           "missense": 12,
           "large_del": 14,
           "other": 29
+        },
+        "byNmd": {
+          "triggering": 411,
+          "escape": 4,
+          "transcript_dependent": 55
         }
       },
       {
@@ -1408,6 +1448,11 @@
           "missense": 10,
           "large_del": 14,
           "other": 22
+        },
+        "byNmd": {
+          "triggering": 247,
+          "escape": 4,
+          "transcript_dependent": 46
         }
       }
     ]
