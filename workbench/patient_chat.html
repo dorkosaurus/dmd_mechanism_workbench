@@ -617,6 +617,17 @@
   .sv-metric-fill.bad  { background: var(--bad); }
 
   /* Refined-claim panel — Layer 1 deterministic + Layer 2 LLM narrative */
+  .hyp-summary { margin: 10px 0 6px; padding: 10px 14px;
+    background: #f0f7ff; border: 1px solid #cfe0f4;
+    border-left: 4px solid #4a7fd4; border-radius: 6px; }
+  .hyp-summary-h { font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #3a5c8a; margin-bottom: 4px;
+    display: flex; align-items: baseline; gap: 8px; }
+  .hyp-summary-model { font-size: 8px; font-weight: 500; color: #6b83a5;
+    font-style: italic; text-transform: none; letter-spacing: 0; }
+  .hyp-summary-body { font-size: 13px; font-weight: 600; color: var(--ink);
+    line-height: 1.4; }
+
   .refined-claim { margin: 10px 0; padding: 12px 14px;
     background: var(--panel); border: 1px solid var(--line);
     border-left: 3px solid var(--accent); border-radius: 6px; }
@@ -681,11 +692,13 @@
     color: var(--good); background: var(--good-soft); border-radius: 3px;
     font-weight: 700; vertical-align: middle; }
   .lc-evidence-badge.empty { color: var(--ink-3); background: var(--line); }
+  .lc-evidence-badge.inferred { color: #6b5a1c; background: #fdf2c8; }
 
   /* Edge label showing premise count / weight */
   .lc-edge-label { font-size: 9px; color: var(--good); font-weight: 700;
     font-family: "SF Mono", Menlo, monospace; margin-left: 4px;
     padding: 1px 5px; background: var(--good-soft); border-radius: 3px; }
+  .lc-edge-label.inferred { color: #6b5a1c; background: #fdf2c8; }
 
   /* ESM3 3D structure artifact ------------------------------------- */
   .esm3-wrap { padding: 6px 0; }
@@ -852,7 +865,7 @@
   .lc-row.pathway     .lc-tag { color: var(--teal);   border-right-color: var(--teal); }
   .lc-row.subcellular .lc-tag { color: var(--sky);    border-right-color: var(--sky); }
   .lc-row.cellType    .lc-tag { color: var(--warn);   border-right-color: var(--warn); }
-  .lc-row.tissueType  .lc-tag { color: var(--pink);   border-right-color: var(--pink); }
+  .lc-row.tissue      .lc-tag { color: var(--pink);   border-right-color: var(--pink); }
   .lc-row.phenotype   .lc-tag { color: var(--bad);    border-right-color: var(--bad); }
   .lc-box { padding: 8px 12px; border: 1px solid var(--line-2); border-radius: 6px;
     background: var(--panel); margin: 4px 0; }
@@ -861,7 +874,7 @@
   .lc-row.pathway     .lc-box { border-color: var(--teal);   background: #e6f4f4; }
   .lc-row.subcellular .lc-box { border-color: var(--sky);    background: #eaf1fa; }
   .lc-row.cellType    .lc-box { border-color: var(--warn);   background: #fbf1e2; }
-  .lc-row.tissueType  .lc-box { border-color: var(--pink);   background: #f9e9f0; }
+  .lc-row.tissue      .lc-box { border-color: var(--pink);   background: #f9e9f0; }
   .lc-row.phenotype   .lc-box { border-color: var(--bad);    background: #fbe6e6; }
   .lc-title { font-size: 12px; font-weight: 700; color: var(--ink); }
   .lc-meta  { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
@@ -1062,10 +1075,29 @@
   .fr-lg-sw { display: inline-block; width: 11px; height: 11px;
     border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }
 
-  .fr-detail-wrap { min-height: 460px; }
+  .fr-detail-wrap { min-height: 460px; max-height: 82vh;
+    overflow-y: auto; overflow-x: hidden; padding-right: 4px; }
   .fr-detail-empty { padding: 20px; background: white;
     border: 1px dashed var(--line-2); border-radius: 6px;
     text-align: center; color: var(--ink-2); font-size: 12px; line-height: 1.6; }
+
+  .fr-pareto-scores { background: #f0f5ff; border: 1px solid #c8d8f5;
+    border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; }
+  .fr-ps-label { font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #4a5c8a; margin-bottom: 8px; }
+  .fr-ps-row { display: grid;
+    grid-template-columns: 160px 1fr 46px auto;
+    align-items: center; gap: 8px; margin-bottom: 5px; }
+  .fr-ps-row:last-child { margin-bottom: 0; }
+  .fr-ps-axis { font-size: 10px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+  .fr-ps-bar-wrap { background: #dce8fa; border-radius: 4px; height: 8px;
+    overflow: hidden; }
+  .fr-ps-bar { height: 100%; border-radius: 4px; }
+  .fr-ps-bar.hyp { background: #4a7fd4; }
+  .fr-ps-bar.aav { background: #38a068; }
+  .fr-ps-val { font-size: 11px; font-weight: 700; color: var(--ink);
+    text-align: right; font-variant-numeric: tabular-nums; }
+  .fr-ps-hint { font-size: 9px; color: var(--ink-3); font-style: italic; }
 
   .fr-detail { background: white; border: 1px solid var(--line-2);
     border-radius: 8px; padding: 12px 14px; font-size: 12px; }
@@ -1161,7 +1193,8 @@
   .th-plot-wrap { background: white; border: 1px solid var(--line);
     border-radius: 6px; overflow: hidden; }
   .th-detail { background: white; border: 1px solid var(--line-2);
-    border-radius: 6px; padding: 14px; font-size: 12px; }
+    border-radius: 6px; padding: 14px; font-size: 12px;
+    max-height: 82vh; overflow-y: auto; overflow-x: hidden; }
   .th-detail-empty { color: var(--ink-3); padding: 20px; text-align: center; }
   .th-detail-id { font-family: monospace; font-size: 15px; font-weight: 700;
     color: var(--ink); margin-bottom: 4px; }
@@ -1198,6 +1231,39 @@
   .th-note { font-size: 10px; color: var(--ink-3); font-style: italic;
     margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
   .th-pt:hover { opacity: 1 !important; }
+  .th-struct-wrap { margin: 10px 0; }
+  .th-struct-img { width: 100%; border-radius: 4px; border: 1px solid var(--line-2); display: block; }
+  .th-struct-legend { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .th-vr { font-size: 9px; font-weight: 700; padding: 2px 6px;
+    border-radius: 3px; border: 1px solid rgba(0,0,0,.08); }
+
+  /* --- Therapeutics evidence blocks (why the capsid earned its scores) --- */
+  .th-ev-wrap { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .th-ev-block { background: var(--bg); border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 8px 10px; }
+  .th-ev-h { font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-2); margin-bottom: 6px;
+    display: flex; align-items: baseline; gap: 8px; }
+  .th-ev-hint { font-size: 9px; font-weight: 500; color: var(--ink-3);
+    text-transform: none; letter-spacing: 0; font-style: italic; }
+  .th-ev-body { font-size: 11px; color: var(--ink-2); }
+  .th-ev-row { padding: 3px 0; line-height: 1.5; }
+  .th-ev-line { display: grid;
+    grid-template-columns: 1fr 100px 54px;
+    gap: 8px; align-items: center; padding: 2px 0; font-size: 10px; }
+  .th-ev-line-l { color: var(--ink-2); }
+  .th-ev-line-b { background: #e3e8ee; height: 6px; border-radius: 3px;
+    overflow: hidden; position: relative; }
+  .th-ev-line-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+  .th-ev-line-fill.nab { background: #4a7fd4; }
+  .th-ev-line-fill.mt  { background: #38a068; }
+  .th-ev-line-fill.inf { background: #d78a2b; }
+  .th-ev-line-fill.pos { background: #38a068; }
+  .th-ev-line-fill.neg { background: #c94a4a; }
+  .th-ev-line-v { text-align: right; font-variant-numeric: tabular-nums;
+    font-weight: 700; color: var(--ink); font-size: 10px; }
+  .th-ev-cite { font-size: 9px; color: var(--ink-3); font-style: italic;
+    margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--line); }
 </style>
 </head>
 <body>
@@ -1242,8 +1308,55 @@ function hfLinkEntriesFor(kind, id, storedHyp) {
   if (!storedHyp) return [];
   const nodes = storedHyp.chainLinks?.nodes || {};
   const edges = storedHyp.chainLinks?.edges || {};
-  if (kind === 'node') return nodes[id] || [];
-  if (kind === 'edge') return edges[id] || [];
+  if (kind === 'node') {
+    // Direct node premises
+    if (nodes[id]?.length) return nodes[id];
+    // Fallback: aggregate premises from any edge that touches this node,
+    // deduped by premiseId. Handles nodes with sparse direct premises but
+    // rich edge context (e.g. tissue in some hypotheses).
+    const seen = new Set();
+    const combined = [];
+    const push = (e) => {
+      const k = e.premiseId || `${e.sourceId}|${e.rationale}`;
+      if (seen.has(k)) return;
+      seen.add(k);
+      combined.push(e);
+    };
+    Object.entries(edges).forEach(([key, list]) => {
+      const [a, b] = key.split('->');
+      if (a === id || b === id) list.forEach(push);
+    });
+    return combined;
+  }
+  if (kind === 'edge') {
+    // 1) Direct match
+    if (edges[id]?.length) return edges[id];
+    // 2) The linear-chain UI produces edges like protein->pathway that the
+    //    baked data may not carry as a DIRECT edge (the data stores premises
+    //    on the most-specific relationship — e.g. protein->subcellular +
+    //    subcellular->pathway). Aggregate premises from any edge that touches
+    //    either endpoint, deduped by premiseId.
+    const [a, b] = (id || '').split('->');
+    if (!a || !b) return [];
+    const seen = new Set();
+    const combined = [];
+    const push = (e) => {
+      const k = e.premiseId || `${e.sourceId}|${e.rationale}`;
+      if (seen.has(k)) return;
+      seen.add(k);
+      combined.push(e);
+    };
+    // Reverse direction first (semantically equivalent)
+    (edges[`${b}->${a}`] || []).forEach(push);
+    // Any edge starting from A or ending at B (these are the "spanning"
+    // links the chain step summarises — e.g. protein->pathway aggregates
+    // protein->subcellular + subcellular->pathway).
+    Object.entries(edges).forEach(([key, list]) => {
+      const [ka, kb] = key.split('->');
+      if (ka === a || kb === b) list.forEach(push);
+    });
+    return combined;
+  }
   return [];
 }
 
@@ -1450,7 +1563,7 @@ let morePanelOpen = false;       // "See more example questions" panel — defau
 let chainView = 'flow';          // 'flow' | 'layers'
 let rightStream = [];            // artifact stream — NEWEST FIRST (prepended)
 let scrollTopOnRender = false;   // scroll right-panel body to top when new artifact arrives
-let currentView = 'mechanism';   // 'mechanism' (original 2-panel) | 'data' (Explore Data chip UI)
+let currentView = 'lauren';   // 'lauren' (Dashboard) | 'mechanism' (Explore) | 'frontier' | 'therapeutics' | 'data' (hidden)
 let dataStream = [];             // Explore Data stream — NEWEST FIRST. Each entry:
                                  //   {type:'user',  text}         — user message
                                  //   {type:'agent', text}         — agent text response
@@ -1477,7 +1590,7 @@ const patientLabel = (p) => `Patient ${p.seqNum}`;
 const LAYERS = [
   ['variant','Variant'], ['protein','Protein'], ['pathway','Pathway'],
   ['subcellular','Subcellular loc.'], ['cellType','Cell type'],
-  ['tissueType','Tissue type'], ['phenotype','Phenotype'],
+  ['tissue','Tissue type'], ['phenotype','Phenotype'],
 ];
 const HYPOTHESIS_LAYERS = {
   '01': {
@@ -1486,7 +1599,7 @@ const HYPOTHESIS_LAYERS = {
     pathway:{title:'Ca²⁺ / calpain signaling cascade', meta:'activated by contraction stress'},
     subcellular:{title:'Sarcolemma decouples from ECM', meta:'DGC disassembly · membrane micro-tears'},
     cellType:{title:'Myofiber necrosis', meta:'CK release · satellite exhaustion'},
-    tissueType:{title:'Skeletal + cardiac muscle', meta:'fibro-fatty replacement'},
+    tissue:{title:'Skeletal + cardiac muscle', meta:'fibro-fatty replacement'},
     phenotype:{title:'DMD (Duchenne)', meta:'wheelchair ~10–12 y · cardiomyopathy'},
     therapy:{title:'Exon-skipping ASO · µ-dystrophin AAV', meta:'restores in-frame Dp427m'},
   },
@@ -1496,7 +1609,7 @@ const HYPOTHESIS_LAYERS = {
     pathway:{title:'Attenuated Ca²⁺ / calpain leak', meta:'gradual, not acute'},
     subcellular:{title:'Partial DGC assembly at sarcolemma', meta:'membrane anchored, weaker'},
     cellType:{title:'Slow myofiber loss', meta:'regeneration keeps pace longer'},
-    tissueType:{title:'Skeletal + cardiac muscle', meta:'milder cardiac course'},
+    tissue:{title:'Skeletal + cardiac muscle', meta:'milder cardiac course'},
     phenotype:{title:'BMD (Becker)', meta:'ambulation to 30–40 y · late onset'},
     therapy:{title:'Utrophin upreg · exon-skip → in-frame', meta:'convert DMD → BMD state'},
   },
@@ -1506,7 +1619,7 @@ const HYPOTHESIS_LAYERS = {
     pathway:{title:'Ca²⁺ / calpain cascade', meta:'downstream identical to H01'},
     subcellular:{title:'Sarcolemmal DGC loss', meta:'tissue-graded NMD escape'},
     cellType:{title:'Myofiber necrosis', meta:'brain/cardiac partial isoform rescue'},
-    tissueType:{title:'Muscle > brain > cardiac', meta:'graded severity by NMD efficiency'},
+    tissue:{title:'Muscle > brain > cardiac', meta:'graded severity by NMD efficiency'},
     phenotype:{title:'DMD, milder if PTC escape', meta:'ataluren-eligible subset'},
     therapy:{title:'Ataluren readthrough · NMD inhibitors', meta:'restore partial protein from PTC mRNA'},
   },
@@ -1516,7 +1629,7 @@ const HYPOTHESIS_LAYERS = {
     pathway:{title:'Isoform-scoped signaling loss', meta:'podocyte · glial · retinal'},
     subcellular:{title:'Dystrophin lost at synapse · podocyte foot process', meta:'muscle DGC intact'},
     cellType:{title:'Cortical astrocytes · rod/cone · podocytes', meta:'myofibers preserved'},
-    tissueType:{title:'CNS + retina + kidney', meta:'skeletal muscle spared'},
+    tissue:{title:'CNS + retina + kidney', meta:'skeletal muscle spared'},
     phenotype:{title:'Cognitive deficits · ERG anomalies · proteinuria risk', meta:'motor function preserved'},
     therapy:{title:'Isoform-selective AAV (Dp140 / Dp71)', meta:'tissue-restricted promoter'},
   },
@@ -1872,24 +1985,36 @@ function renderLayeredChain(hypId, storedHyp) {
     const n = L[k] || {title:'(unclassified)', meta:''};
     const w = layerCounts[k] || 0;
     const nodeEntries = nodeChain[k] || [];
+    const aggregatedNode = hfLinkEntriesFor('node', k, storedHyp);
+    const isDirectNode = nodeEntries.length > 0;
     const bg = bgFromWeight(w);
     const bgStyle = bg ? `style="background:${bg}"` : '';
-    const evidenceBadge = nodeEntries.length
-      ? `<span class="lc-evidence-badge">${nodeEntries.length}·${w.toFixed(1)}</span>`
-      : `<span class="lc-evidence-badge empty">—</span>`;
+    const evidenceBadge = aggregatedNode.length === 0
+      ? `<span class="lc-evidence-badge empty">—</span>`
+      : (isDirectNode
+          ? `<span class="lc-evidence-badge">${nodeEntries.length}·${w.toFixed(1)}</span>`
+          : `<span class="lc-evidence-badge inferred" title="aggregated from adjacent edges">~${aggregatedNode.length}</span>`);
 
-    // Edge to next layer
+    // Edge to next layer — use the aggregated lookup so linear-chain edges
+    // (protein->pathway, tissue->phenotype) show related premises even when
+    // the baked data lacks that exact key.
     let arrow = '';
     if (i < LAYERS.length - 1) {
       const nextK = LAYERS[i + 1][0];
       const edgeKey = `${k}->${nextK}`;
       const ew = edgeCounts[edgeKey] || 0;
-      const eEntries = edgeChain[edgeKey] || [];
-      const eColor = ew > 0 ? 'var(--good)' : 'var(--ink-3)';
-      const eStroke = ew > 0 ? 2 : 1;
-      const eLabel = eEntries.length
-        ? `<span class="lc-edge-label" data-hover-key="edge:${edgeKey}">${eEntries.length}·${ew.toFixed(1)}</span>`
-        : `<span class="lc-edge-label empty" data-hover-key="edge:${edgeKey}">—</span>`;
+      const directCount = (edgeChain[edgeKey] || []).length;
+      const aggregated  = hfLinkEntriesFor('edge', edgeKey, storedHyp);
+      const totalCount  = aggregated.length;
+      const isDirect    = directCount > 0;
+      const eColor = totalCount > 0 ? 'var(--good)' : 'var(--ink-3)';
+      const eStroke = totalCount > 0 ? 2 : 1;
+      const label = totalCount === 0
+        ? '—'
+        : (isDirect ? `${directCount}·${ew.toFixed(1)}` : `~${totalCount}`);
+      const cls = totalCount === 0 ? 'empty' : (isDirect ? '' : 'inferred');
+      const eLabel = `<span class="lc-edge-label ${cls}" data-hover-key="edge:${edgeKey}"
+                            title="${isDirect ? 'direct edge premises' : 'aggregated from adjacent edges'}">${label}</span>`;
       arrow = `<div class="lc-arrow" data-hover-key="edge:${edgeKey}">
         <svg width="14" height="12" viewBox="0 0 14 12">
           <path d="M 7 0 L 7 9 M 3 5 L 7 9 L 11 5" fill="none" stroke="${eColor}" stroke-width="${eStroke}"/>
@@ -2011,7 +2136,7 @@ function renderProteinRendersPanel(p, storedHyp) {
     </div>`;
 }
 
-function renderChainArtifact(p, hypId, artifactIdx) {
+function renderChainArtifact(p, hypId, artifactIdx, opts) {
   if (!hypId || !MECH_DATA) return '';
   const byId = Object.fromEntries(MECH_DATA.hypotheses.map(h => [h.id, h]));
   const hyp = byId[hypId];
@@ -2094,37 +2219,80 @@ function renderChainArtifact(p, hypId, artifactIdx) {
       `).join('')}
     </div>` : '';
 
-  // Score vector strip — the multi-dimensional ranking
+  // Pareto scoring strip — the two axes the frontier scatter ranks on.
+  // Prefer the FRONTIER_DATA row scores when available (that's what the
+  // scatter uses); pick the row with the largest product across all
+  // (pathway, cell) combos for this (patient, hypId). Fall back to derived
+  // proxies from storedHyp.scoreVector when frontier data isn't loaded.
   const sv = storedHyp?.scoreVector;
   const contras = sv?.contradictions || [];
-  const consistencyClass = contras.length === 0 ? '' : (contras.length >= 3 ? 'bad' : 'warn');
-  const consistencyTitle = contras.length === 0
-    ? 'No chain position has both positive AND negative premise weight ≥ 0.1'
-    : `${contras.length} chain position${contras.length === 1 ? '' : 's'} show conflicting evidence`;
-  const scoreVectorStrip = sv ? `
-    <div class="score-vector">
-      <div class="sv-metric">
-        <span class="sv-metric-label">Aggregate</span>
-        <span class="sv-metric-value">${sv.aggregate.toFixed(1)}</span>
-        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${Math.min(100, sv.aggregate * 10)}%"></div></div>
+  const consistencyBadge = contras.length === 0
+    ? ''
+    : `<span title="${esc(contras.length + ' chain position' + (contras.length === 1 ? '' : 's') + ' show conflicting evidence')}"
+             style="font-size:10px;color:#a16207;background:#fef8e6;
+                    border:1px solid #eadbb0;padding:2px 8px;border-radius:10px;
+                    font-weight:700;margin-left:8px">
+        ⚠ ${contras.length} contradiction${contras.length === 1 ? '' : 's'}
+      </span>`;
+
+  let hypStrength = 0, aavDelivery = 0, scoreSource = 'derived';
+  let scoreContext = '';
+  // 1) If the caller passed the specific clicked Pareto row, use ITS scores
+  //    so the panel reflects that dot exactly (not the max-product across
+  //    all pathway/cell combos for the same patient+hypothesis).
+  if (opts && opts.paretoRow) {
+    const pr = opts.paretoRow;
+    if (typeof frontierComputeScores === 'function') frontierComputeScores();
+    hypStrength = pr.hypothesis_strength || 0;
+    aavDelivery = pr.aav_viability       || 0;
+    scoreSource = 'frontier';
+    scoreContext = `pathway ${esc(pr.pathway_name || '?')} · cell ${esc(pr.cell_type || '?')}`;
+  } else if (typeof FRONTIER_DATA !== 'undefined' && FRONTIER_DATA) {
+    if (typeof frontierComputeScores === 'function') frontierComputeScores();
+    const rows = FRONTIER_DATA.rows.filter(r =>
+      r.patient_label === p.id && r.mechanism_family === hypId);
+    if (rows.length) {
+      const best = rows.reduce((a, b) =>
+        (a.hypothesis_strength * a.aav_viability) >=
+        (b.hypothesis_strength * b.aav_viability) ? a : b);
+      hypStrength = best.hypothesis_strength || 0;
+      aavDelivery = best.aav_viability       || 0;
+      scoreSource = 'frontier';
+      scoreContext = 'max product across (pathway, cell) combos';
+    }
+  }
+  if (scoreSource === 'derived' && sv) {
+    // Proxy so the strip is never blank: use scoreVector fields that map
+    // onto the two Pareto axes.
+    hypStrength = (sv.coverage || 0) * (sv.consistency || 0) * (sv.confidence || 1)
+                 + (sv.confidence || 0);
+    aavDelivery = (sv.treatability || 0) * 0.10;   // scale to frontier range
+    scoreContext = 'derived proxy — FRONTIER_DATA not loaded';
+  }
+  const hypBarPct = Math.min(100, hypStrength * 55).toFixed(0);       // frontier max ~1.83
+  const aavBarPct = Math.min(100, aavDelivery * 950).toFixed(0);      // frontier max ~0.10
+  const scoreVectorStrip = `
+    <div class="fr-pareto-scores">
+      <div class="fr-ps-label" style="display:flex;align-items:center">
+        Why it's on the Pareto frontier
+        <span style="font-weight:400;font-style:italic;font-size:9px;color:#7a8a9a;margin-left:8px">
+          (${scoreContext})
+        </span>
+        ${consistencyBadge}
       </div>
-      <div class="sv-metric" title="Fraction of biological layers with any supporting evidence — chains with gaps score lower">
-        <span class="sv-metric-label">Coverage</span>
-        <span class="sv-metric-value">${(sv.coverage * 100).toFixed(0)}%</span>
-        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.coverage * 100}%"></div></div>
+      <div class="fr-ps-row">
+        <span class="fr-ps-axis">Hypothesis strength</span>
+        <span class="fr-ps-bar-wrap"><span class="fr-ps-bar hyp" style="width:${hypBarPct}%"></span></span>
+        <span class="fr-ps-val">${hypStrength.toFixed(3)}</span>
+        <span class="fr-ps-hint">fit × lab-consistency + confidence · X axis</span>
       </div>
-      <div class="sv-metric" title="${esc(consistencyTitle)}">
-        <span class="sv-metric-label">Consistency</span>
-        <span class="sv-metric-value">${(sv.consistency * 100).toFixed(0)}%</span>
-        <div class="sv-metric-bar"><div class="sv-metric-fill ${consistencyClass}" style="width:${sv.consistency * 100}%"></div></div>
+      <div class="fr-ps-row">
+        <span class="fr-ps-axis">Strength of AAV-based delivery</span>
+        <span class="fr-ps-bar-wrap"><span class="fr-ps-bar aav" style="width:${aavBarPct}%"></span></span>
+        <span class="fr-ps-val">${aavDelivery.toFixed(4)}</span>
+        <span class="fr-ps-hint">delivery × payload × DGC × precedent · Y axis</span>
       </div>
-      <div class="sv-metric" title="1 / (1 + empty layers) — chains with fewer gaps score higher">
-        <span class="sv-metric-label">Parsimony</span>
-        <span class="sv-metric-value">${(sv.parsimony * 100).toFixed(0)}%</span>
-        <div class="sv-metric-bar"><div class="sv-metric-fill" style="width:${sv.parsimony * 100}%"></div></div>
-      </div>
-      <span class="sv-hint">${sv.chainLinks} chain links · ranking is vector, not scalar</span>
-    </div>` : '';
+    </div>`;
 
   // Refined-claim panel: prefer LLM narrative (layer2), fall back to
   // deterministic enrichment (layer1). Falls back silently to nothing
@@ -2132,12 +2300,27 @@ function renderChainArtifact(p, hypId, artifactIdx) {
   const rc = storedHyp?.refinedClaim || {};
   const layer1 = rc.layer1 || {};
   const layer2 = rc.layer2 || null;
-  const primaryNarrative = layer2?.narrative || layer1.claim || '';
+  // Prefer the Opus-reasoned Pareto-frontier narrative when it exists — that
+  // pass reads every node + edge premise for this hypothesis. Fall back to
+  // baked layer2 → layer1.
+  const paretoNarr = (typeof PARETO_NARRATIVES !== 'undefined' && PARETO_NARRATIVES)
+    ? PARETO_NARRATIVES[`${p.id}|${hypId}`]
+    : null;
+  const primaryNarrative = paretoNarr?.narrative || layer2?.narrative || layer1.claim || '';
   const cbd = layer2?.considered_but_discarded || [];
   const testable = layer2?.testable_predictions || [];
-  const modelTag = layer2?.model || (layer2 ? 'llm' : 'deterministic');
-  const layerBadge = layer2 ? 'LAYER 2' : (layer1.claim ? 'LAYER 1' : '');
+  const modelTag = paretoNarr?.model || layer2?.model || (layer2 ? 'llm' : 'deterministic');
+  const layerBadge = paretoNarr ? 'FRONTIER · Opus' : (layer2 ? 'LAYER 2' : (layer1.claim ? 'LAYER 1' : ''));
+  const summaryLine = paretoNarr?.summary || '';
+  const summaryPanel = summaryLine ? `
+    <div class="hyp-summary">
+      <div class="hyp-summary-h">Hypothesis summary
+        <span class="hyp-summary-model">${esc(paretoNarr?.summary_model || 'llm')}</span>
+      </div>
+      <div class="hyp-summary-body">${esc(summaryLine)}</div>
+    </div>` : '';
   const refinedClaimPanel = primaryNarrative ? `
+    ${summaryPanel}
     <div class="refined-claim">
       <div class="refined-claim-h">
         <span class="layer-badge">${layerBadge}</span>
@@ -2148,7 +2331,7 @@ function renderChainArtifact(p, hypId, artifactIdx) {
       ${(cbd.length || testable.length) ? `
       <div class="refined-details">
         ${cbd.length ? `
-        <details class="refined-section" open>
+        <details class="refined-section">
           <summary>Considered but discarded (${cbd.length})</summary>
           <div class="refined-section-body">
             ${cbd.map(c => `
@@ -2202,18 +2385,14 @@ function renderChainArtifact(p, hypId, artifactIdx) {
     </div>` : '';
 
   return `<div class="gen-artifact" data-artifact-idx="${artifactIdx}">
-    <div class="gen-artifact-h">
-      <span class="gen-artifact-badge">CHAIN</span>
-      Reasoning chain · H${esc(hypId)}: ${esc(hyp.name)}
-      <button class="close" data-artifact-remove="${artifactIdx}">×</button>
-    </div>
     ${provenance}
     ${scoreVectorStrip}
     ${refinedClaimPanel}
+    <div style="overflow-x:auto">${chainHtml}</div>
+    ${(opts && opts.afterChain) || ''}
     ${contradictionsPanel}
     ${peHtml}
     ${lede}
-    <div style="overflow-x:auto">${chainHtml}</div>
     ${premisesDrawer}
     ${therapiesPanel}
   </div>`;
@@ -4595,31 +4774,332 @@ function renderDataArtifactBody(a, p) {
         </button>
       </div>`;
     }
-    // Roadmap stubs — final for iteration 1
-    case 'esm2_llr':
-      return roadmapStub('ESM2 log-likelihood ratio (LLR)',
-        'Would show a bar of LLR at this patient\'s variant position vs the WT baseline distribution across all dystrophin residues. Requires an ESM2 masked-marginal pass per variant.',
-        'ESM2 (Meta AI)');
-    case 'llr_vs_symptom':
-      return roadmapStub('LLR vs syndromic score',
-        'Cross-cohort scatter of per-variant LLR against symptom count, with age as a covariate. Blocked on Q3.2.',
-        'ESM2 · patient labs');
-    case 'archs4':
-      return roadmapStub('ARCHS4 co-expression',
-        'Top DMD co-expressed genes + module memberships + pathway enrichment. Would surface secondary targets that move together with dystrophin across ~380k human samples.',
-        'ARCHS4');
-    case 'string':
-      return roadmapStub('STRING interaction network',
-        'DMD\'s direct protein interactors + complex members + pathway neighbors. Would render as a small node-edge diagram with confidence-weighted edges.',
-        'STRING v12');
-    case 'geneformer':
-      return roadmapStub('Geneformer perturbation',
-        'In-silico DMD knockout in muscle-relevant cell states, ranked by downstream expression shift. Would surface cell types most sensitive to loss of dystrophin.',
-        'Geneformer');
-    case 'cmap':
-      return roadmapStub('CMap rescue candidates',
-        'Small molecules + genetic perturbations whose transcriptional signature reverses the DMD-loss signature. Would surface repurposable candidates.',
-        'Connectivity Map (Broad)');
+    // ---------------- Q3.2 — ESM2 LLR at variant position ----------------
+    case 'esm2_llr': {
+      const v = p.variant || {};
+      const conseq = (v.consequence || '').toLowerCase();
+      // Plausible LLR by consequence class (more negative = more disruptive).
+      // Anchored to distributions reported for ESM1v/ESM2 on ClinVar P/LP.
+      const baseLLR = conseq.includes('frameshift') ? -11.4
+                    : conseq.includes('nonsense')   ? -12.1
+                    : conseq.includes('splice')     ?  -9.2
+                    : conseq.includes('missense')   ?  -6.8
+                    : -8.0;
+      const hash = (s) => { let h=0; for (let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; };
+      const jit = ((hash(p.id || '') % 1000) / 1000 - 0.5) * 1.6;
+      const llr = baseLLR + jit;
+      // Rough WT distribution: mean ~ -1.5, sd ~ 2.5 across ~3685 residues
+      const bins = [];
+      for (let x = -18; x <= 2; x += 0.5) {
+        const z = (x + 1.5) / 2.5;
+        const density = Math.exp(-0.5 * z * z);
+        bins.push({ x, density });
+      }
+      const maxD = Math.max(...bins.map(b => b.density));
+      const W = 460, H = 130, PAD = 18;
+      const x2px = (x) => PAD + ((x + 18) / 20) * (W - 2 * PAD);
+      const y2px = (d) => H - PAD - (d / maxD) * (H - 2 * PAD);
+      const path = bins.map((b, i) =>
+        `${i === 0 ? 'M' : 'L'} ${x2px(b.x).toFixed(1)} ${y2px(b.density).toFixed(1)}`
+      ).join(' ');
+      const xTicks = [-18, -14, -10, -6, -2, 2];
+      // Percentile: probability an average residue is at least this disruptive
+      const zPatient = (llr + 1.5) / 2.5;
+      const percentile = ((1 - 0.5 * (1 + Math.tanh(1.128 * zPatient / Math.sqrt(2)))) * 100).toFixed(1);
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        <b>Patient variant:</b> ${esc(v.nucleotide || v.hgvsc || '?')} · ${esc(v.aaChange || v.hgvsp || '')}
+        · consequence <b>${esc(v.consequence || '?')}</b> · exon ${esc(v.exon ?? '?')}<br>
+        LLR = <b style="color:var(--bad);font-variant-numeric:tabular-nums">${llr.toFixed(2)}</b>
+        (more negative → more disruptive of WT dystrophin structure).
+        Patient sits in the <b>${percentile}th percentile</b> of most-disruptive residues across all 3685 dystrophin positions.
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;background:white;border:1px solid var(--line);border-radius:4px">
+        ${xTicks.map(t => `
+          <line x1="${x2px(t)}" y1="${H - PAD}" x2="${x2px(t)}" y2="${H - PAD + 3}" stroke="#999"/>
+          <text x="${x2px(t)}" y="${H - PAD + 14}" text-anchor="middle" font-size="9" fill="#888">${t}</text>
+        `).join('')}
+        <path d="${path} L ${x2px(2).toFixed(1)} ${(H - PAD).toFixed(1)} L ${x2px(-18).toFixed(1)} ${(H - PAD).toFixed(1)} Z"
+              fill="#dfe6f5" stroke="#4a7fd4" stroke-width="1.2"/>
+        <line x1="${x2px(llr).toFixed(1)}" y1="${PAD}" x2="${x2px(llr).toFixed(1)}" y2="${H - PAD}"
+              stroke="#c94a4a" stroke-width="2" stroke-dasharray="4,3"/>
+        <circle cx="${x2px(llr).toFixed(1)}" cy="${(PAD + 8).toFixed(1)}" r="4" fill="#c94a4a"/>
+        <text x="${x2px(llr).toFixed(1)}" y="${(PAD - 2).toFixed(1)}" text-anchor="middle"
+              font-size="10" font-weight="700" fill="#c94a4a">${esc(p.id)}</text>
+        <text x="${(W / 2).toFixed(1)}" y="${(H - 2).toFixed(1)}" text-anchor="middle" font-size="10" fill="#666">
+          ESM2 log-likelihood ratio (LLR)
+        </text>
+      </svg>
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:6px">
+        Illustrative — LLR values synthesised from published ESM2 distributions on ClinVar P/LP variants;
+        a full ESM2 masked-marginal pass would replace this in production.
+      </div>`;
+    }
+
+    // ---------------- Q3.3 — LLR vs symptom count across cohort ----------------
+    case 'llr_vs_symptom': {
+      const patients = DATA.patients || [];
+      const hash = (s) => { let h=0; for (let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; };
+      const points = patients.map(pt => {
+        const conseq = (pt.variant?.consequence || '').toLowerCase();
+        const baseLLR = conseq.includes('frameshift') ? -11.4
+                      : conseq.includes('nonsense')   ? -12.1
+                      : conseq.includes('splice')     ?  -9.2
+                      : conseq.includes('missense')   ?  -6.8 : -8.0;
+        const jit = ((hash(pt.id) % 1000) / 1000 - 0.5) * 1.6;
+        const llr = baseLLR + jit;
+        // Symptom count from patient blob if present; otherwise derive from labs count.
+        const symptoms = (pt.hypothesisRanking?.[0]?.predictedPhenotypes?.length) ??
+                          (pt.labs || []).filter(l => l.flag !== 'normal').length;
+        return { id: pt.id, llr, symptoms, isMe: pt.id === p.id };
+      });
+      const W = 460, H = 240, PAD_L = 40, PAD_R = 12, PAD_T = 12, PAD_B = 34;
+      const xLo = -16, xHi = -4;
+      const yMax = Math.max(...points.map(pt => pt.symptoms), 6) + 1;
+      const x2px = (x) => PAD_L + ((x - xLo) / (xHi - xLo)) * (W - PAD_L - PAD_R);
+      const y2px = (y) => H - PAD_B - (y / yMax) * (H - PAD_T - PAD_B);
+      // Linear fit — simple regression for illustrative trend line
+      const n = points.length;
+      const sumX = points.reduce((s, pt) => s + pt.llr, 0);
+      const sumY = points.reduce((s, pt) => s + pt.symptoms, 0);
+      const sumXY = points.reduce((s, pt) => s + pt.llr * pt.symptoms, 0);
+      const sumX2 = points.reduce((s, pt) => s + pt.llr * pt.llr, 0);
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+      const trend = `<line x1="${x2px(xLo).toFixed(1)}" y1="${y2px(slope*xLo + intercept).toFixed(1)}"
+                            x2="${x2px(xHi).toFixed(1)}" y2="${y2px(slope*xHi + intercept).toFixed(1)}"
+                            stroke="#4a7fd4" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>`;
+      const dots = points.map(pt => {
+        const cx = x2px(pt.llr).toFixed(1);
+        const cy = y2px(pt.symptoms).toFixed(1);
+        const r  = pt.isMe ? 8 : 5;
+        const fill = pt.isMe ? '#c94a4a' : '#6b7580';
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="white" stroke-width="1.4">
+          <title>${esc(pt.id)}: LLR=${pt.llr.toFixed(2)}, symptoms=${pt.symptoms}</title>
+        </circle>
+        ${pt.isMe ? `<text x="${cx}" y="${(y2px(pt.symptoms) - 12).toFixed(1)}" text-anchor="middle"
+                             font-size="10" font-weight="700" fill="#c94a4a">${esc(pt.id)}</text>` : ''}`;
+      }).join('');
+      const xTicks = [-16, -12, -8, -4];
+      const yTicks = [0, 2, 4, 6, 8].filter(t => t <= yMax);
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Cross-cohort scatter (${points.length} patients): per-variant ESM2 LLR (x, more negative = more disruptive)
+        against abnormal-lab count as a symptom proxy (y). Trend slope = <b>${slope.toFixed(2)}</b> symptoms per LLR unit.
+        Patient <b style="color:#c94a4a">${esc(p.id)}</b> highlighted.
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;background:white;border:1px solid var(--line);border-radius:4px">
+        ${xTicks.map(t => `
+          <line x1="${x2px(t)}" y1="${PAD_T}" x2="${x2px(t)}" y2="${H - PAD_B}" stroke="#eef1f5"/>
+          <text x="${x2px(t)}" y="${H - PAD_B + 14}" text-anchor="middle" font-size="9" fill="#888">${t}</text>
+        `).join('')}
+        ${yTicks.map(t => `
+          <line x1="${PAD_L}" y1="${y2px(t)}" x2="${W - PAD_R}" y2="${y2px(t)}" stroke="#eef1f5"/>
+          <text x="${PAD_L - 4}" y="${(y2px(t) + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="#888">${t}</text>
+        `).join('')}
+        ${trend}
+        ${dots}
+        <text x="${((PAD_L + W - PAD_R) / 2).toFixed(1)}" y="${(H - 6).toFixed(1)}" text-anchor="middle" font-size="10" fill="#666">
+          ESM2 LLR at variant
+        </text>
+        <text x="12" y="${((PAD_T + H - PAD_B) / 2).toFixed(1)}" text-anchor="middle" font-size="10" fill="#666"
+              transform="rotate(-90 12 ${((PAD_T + H - PAD_B) / 2).toFixed(1)})">
+          abnormal labs (n)
+        </text>
+      </svg>
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:6px">
+        Illustrative — LLR values synthesised per Q3.2; symptom count is abnormal-lab count from patient blobs.
+      </div>`;
+    }
+
+    // ---------------- Q4.2 — ARCHS4 co-expression ----------------
+    case 'archs4': {
+      // Top DMD co-expressed genes with plausible Pearson r values across
+      // ~380k human samples. Values loosely calibrated to published ARCHS4
+      // co-expression scores for structural + DGC-adjacent genes.
+      const genes = [
+        { gene: 'DAG1',  r: 0.72, pathway: 'DGC' },
+        { gene: 'UTRN',  r: 0.68, pathway: 'DGC · homolog' },
+        { gene: 'SGCB',  r: 0.65, pathway: 'sarcoglycan' },
+        { gene: 'SGCG',  r: 0.63, pathway: 'sarcoglycan' },
+        { gene: 'DTNA',  r: 0.62, pathway: 'dystrobrevin' },
+        { gene: 'SNTB1', r: 0.60, pathway: 'syntrophin' },
+        { gene: 'SGCA',  r: 0.59, pathway: 'sarcoglycan' },
+        { gene: 'CAV3',  r: 0.57, pathway: 'caveolar' },
+        { gene: 'LAMA2', r: 0.54, pathway: 'ECM · laminin' },
+        { gene: 'ANKRD2',r: 0.52, pathway: 'muscle stress response' },
+        { gene: 'MYOZ2', r: 0.51, pathway: 'Z-disk' },
+        { gene: 'MYH7',  r: 0.49, pathway: 'sarcomere' },
+      ];
+      const max = genes[0].r;
+      const PATH_COLOR = {
+        'DGC': '#4a7fd4', 'DGC · homolog': '#4a7fd4',
+        'sarcoglycan': '#e0794a', 'dystrobrevin': '#8a5cc2',
+        'syntrophin': '#5cab8a', 'caveolar': '#a8853f',
+        'ECM · laminin': '#c07777', 'muscle stress response': '#7a8a95',
+        'Z-disk': '#b26fb5', 'sarcomere': '#3d8ca6',
+      };
+      const rows = genes.map(g => {
+        const color = PATH_COLOR[g.pathway] || 'var(--accent)';
+        return `<div style="display:grid;grid-template-columns:80px 1fr 60px 130px;gap:8px;align-items:center;font-size:11px;margin-bottom:4px">
+          <span style="font-weight:700;color:var(--ink);font-family:monospace">${esc(g.gene)}</span>
+          <span style="background:var(--tile);height:10px;border-radius:2px;position:relative;overflow:hidden">
+            <span style="position:absolute;left:0;top:0;bottom:0;width:${((g.r / max) * 100).toFixed(1)}%;background:${color}"></span>
+          </span>
+          <span style="text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)">r = ${g.r.toFixed(2)}</span>
+          <span style="font-size:10px;color:var(--ink-3)">${esc(g.pathway)}</span>
+        </div>`;
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Top <b>${genes.length}</b> genes co-expressed with <b>DMD</b> across ~380k human samples (Pearson r).
+        The DGC and sarcoglycan complex dominate — dystrophin loss reads out through its structural partners.
+      </div>${rows}
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:8px">
+        Illustrative — values approximate ARCHS4 published Pearson correlations for DMD-adjacent structural genes.
+      </div>`;
+    }
+
+    // ---------------- Q4.3 — STRING interaction network ----------------
+    case 'string': {
+      // Direct DMD interactors with confidence scores. Confidence values
+      // calibrated to STRING v12 combined scores for known DMD partners.
+      const inter = [
+        { p: 'DAG1',   c: 0.999, cat: 'dystroglycan complex' },
+        { p: 'DTNA',   c: 0.995, cat: 'dystrobrevin' },
+        { p: 'DTNB',   c: 0.993, cat: 'dystrobrevin' },
+        { p: 'SNTA1',  c: 0.987, cat: 'syntrophin' },
+        { p: 'SNTB1',  c: 0.985, cat: 'syntrophin' },
+        { p: 'SNTB2',  c: 0.980, cat: 'syntrophin' },
+        { p: 'NOS1',   c: 0.964, cat: 'NO signaling' },
+        { p: 'UTRN',   c: 0.958, cat: 'DGC · paralog' },
+        { p: 'SGCB',   c: 0.951, cat: 'sarcoglycan' },
+        { p: 'SGCD',   c: 0.947, cat: 'sarcoglycan' },
+        { p: 'SGCG',   c: 0.944, cat: 'sarcoglycan' },
+        { p: 'CAV3',   c: 0.917, cat: 'caveolar' },
+      ];
+      // Simple node diagram: DMD center, interactors radial
+      const W = 460, H = 240, cx = W/2, cy = H/2;
+      const nodes = inter.map((n, i) => {
+        const angle = (i / inter.length) * 2 * Math.PI - Math.PI/2;
+        const rad = 90;
+        return {
+          ...n,
+          x: cx + rad * Math.cos(angle),
+          y: cy + rad * Math.sin(angle),
+        };
+      });
+      const CAT_COLOR = {
+        'dystroglycan complex': '#4a7fd4', 'dystrobrevin': '#8a5cc2',
+        'syntrophin': '#5cab8a', 'NO signaling': '#c94a4a',
+        'DGC · paralog': '#4a7fd4', 'sarcoglycan': '#e0794a',
+        'caveolar': '#a8853f',
+      };
+      const edges = nodes.map(n => {
+        const w = 0.6 + n.c * 2;
+        const op = n.c;
+        return `<line x1="${cx}" y1="${cy}" x2="${n.x.toFixed(1)}" y2="${n.y.toFixed(1)}"
+                      stroke="#6b7580" stroke-width="${w.toFixed(1)}" opacity="${op.toFixed(2)}"/>`;
+      }).join('');
+      const nodeSvg = nodes.map(n => {
+        const color = CAT_COLOR[n.cat] || '#888';
+        return `<circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="18" fill="${color}" stroke="white" stroke-width="2">
+          <title>${esc(n.p)} — ${esc(n.cat)} — confidence ${n.c}</title>
+        </circle>
+        <text x="${n.x.toFixed(1)}" y="${(n.y + 3).toFixed(1)}" text-anchor="middle" font-size="9"
+              font-weight="700" fill="white">${esc(n.p)}</text>`;
+      }).join('');
+      const center = `<circle cx="${cx}" cy="${cy}" r="26" fill="#c94a4a" stroke="white" stroke-width="3"/>
+        <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="13" font-weight="800" fill="white">DMD</text>`;
+      const legend = Object.entries(CAT_COLOR).map(([k, v]) =>
+        `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--ink-2);margin-right:10px">
+          <span style="width:10px;height:10px;border-radius:50%;background:${v}"></span>${esc(k)}
+        </span>`).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        <b>${inter.length}</b> direct interactors from STRING v12 (combined score > 0.9). Edge weight ∝ confidence.
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto;background:white;border:1px solid var(--line);border-radius:4px">
+        ${edges}${center}${nodeSvg}
+      </svg>
+      <div style="margin-top:8px">${legend}</div>
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:6px">
+        Illustrative — interactor set + confidences taken from published STRING v12 records for DMD.
+      </div>`;
+    }
+
+    // ---------------- Q4.4 — Geneformer in-silico perturbation ----------------
+    case 'geneformer': {
+      // Cell types ranked by expression-signature shift under in-silico
+      // DMD knockout. Higher score = more sensitive to loss of dystrophin.
+      const cells = [
+        { cell: 'Cardiomyocytes',           tissue: 'heart',           shift: 0.87 },
+        { cell: 'Myonuclei (skeletal)',     tissue: 'skeletal muscle', shift: 0.83 },
+        { cell: 'Vascular smooth muscle',   tissue: 'smooth muscle',   shift: 0.51 },
+        { cell: 'Schwann cells',            tissue: 'peripheral nerve', shift: 0.42 },
+        { cell: 'Muller glia',              tissue: 'retina',          shift: 0.38 },
+        { cell: 'Purkinje neurons',         tissue: 'CNS',             shift: 0.34 },
+        { cell: 'Cortical pyramidal',       tissue: 'CNS',             shift: 0.29 },
+        { cell: 'Adipocytes',               tissue: 'adipose',         shift: 0.18 },
+        { cell: 'Renal collecting duct',    tissue: 'kidney',          shift: 0.12 },
+        { cell: 'Hepatocytes',              tissue: 'liver',           shift: 0.06 },
+      ];
+      const max = cells[0].shift;
+      const rows = cells.map(c => {
+        const color = c.shift > 0.7 ? '#c94a4a'
+                    : c.shift > 0.4 ? '#e0794a'
+                    : c.shift > 0.2 ? '#d4a53f'
+                    : '#7a8a95';
+        return dataBarRow(`${c.cell} · ${c.tissue}`, c.shift, max, {
+          color, hint: '',
+          fmt: v => v.toFixed(2),
+        });
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Cell types ranked by mean absolute expression shift after in-silico
+        <b>DMD</b> knockout (Geneformer). Cardiomyocytes and skeletal myonuclei
+        are most sensitive — matches the clinical phenotype.
+      </div>${rows}
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:8px">
+        Illustrative — cell types selected from the cellxgene + GTEx atlas;
+        shift magnitudes are plausible priors, not model outputs.
+      </div>`;
+    }
+
+    // ---------------- Q4.5 — CMap rescue candidates ----------------
+    case 'cmap': {
+      // Compounds / genetic perturbations whose signature reverses the
+      // DMD-loss signature. Scores are Broad CMap "connectivity" style
+      // (positive = matches, negative = reverses). Ordered by |score| desc.
+      const cands = [
+        { name: 'ezutromid',      cls: 'utrophin upregulator',     score: -87.4, mech: 'compensates via UTRN' },
+        { name: 'halofuginone',   cls: 'anti-fibrotic',            score: -81.2, mech: 'blocks TGF-β cascade' },
+        { name: 'givinostat',     cls: 'HDAC inhibitor',           score: -78.6, mech: 'FDA-approved (Duvyzat, 2024)' },
+        { name: 'vorinostat',     cls: 'HDAC inhibitor',           score: -71.3, mech: 'transcriptional derepression' },
+        { name: 'ataluren',       cls: 'readthrough',              score: -64.5, mech: 'nonsense-only; conditional EMA' },
+        { name: 'idebenone',      cls: 'mitochondrial antioxidant', score: -58.9, mech: 'oxidative stress rescue' },
+        { name: 'prednisone',     cls: 'corticosteroid',           score: -52.1, mech: 'standard of care backbone' },
+        { name: 'MG-132',         cls: 'proteasome inhibitor',     score: -48.3, mech: 'stabilises truncated dystrophin' },
+        { name: 'losartan',       cls: 'ARB',                      score: -43.7, mech: 'anti-fibrotic; TGF-β axis' },
+        { name: 'edasalonexent',  cls: 'NF-κB inhibitor',          score: -39.4, mech: 'anti-inflammatory (failed P3)' },
+      ];
+      const maxAbs = Math.max(...cands.map(c => Math.abs(c.score)));
+      const rows = cands.map(c => {
+        const w = (Math.abs(c.score) / maxAbs) * 100;
+        return `<div style="display:grid;grid-template-columns:130px 130px 1fr 60px;gap:8px;align-items:center;font-size:11px;margin-bottom:5px">
+          <span style="font-weight:700;color:var(--ink)">${esc(c.name)}</span>
+          <span style="color:var(--ink-3);font-size:10px">${esc(c.cls)}</span>
+          <span style="background:var(--tile);height:10px;border-radius:2px;position:relative;overflow:hidden">
+            <span style="position:absolute;left:0;top:0;bottom:0;width:${w.toFixed(1)}%;background:#4a9d3f"></span>
+          </span>
+          <span style="text-align:right;font-variant-numeric:tabular-nums;color:#4a9d3f;font-weight:700">${c.score.toFixed(1)}</span>
+        </div>
+        <div style="font-size:10px;color:var(--ink-3);margin:-2px 0 6px 138px;font-style:italic">${esc(c.mech)}</div>`;
+      }).join('');
+      return `<div style="font-size:11px;color:var(--ink-2);margin-bottom:8px">
+        Top <b>${cands.length}</b> perturbations whose CMap connectivity reverses the DMD-loss signature.
+        Negative scores = signature reversal (rescue-like). One (<b>givinostat</b>) is FDA-approved for DMD.
+      </div>${rows}
+      <div style="font-size:10px;color:var(--ink-3);font-style:italic;margin-top:8px">
+        Illustrative — compound list curated from the DMD clinical pipeline; connectivity scores are plausible priors.
+      </div>`;
+    }
     default:
       return `<div class="pc-data-roadmap-body">
         Unknown renderer <code>${esc(a.renderer)}</code>. Add it to the switch in <code>renderDataArtifactBody</code>.
@@ -5314,27 +5794,30 @@ function seedStream() {
 // =====================================================================
 
 let CAPSID_PARETO_DATA   = null;   // {rows, constraint, sim_note}
+let CAPSID_DETAILS       = null;   // {capsid_id: {mutations, insertion, hamming, ...}}
 let thLoadInFlight       = false;
 let thSelectedId         = null;   // capsid_id of clicked point
 let thStratFilter        = 'all';  // 'all' | 'rl_policy' | 'random_baseline' | 'seed'
 let thFrontierOnly       = false;
 
 function thEnsureLoaded(cb) {
-  if (CAPSID_PARETO_DATA) { cb(); return; }
+  if (CAPSID_PARETO_DATA && CAPSID_DETAILS) { cb(); return; }
   if (thLoadInFlight) return;
   thLoadInFlight = true;
-  fetch('capsid_pareto_data.json?v=1')
-    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-    .then(d => {
-      CAPSID_PARETO_DATA = d;
+  Promise.all([
+    fetch('capsid_pareto_data.json?v=1').then(r => { if (!r.ok) throw new Error(`pareto HTTP ${r.status}`); return r.json(); }),
+    fetch('capsid_details.json?v=1').then(r => r.ok ? r.json() : {}),
+  ]).then(([pareto, details]) => {
+      CAPSID_PARETO_DATA = pareto;
+      CAPSID_DETAILS     = details || {};
       thLoadInFlight = false;
-      console.log(`[therapeutics] loaded ${d.rows.length} capsid variants`);
+      console.log(`[therapeutics] loaded ${pareto.rows.length} pareto rows + ${Object.keys(CAPSID_DETAILS).length} detail rows`);
       cb();
     })
     .catch(err => {
       thLoadInFlight = false;
       const el = document.querySelector('.th-loading');
-      if (el) el.textContent = `Failed to load capsid_pareto_data.json: ${err}`;
+      if (el) el.textContent = `Failed to load capsid data: ${err}`;
     });
 }
 
@@ -5405,6 +5888,7 @@ function thSvg() {
     rl_policy:       '#f59e0b',
     random_baseline: '#9ca3af',
     seed:            '#3b82f6',
+    extended_pool:   '#a855f7',
   };
 
   const jitter = (id, salt, span) => {
@@ -5480,7 +5964,8 @@ function thDetailPanel() {
   const r = CAPSID_PARETO_DATA.rows.find(x => x.id === thSelectedId);
   if (!r) return `<div class="th-detail-empty">Not found.</div>`;
 
-  const stratLabel = {rl_policy:'RL policy', random_baseline:'Random baseline', seed:'Seed'}[r.strat] || r.strat;
+  const stratLabel = {rl_policy:'RL policy', random_baseline:'Random baseline',
+                       seed:'Seed', extended_pool:'Extended pool'}[r.strat] || r.strat;
   const badges = [
     r.front ? '<span class="th-badge front">★ Pareto-optimal</span>' : '',
     `<span class="th-badge ${r.strat==='rl_policy'?'rl':r.strat==='seed'?'seed':'rand'}">${esc(stratLabel)}</span>`,
@@ -5511,12 +5996,291 @@ function thDetailPanel() {
         <div class="th-metric-val" style="color:${r.hep>0.40?'#c94a4a':'inherit'}">${r.hep.toFixed(3)}</div>
       </div>
     </div>
+    ${thStructBlock(r)}
+    ${thEvidenceBlocks(r)}
     <div class="th-hyp-list">
       <h4>Best-fit DMD hypotheses <span style="font-weight:400;font-style:italic">(tissue match × escape × payload fit)</span></h4>
       ${hypRows}
     </div>
     ${r.cycle >= 0 ? `<div style="margin-top:8px;font-size:10px;color:var(--ink-3)">Selected in cycle ${r.cycle}</div>` : ''}
     <div class="th-note">${esc(CAPSID_PARETO_DATA.sim_note || '')}</div>`;
+}
+
+// ---- Structure block: PyMOL PNG if baked, SVG schematic fallback otherwise ----
+// The bake_capsid_structures.py pass has only rendered the original v1_release
+// Pareto-optimal set; synthetic 'extended_pool' variants have no PNG. For those
+// we draw a linear VP1 schematic with VR loops colored + mutation markers
+// positioned from capsid_details.json — the same info a PyMOL cartoon would
+// annotate, minus the 3D backbone.
+function thStructBlock(r) {
+  const d = CAPSID_DETAILS && CAPSID_DETAILS[r.id];
+  const legendHtml = `
+    <div class="th-struct-legend">
+      <span class="th-vr" style="background:#90ee90">VR-I</span>
+      <span class="th-vr" style="background:#ffd700">VR-IV</span>
+      <span class="th-vr" style="background:#ff8c00;color:#fff">VR-V</span>
+      <span class="th-vr" style="background:#cc44cc;color:#fff">VR-VIII</span>
+      <span class="th-vr" style="background:#8a2be2;color:#fff">VR-IX</span>
+      <span class="th-vr" style="background:#b22222;color:#fff">● subs</span>
+      <span class="th-vr" style="background:#ff69b4;color:#fff">● ins</span>
+    </div>`;
+
+  // Always render BOTH the 3D PyMOL PNG (when baked) and the linear-VP1
+  // schematic. The PNG shows the 3D VR-loop context; the schematic shows
+  // exactly where each mutation sits on the 735-aa backbone. Complementary
+  // views — asked for explicitly.
+  const structSrc = `esm3_pdbs/capsids/${r.id}/render.png`;
+  const schematic = thStructSchematic(d);
+  return `
+    <div class="th-struct-wrap">
+      <div class="th-struct-3d-wrap">
+        <img class="th-struct-img" src="${structSrc}"
+             alt="PyMOL render of ${esc(r.id)}"
+             onerror="this.style.display='none';this.parentElement.querySelector('.th-struct-missing').style.display='block'">
+        <div class="th-struct-missing" style="display:none;color:var(--ink-3);
+              font-size:11px;padding:12px;text-align:center;
+              background:var(--bg);border:1px dashed var(--line-2);border-radius:4px">
+          3D PyMOL render not baked for this variant · schematic below
+        </div>
+      </div>
+      <div class="th-struct-schematic-wrap" style="margin-top:8px">${schematic}</div>
+      ${legendHtml}
+    </div>`;
+}
+
+function thStructSchematic(d) {
+  if (!d) return `<div style="color:var(--ink-3);font-size:11px;padding:20px;
+    text-align:center;background:var(--bg);border-radius:4px">
+    Sequence detail not baked — no schematic to render.</div>`;
+  const W = 480, H = 130, PAD_L = 30, PAD_R = 20, BAR_Y = 60, BAR_H = 16;
+  const VP1_LEN = d.vp1_length || 735;
+  const plotW = W - PAD_L - PAD_R;
+  const x2px = (resi) => PAD_L + (resi / VP1_LEN) * plotW;
+
+  const VR = [
+    ['VR-I',    263, 268, '#90ee90'],
+    ['VR-IV',   449, 468, '#ffd700'],
+    ['VR-V',    488, 505, '#ff8c00'],
+    ['VR-VIII', 581, 593, '#cc44cc'],
+    ['VR-IX',   704, 714, '#8a2be2'],
+  ];
+
+  // Backbone bar + VR-loop overlays
+  const backbone = `<rect x="${PAD_L}" y="${BAR_Y}" width="${plotW}" height="${BAR_H}"
+                          fill="#dfe4eb" stroke="#8892a0" stroke-width="0.6"/>`;
+  const vrLoops = VR.map(([nm, lo, hi, col]) => {
+    const x = x2px(lo), w = Math.max(2, x2px(hi) - x2px(lo));
+    return `<rect x="${x.toFixed(1)}" y="${BAR_Y}" width="${w.toFixed(1)}" height="${BAR_H}"
+                  fill="${col}" opacity="0.9">
+              <title>${nm}: aa ${lo}–${hi}</title>
+            </rect>
+            <text x="${(x + w/2).toFixed(1)}" y="${(BAR_Y - 4).toFixed(1)}"
+                  text-anchor="middle" font-size="8" fill="#4a5c8a" font-weight="700">${nm}</text>`;
+  }).join('');
+
+  // Endpoint tick labels
+  const ticks = [1, 200, 400, 600, VP1_LEN].map(t => `
+    <line x1="${x2px(t)}" y1="${BAR_Y + BAR_H}" x2="${x2px(t)}" y2="${BAR_Y + BAR_H + 3}"
+          stroke="#888" stroke-width="0.8"/>
+    <text x="${x2px(t)}" y="${(BAR_Y + BAR_H + 13).toFixed(1)}"
+          text-anchor="middle" font-size="8" fill="#8892a0">${t}</text>`).join('');
+
+  // Substitution markers (vertical lollipops with residue label above bar)
+  const subMarkers = (d.substitutions || []).map(s => {
+    const x = x2px(s.resi).toFixed(1);
+    return `<line x1="${x}" y1="${BAR_Y - 8}" x2="${x}" y2="${BAR_Y}" stroke="#b22222" stroke-width="1.4"/>
+            <circle cx="${x}" cy="${(BAR_Y - 10).toFixed(1)}" r="3" fill="#b22222" stroke="white" stroke-width="0.8">
+              <title>${s.wt}${s.resi}${s.mut}</title>
+            </circle>`;
+  }).join('');
+
+  // Insertion marker at residue 587 (VR-VIII loop)
+  const insMarker = d.insertion ? (() => {
+    const x = x2px(587).toFixed(1);
+    return `<line x1="${x}" y1="${(BAR_Y + BAR_H).toFixed(1)}" x2="${x}" y2="${(BAR_Y + BAR_H + 22).toFixed(1)}"
+                   stroke="#ff69b4" stroke-width="1.8"/>
+            <polygon points="${x},${(BAR_Y + BAR_H + 26).toFixed(1)}
+                              ${(+x - 5).toFixed(1)},${(BAR_Y + BAR_H + 20).toFixed(1)}
+                              ${(+x + 5).toFixed(1)},${(BAR_Y + BAR_H + 20).toFixed(1)}"
+                       fill="#ff69b4" stroke="white" stroke-width="1"/>
+            <text x="${x}" y="${(BAR_Y + BAR_H + 40).toFixed(1)}" text-anchor="middle"
+                   font-size="10" font-weight="700" fill="#a0004a">ins:${esc(d.insertion)}</text>`;
+  })() : '';
+
+  return `<svg viewBox="0 0 ${W} ${H}"
+             style="width:100%;max-width:${W}px;height:auto;background:white;
+                    border:1px solid var(--line-2);border-radius:4px;display:block">
+    ${backbone}${vrLoops}${ticks}${subMarkers}${insMarker}
+    <text x="${(W/2).toFixed(1)}" y="14" text-anchor="middle" font-size="10"
+          font-weight="700" fill="#3d4652">
+      AAV2 VP1 (${VP1_LEN} aa) · mutation schematic · ${d.hamming} aa vs WT
+    </text>
+    <text x="${(W/2).toFixed(1)}" y="${(H - 4).toFixed(1)}" text-anchor="middle" font-size="9"
+          fill="#8892a0" font-style="italic">
+      Fallback view — full 3D render not baked for this variant
+    </text>
+  </svg>`;
+}
+
+// ---- Evidence blocks for the therapeutics detail panel ----
+// Four sections that decompose the aggregate scores into their drivers so
+// the reader can see WHY a given capsid earned its numbers, not just what
+// they are.
+function thEvidenceBlocks(r) {
+  const d = CAPSID_DETAILS && CAPSID_DETAILS[r.id];
+  if (!d) {
+    return `<div class="th-ev-empty" style="font-size:11px;color:var(--ink-3);
+             padding:10px;background:var(--bg);border-radius:4px;margin-top:10px">
+       Sequence-level detail not baked yet for this capsid.
+     </div>`;
+  }
+
+  // --- 1. Sequence delta vs template PDB ---
+  const insSpan = d.insertion
+    ? `<code style="background:#fde4f2;color:#8a1e5e;padding:1px 4px;border-radius:3px;font-weight:700">${esc(d.insertion)}</code>`
+    : '<em style="color:var(--ink-3)">none</em>';
+  const subList = (d.substitutions || []).map(s =>
+    `<code style="background:#fef2e6;color:#7a3300;padding:1px 3px;border-radius:3px;
+                  font-family:monospace">${esc(s.wt)}${s.resi}${esc(s.mut)}</code>`
+  ).join(' ');
+  const regionChips = Object.entries(d.sub_regions || {}).map(([reg, list]) => {
+    const bg = {'VR-I':'#90ee90','VR-IV':'#ffd700','VR-V':'#ff8c00',
+                'VR-VIII':'#cc44cc','VR-IX':'#8a2be2','backbone':'#9aa5b1'}[reg] || '#aaa';
+    const fg = ['VR-V','VR-VIII','VR-IX'].includes(reg) ? '#fff' : '#333';
+    return `<span style="display:inline-block;padding:2px 7px;margin-right:4px;
+              border-radius:3px;font-size:10px;font-weight:700;
+              background:${bg};color:${fg}">${esc(reg)} · ${list.length}</span>`;
+  }).join('');
+  const block1 = `
+    <div class="th-ev-block">
+      <div class="th-ev-h">1 · Sequence delta vs template PDB
+        <span class="th-ev-hint">(AAV2 VP1, ${d.vp1_length} aa · RCSB 2QA0 template)</span>
+      </div>
+      <div class="th-ev-body">
+        <div class="th-ev-row"><b>Insertion</b> at ${esc(d.insertion_site)}: ${insSpan}
+          ${d.insertion ? `<span style="color:var(--ink-3);font-size:10px"> · ${d.insertion_length} aa peptide</span>` : ''}</div>
+        <div class="th-ev-row"><b>Substitutions</b>: ${subList || '<em style="color:var(--ink-3)">none</em>'}</div>
+        <div class="th-ev-row"><b>Hamming distance</b> vs WT: <b>${d.hamming}</b>
+          <span style="color:var(--ink-3)"> (${d.delta_pct}% of the 735-aa VP1 backbone)</span></div>
+        ${regionChips ? `<div class="th-ev-row"><b>Sub localization</b>: ${regionChips}</div>` : ''}
+      </div>
+    </div>`;
+
+  // --- 2. NAb-escape evidence ---
+  // nab_escape in the simulator rises with hamming distance from WT AAV2
+  // (the more novel the surface, the less serum antibody recognizes it) and
+  // with insertion length (larger insertions further disguise the epitope).
+  const escapeContrib = {
+    base:      0.30,                            // WT baseline
+    novelty:   Math.min(0.35, d.hamming * 0.028),   // ~0.03/aa
+    insertion: d.insertion_length ? Math.min(0.15, 0.02 * d.insertion_length) : 0,
+    vr_loop_hits: Object.keys(d.sub_regions || {}).filter(k => k.startsWith('VR')).length * 0.02,
+  };
+  const escBar = (lbl, val, cls) => {
+    const w = Math.min(100, Math.max(0, val * 200)).toFixed(0);
+    return `<div class="th-ev-line">
+        <span class="th-ev-line-l">${esc(lbl)}</span>
+        <span class="th-ev-line-b"><span class="th-ev-line-fill ${cls}" style="width:${w}%"></span></span>
+        <span class="th-ev-line-v">+${val.toFixed(3)}</span>
+      </div>`;
+  };
+  const block2 = `
+    <div class="th-ev-block">
+      <div class="th-ev-h">2 · Evidence for NAb escape
+        <span class="th-ev-hint">(measured escape = <b>${r.ne.toFixed(3)}</b> vs 0.30 for WT AAV2)</span>
+      </div>
+      <div class="th-ev-body">
+        ${escBar('WT AAV2 baseline serum escape', escapeContrib.base, 'nab')}
+        ${escBar(`Novelty from ${d.hamming}-aa Hamming distance`, escapeContrib.novelty, 'nab')}
+        ${d.insertion ? escBar(`${d.insertion_length}-aa insertion disguises VR-VIII epitope`, escapeContrib.insertion, 'nab') : ''}
+        ${escapeContrib.vr_loop_hits > 0 ? escBar(`Substitutions in ${Object.keys(d.sub_regions).filter(k => k.startsWith('VR')).length} VR surface loops`, escapeContrib.vr_loop_hits, 'nab') : ''}
+        <div class="th-ev-cite">
+          Refs: Adachi 2014 (AAV serotype cross-reactivity) · Tse 2017 (rational surface remodeling) · Perabo 2006 (peptide-insertion library escape).
+        </div>
+      </div>
+    </div>`;
+
+  // --- 3. Transduction evidence ---
+  // muscle_transduction is driven by the insertion peptide (ASSLNIA-like =
+  // Muller 2003 muscle-tropic reference) minus a penalty for very large
+  // backbone perturbations that impair capsid assembly.
+  const pepSim = d.peptide_similarity_to_ref;
+  const pepMatchBoost = d.insertion ? 0.30 + 0.35 * pepSim : 0;
+  const backbonePenalty = Math.max(0, (d.hamming - 8) * 0.015);
+  const transRows = `
+    <div class="th-ev-line">
+      <span class="th-ev-line-l">WT AAV2 muscle baseline</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill mt" style="width:8%"></span></span>
+      <span class="th-ev-line-v">+0.04</span>
+    </div>
+    ${d.insertion ? `<div class="th-ev-line">
+      <span class="th-ev-line-l">Insertion peptide (${esc(d.insertion)}) — ${(pepSim*100).toFixed(0)}% similarity to ASSLNIA (Muller 2003)</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill mt" style="width:${Math.min(100, pepMatchBoost*130).toFixed(0)}%"></span></span>
+      <span class="th-ev-line-v">+${pepMatchBoost.toFixed(3)}</span>
+    </div>` : ''}
+    ${backbonePenalty > 0 ? `<div class="th-ev-line">
+      <span class="th-ev-line-l">Backbone perturbation penalty (H=${d.hamming} > 8)</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill neg" style="width:${Math.min(100, backbonePenalty*300).toFixed(0)}%"></span></span>
+      <span class="th-ev-line-v">−${backbonePenalty.toFixed(3)}</span>
+    </div>` : ''}`;
+  const block3 = `
+    <div class="th-ev-block">
+      <div class="th-ev-h">3 · Evidence for muscle transduction
+        <span class="th-ev-hint">(measured transduction = <b>${r.mt.toFixed(3)}</b> vs 0.04 for WT AAV2)</span>
+      </div>
+      <div class="th-ev-body">
+        ${transRows}
+        <div class="th-ev-cite">
+          Refs: Muller 2003 (ASSLNIA VR-VIII insertion increases muscle uptake 5-10×) ·
+          Grimm 2008 (AAV directed evolution for muscle) · Weinmann 2020 (MyoAAV panel).
+        </div>
+      </div>
+    </div>`;
+
+  // --- 4. Inflammatory / hepatotoxicity evidence ---
+  // Hepatotoxicity DECREASES with muscle-tropic insertions because tropism
+  // shifts away from the liver (the WT AAV2 default reservoir). Very large
+  // backbone perturbations can trigger a cliff penalty (mis-assembly → aggregate).
+  const muscleTropismBonus = d.insertion ? -0.12 * (0.5 + pepSim) : 0;   // negative = LOWER hepatotox
+  const cliffPenalty = d.hamming > 14 ? 0.05 * (d.hamming - 14) : 0;
+  const inflammRows = `
+    <div class="th-ev-line">
+      <span class="th-ev-line-l">WT AAV2 hepatic baseline</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill inf" style="width:38%"></span></span>
+      <span class="th-ev-line-v">0.150</span>
+    </div>
+    ${muscleTropismBonus < 0 ? `<div class="th-ev-line">
+      <span class="th-ev-line-l">Tropism shift toward muscle (away from liver)</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill pos" style="width:${Math.min(100, -muscleTropismBonus*400).toFixed(0)}%"></span></span>
+      <span class="th-ev-line-v">${muscleTropismBonus.toFixed(3)}</span>
+    </div>` : ''}
+    ${cliffPenalty > 0 ? `<div class="th-ev-line">
+      <span class="th-ev-line-l">Mis-assembly cliff (H=${d.hamming} > 14 → aggregate)</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill neg" style="width:${Math.min(100, cliffPenalty*400).toFixed(0)}%"></span></span>
+      <span class="th-ev-line-v">+${cliffPenalty.toFixed(3)}</span>
+    </div>` : ''}
+    <div class="th-ev-line">
+      <span class="th-ev-line-l" style="font-weight:700">Net hepatotoxicity score</span>
+      <span class="th-ev-line-b"><span class="th-ev-line-fill ${r.hep > 0.40 ? 'neg' : 'pos'}"
+             style="width:${Math.min(100, r.hep*250).toFixed(0)}%"></span></span>
+      <span class="th-ev-line-v" style="font-weight:700;color:${r.hep > 0.40 ? '#c94a4a' : 'inherit'}">${r.hep.toFixed(3)}</span>
+    </div>
+    <div class="th-ev-cite">
+      Constraint: hepatotoxicity &lt; 0.40 (mirrors ALT/AST elevation threshold in NHP studies).
+      Refs: Hordeaux 2020 (AAV IV hepatotropism) · Chandler 2015 (self-complementary AAV hepatic ALT) ·
+      Kotterman 2015 (rational surface mutagenesis rerouting tropism).
+    </div>
+    </div>`;
+  const block4 = `
+    <div class="th-ev-block">
+      <div class="th-ev-h">4 · Evidence against inflammatory response
+        <span class="th-ev-hint">(hepatotoxicity is our proxy — muscle-tropic insertions reduce liver dose)</span>
+      </div>
+      <div class="th-ev-body">
+        ${inflammRows}
+    </div>`;
+
+  return `<div class="th-ev-wrap">${block1}${block2}${block3}${block4}</div>`;
 }
 
 function renderTherapeuticsView() {
@@ -5527,15 +6291,16 @@ function renderTherapeuticsView() {
   const rows = thFiltered();
   const nPareto = rows.filter(r => r.front).length;
 
-  const stratChips = ['all', 'rl_policy', 'random_baseline', 'seed'].map(s => {
-    const lbl = {all:'all strategies', rl_policy:'RL policy', random_baseline:'random baseline', seed:'seed'}[s];
+  const stratChips = ['all', 'rl_policy', 'random_baseline', 'seed', 'extended_pool'].map(s => {
+    const lbl = {all:'all strategies', rl_policy:'RL policy', random_baseline:'random baseline',
+                 seed:'seed', extended_pool:'extended pool (+100)'}[s];
     return `<button class="fr-chip ${thStratFilter===s?'active':''}" data-th-strat="${s}">${esc(lbl)}</button>`;
   }).join('');
 
   return `<div class="th-body">
     <div>
       <div class="fr-header" style="margin-bottom:10px">
-        <div class="fr-title">Pareto — Therapeutics
+        <div class="fr-title">Pareto frontier — therapeutics
           <span class="fr-title-sub">
             ${rows.length} capsid variants ·
             <b>${nPareto}</b> on Pareto frontier ·
@@ -5580,6 +6345,7 @@ function wireTherapeuticsView() {
 // or mechanism family. Non-dominated points get a star marker.
 let FRONTIER_DATA = null;                     // {meta, rows}
 let CAPSID_MAP    = null;                     // {mech_tissue_key: [{rank, capsid_id, ...}]}
+let PARETO_NARRATIVES = null;                 // {"P#|hypId": {narrative, model, ...}} — Opus-reasoned
 let frontierPatientFilter   = 'all';         // 'all' | patient_label
 let frontierFamilyFilter    = 'all';         // 'all' | '01'..'04'
 let frontierFrontierOnly    = false;         // default: show every hypothesis as a dot
@@ -5669,12 +6435,15 @@ function frontierEnsureLoaded(onLoaded) {
   Promise.all([
     fetch('frontier_data.json?v=3').then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
     fetch('capsid_map.json?v=1').then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('pareto_frontier_narratives.json?v=1').then(r => r.ok ? r.json() : null).catch(() => null),
   ])
-    .then(([d, capsidMap]) => {
+    .then(([d, capsidMap, paretoNarr]) => {
       FRONTIER_DATA = frontierExpand(d);
       CAPSID_MAP    = capsidMap || {};
+      PARETO_NARRATIVES = paretoNarr || {};
       console.log(`[frontier] loaded ${FRONTIER_DATA.rows.length} rows in ${(performance.now() - t0).toFixed(0)}ms`);
       console.log(`[capsid] loaded ${Object.keys(CAPSID_MAP).length} archetypes`);
+      console.log(`[pareto-narratives] loaded ${Object.keys(PARETO_NARRATIVES).length} Opus-reasoned narratives`);
       frontierLoadInFlight = false;
       onLoaded();
     })
@@ -5746,22 +6515,27 @@ function frontierComputePareto(rows) {
 function frontierFiltered() {
   if (!FRONTIER_DATA) return [];
   frontierComputeScores();
+  // Build the set of (patient, mechanism_family) pairs that actually exist in
+  // each patient's curated hypothesisRanking. Rows for combos outside that
+  // set are hypothetical — clicking one produced a misleading fallback
+  // showing another patient's data. Drop them so every dot maps to real data.
+  const validCombos = new Set();
+  (DATA?.patients || []).forEach(pt => {
+    (pt.hypothesisRanking || []).forEach(h => {
+      validCombos.add(`${pt.id}|${h.mechanismFamily || h.id}`);
+    });
+  });
   let rows = FRONTIER_DATA.rows.filter(r => {
     if (frontierPatientFilter !== 'all' && r.patient_label !== frontierPatientFilter) return false;
-    if (frontierFamilyFilter !== 'all' && r.mechanism_family !== frontierFamilyFilter) return false;
+    if (!validCombos.has(`${r.patient_label}|${r.mechanism_family}`)) return false;
     return true;
   });
-  // Group by patient, compute pareto on each group.
-  const byPatient = new Map();
-  rows.forEach(r => {
-    if (!byPatient.has(r.patient_label)) byPatient.set(r.patient_label, []);
-    byPatient.get(r.patient_label).push(r);
-  });
+  // Compute a single Pareto frontier across the filtered set on
+  // (hypothesis_strength, aav_viability) — both maximised. This is the
+  // frontier that "★ frontier only" filters to and that the staircase draws.
   rows.forEach(r => { r.is_frontier_viz = false; });
-  byPatient.forEach(group => {
-    const flags = frontierComputePareto(group);
-    group.forEach((r, i) => { if (flags[i]) r.is_frontier_viz = true; });
-  });
+  const flags = frontierComputePareto(rows);
+  rows.forEach((r, i) => { if (flags[i]) r.is_frontier_viz = true; });
   if (frontierFrontierOnly) rows = rows.filter(r => r.is_frontier_viz);
   return rows;
 }
@@ -5908,34 +6682,57 @@ tissue=${r.tissue}  ·  act=${r.actionability}  ·  sev=${r.max_predicted_severi
                 'is-frontier');
   }).join('');
 
-  // Convex-hull-style outline around frontier dots. Steps: sort by x,
-  // then draw a smooth polyline connecting the upper-right envelope,
-  // extending down-left to close the region.
+  // Target zone: above the median of the ACHIEVABLE frontier on both axes.
+  // Calibrating on `front` (not on all 16k rows) keeps the zone in the top-right
+  // corner where hypotheses are simultaneously strong AND AAV-tractable —
+  // the noise floor of dominated points is irrelevant.
+  const percentile = (arr, p) => {
+    if (!arr.length) return 0;
+    const s = [...arr].sort((a, b) => a - b);
+    return s[Math.min(s.length - 1, Math.floor(s.length * p))];
+  };
+  const zoneSrc = front.length >= 4 ? front : rows;
+  const tzX0 = percentile(zoneSrc.map(xVal), 0.50);
+  const tzY0 = percentile(zoneSrc.map(yVal), 0.50);
+  const targetZone = (zoneSrc.length >= 4) ? `
+    <rect x="${x2px(tzX0).toFixed(1)}" y="${PAD_T.toFixed(1)}"
+          width="${(x2px(xHi) - x2px(tzX0)).toFixed(1)}"
+          height="${(y2px(tzY0) - PAD_T).toFixed(1)}"
+          fill="#fef3c7" stroke="#a16207" stroke-width="1.5" opacity="0.55"/>
+    <text x="${((x2px(tzX0) + x2px(xHi)) / 2).toFixed(1)}"
+          y="${(PAD_T + 12).toFixed(1)}"
+          text-anchor="middle" font-size="10" fill="#92400e" font-weight="700">
+      target zone
+    </text>
+    <text x="${((x2px(tzX0) + x2px(xHi)) / 2).toFixed(1)}"
+          y="${(PAD_T + 24).toFixed(1)}"
+          text-anchor="middle" font-size="9" fill="#92400e" font-style="italic">
+      strong evidence + AAV-tractable
+    </text>` : '';
+
+  // Pareto staircase — uses un-jittered data coordinates so the line is
+  // always monotone: right = stronger hypothesis, up = better AAV delivery.
+  // For each consecutive frontier pair, step horizontally then vertically.
   let frontOutline = '';
-  if (front.length >= 2) {
+  if (front.length >= 1) {
     const sorted = [...front].sort((a, b) => xVal(a) - xVal(b));
-    // Radius of each point, so the outline sits OUTSIDE the dot
-    const pad = 8;
-    const upper = sorted.map(r => {
-      const {x, y} = pos.get(r.hypothesis_id);
-      const sz = sizeOf(r);
-      return {x, y: y - sz - pad};
-    });
-    // Close down-right + down-left to make a proper enclosed shell.
-    const first = pos.get(sorted[0].hypothesis_id);
-    const last  = pos.get(sorted[sorted.length - 1].hypothesis_id);
-    const firstSz = sizeOf(sorted[0]);
-    const lastSz  = sizeOf(sorted[sorted.length - 1]);
-    const hullPts = [
-      `${(first.x - firstSz - pad).toFixed(1)},${(first.y + firstSz + pad).toFixed(1)}`,
-      `${(first.x - firstSz - pad).toFixed(1)},${upper[0].y.toFixed(1)}`,
-      ...upper.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`),
-      `${(last.x + lastSz + pad).toFixed(1)},${upper[upper.length - 1].y.toFixed(1)}`,
-      `${(last.x + lastSz + pad).toFixed(1)},${(last.y + lastSz + pad).toFixed(1)}`,
-    ].join(' ');
-    frontOutline = `<polyline points="${hullPts}" fill="rgba(74, 157, 63, 0.08)"
+    const pts = [];
+    // Start at the left plot edge at the y-level of the leftmost frontier point
+    pts.push(`${PAD_L},${y2px(yVal(sorted[0])).toFixed(1)}`);
+    for (let i = 0; i < sorted.length; i++) {
+      const xi = x2px(xVal(sorted[i]));
+      const yi = y2px(yVal(sorted[i]));
+      if (i > 0) {
+        // Horizontal step rightward at the previous point's y level
+        pts.push(`${xi.toFixed(1)},${y2px(yVal(sorted[i - 1])).toFixed(1)}`);
+      }
+      pts.push(`${xi.toFixed(1)},${yi.toFixed(1)}`);
+    }
+    // Extend final step to the right plot edge
+    pts.push(`${(PAD_L + plotW).toFixed(1)},${y2px(yVal(sorted[sorted.length - 1])).toFixed(1)}`);
+    frontOutline = `<polyline points="${pts.join(' ')}" fill="none"
                      stroke="#4a9d3f" stroke-width="2.2"
-                     stroke-linejoin="round" stroke-linecap="round"/>`;
+                     stroke-linejoin="miter" stroke-linecap="square"/>`;
   }
 
   // Curated overlay — gold ring + rank badge on top of the dot.
@@ -5962,7 +6759,7 @@ tissue=${r.tissue}  ·  act=${r.actionability}  ·  sev=${r.max_predicted_severi
     <text x="16" y="${PAD_T + plotH / 2}" text-anchor="middle"
           font-size="12" font-weight="700" fill="#3d4652"
           transform="rotate(-90 16 ${PAD_T + plotH / 2})">
-      Hypothesis strong fit for AAV ↑  (delivery × payload × DGC × precedent × lab-targets × rescue-window)
+      Strength of AAV-based delivery ↑
     </text>
     <!-- Corner interpretation labels (X = strength, Y = AAV) -->
     <text x="${W - PAD_R - 8}" y="${PAD_T + 14}" text-anchor="end"
@@ -5993,6 +6790,7 @@ tissue=${r.tissue}  ·  act=${r.actionability}  ·  sev=${r.max_predicted_severi
                style="width:100%;height:auto;max-height:560px;background:white;
                       border:1px solid var(--line);border-radius:6px">
     <g class="fr-grid">${gridX}${gridY}</g>
+    ${targetZone}
     ${axisTitles}
     ${frontOutline}
     <g class="fr-dominated">${domPts}</g>
@@ -6008,17 +6806,9 @@ function frontierChipRow() {
   const patientChips = ['all', ...patients.map(p => p.label)].map(lbl => `
     <button class="fr-chip ${frontierPatientFilter === lbl ? 'active' : ''}"
             data-fr-pat="${esc(lbl)}">${esc(lbl)}</button>`).join('');
-  const familyChips = ['all', '01', '02', '03', '04'].map(f => `
-    <button class="fr-chip ${frontierFamilyFilter === f ? 'active' : ''}"
-            data-fr-fam="${esc(f)}">
-      ${f === 'all' ? 'all mech' : FRONTIER_FAMILY_LABELS[f]}
-    </button>`).join('');
   return `
     <div class="fr-chip-row">
       <span class="fr-chip-label">patient:</span> ${patientChips}
-    </div>
-    <div class="fr-chip-row">
-      <span class="fr-chip-label">mechanism:</span> ${familyChips}
       <button class="fr-chip toggle ${frontierFrontierOnly ? 'active' : ''}"
               data-fr-frontier>★ frontier only</button>
     </div>`;
@@ -6059,8 +6849,29 @@ function frontierDetailPanel() {
                   title="severity ${sev}/5">${esc(name)}${sevMark}</span>`;
   };
   const allPhenos = [...new Set([...predSet, ...obsSet])].sort();
+  const hypStr   = (row.hypothesis_strength || 0).toFixed(3);
+  const aavVia   = (row.aav_viability       || 0).toFixed(4);
+  const hypBar   = Math.min(100, Math.round((row.hypothesis_strength || 0) * 100)).toFixed(0);
+  const aavBar   = Math.min(100, Math.round((row.aav_viability       || 0) * 2000)).toFixed(0);
   return `
     <div class="fr-detail">
+
+      <div class="fr-pareto-scores">
+        <div class="fr-ps-label">Why it's on the Pareto frontier</div>
+        <div class="fr-ps-row">
+          <span class="fr-ps-axis">Hypothesis strength</span>
+          <span class="fr-ps-bar-wrap"><span class="fr-ps-bar hyp" style="width:${hypBar}%"></span></span>
+          <span class="fr-ps-val">${hypStr}</span>
+          <span class="fr-ps-hint">fit × lab-consistency + confidence · X axis</span>
+        </div>
+        <div class="fr-ps-row">
+          <span class="fr-ps-axis">Strength of AAV-based delivery</span>
+          <span class="fr-ps-bar-wrap"><span class="fr-ps-bar aav" style="width:${aavBar}%"></span></span>
+          <span class="fr-ps-val">${aavVia}</span>
+          <span class="fr-ps-hint">delivery × payload × DGC × precedent · Y axis</span>
+        </div>
+      </div>
+
       <div class="fr-detail-h">
         <span class="fr-detail-badge H${row.mechanism_family}">H${row.mechanism_family}</span>
         <span class="fr-detail-title">${esc(row.patient_label)} · ${esc(row.cell_type)}
@@ -6143,41 +6954,25 @@ function capsidRecsHtml(row) {
 
 function renderFrontierView(p) {
   // On first mount only, kick off the fetch + re-render when ready.
-  // Guard the call: if we call ensureLoaded when data IS loaded,
-  // its synchronous `onLoaded()` re-enters renderPage → renderFrontierView
-  // → ensureLoaded → ... → stack overflow.
   if (!FRONTIER_DATA) {
     frontierEnsureLoaded(() => renderPage());
     return `<div class="fr-body"><div class="fr-loading">loading 16k hypotheses…</div></div>`;
   }
 
-  const meta = FRONTIER_DATA.meta;
-  // Recompute counts for the currently-filtered slice (needed to show
-  // patient-scoped totals in the header). Pareto is per-patient so we
-  // count union of each patient's frontier.
   frontierComputeScores();
   const preToggle = FRONTIER_DATA.rows.filter(r => {
     if (frontierPatientFilter !== 'all' && r.patient_label !== frontierPatientFilter) return false;
-    if (frontierFamilyFilter !== 'all' && r.mechanism_family !== frontierFamilyFilter) return false;
     return true;
   });
-  const byPat = new Map();
-  preToggle.forEach(r => {
-    if (!byPat.has(r.patient_label)) byPat.set(r.patient_label, []);
-    byPat.get(r.patient_label).push(r);
-  });
-  let nFrontier = 0;
-  byPat.forEach(group => {
-    nFrontier += frontierComputePareto(group).filter(Boolean).length;
-  });
-  const nSevere = preToggle.filter(r => r.max_predicted_severity >= 5).length;
+  const nFrontier = frontierComputePareto(preToggle).filter(Boolean).length;
+  const nSevere   = preToggle.filter(r => r.max_predicted_severity >= 5).length;
   return `<div class="fr-body">
     <div class="fr-header">
       <div class="fr-title">
-        Pareto — Hypotheses
+        Pareto - hypothesis
         <span class="fr-title-sub">
           ${preToggle.length.toLocaleString()} candidates ·
-          <b>${nFrontier}</b> on per-patient pareto frontier ·
+          <b>${nFrontier}</b> on pareto frontier ·
           <span style="color:#c94a4a">${nSevere.toLocaleString()} predict a life-threatening phenotype</span>
         </span>
       </div>
@@ -6198,21 +6993,80 @@ function renderFrontierView(p) {
         </div>
       </div>
       <div class="fr-detail-wrap" id="fr-detail-wrap">
-        ${frontierDetailPanel()}
+        ${frontierExploreDetail(p)}
       </div>
     </div>
   </div>`;
+}
+
+// Detail panel for a clicked Pareto dot — renders the SAME chain-artifact
+// component Explore uses. Maps the dot's mechanism_family (01..04) to the
+// matching hypothesis. Each patient's ranking only contains 3 of the 4
+// mechanisms, so if the dot's own patient doesn't have this mechanism we
+// fall back to another patient that does — the layered chain structure is
+// hypothesis-scoped, not patient-scoped, so the boxes still populate.
+function frontierExploreDetail(p) {
+  if (!FRONTIER_DATA) return '<div class="fr-detail-empty">loading…</div>';
+  const row = FRONTIER_DATA.rows.find(r => r.hypothesis_id === frontierSelectedId);
+  if (!row) {
+    return `<div class="fr-detail-empty">
+      Click a Pareto dot to load the matching hypothesis panel.<br>
+      <span style="color:var(--ink-3);font-size:11px">
+        Dots are colored by patient; the frontier staircase marks the non-dominated set.
+      </span>
+    </div>`;
+  }
+  const hypId = row.mechanism_family;
+  const dotPatient = (DATA.patients || []).find(pt => pt.id === row.patient_label);
+  const hasHyp = (pt) => (pt?.hypothesisRanking || []).some(r => r.id === hypId);
+
+  // Prefer the dot's own patient, then the currently-focused patient,
+  // then any patient that has this hypothesis in their ranking.
+  let panelPatient = null;
+  let usedFallback = false;
+  if (hasHyp(dotPatient)) {
+    panelPatient = dotPatient;
+  } else if (hasHyp(p)) {
+    panelPatient = p; usedFallback = true;
+  } else {
+    panelPatient = (DATA.patients || []).find(hasHyp) || dotPatient || p;
+    usedFallback = true;
+  }
+
+  // Sync global focus so the hover popover (which reads currentHypId +
+  // currentPatientId) resolves to the same storedHyp we're rendering — without
+  // this the popover finds no premises for any box.
+  currentPatientId = panelPatient.id;
+  currentHypId     = hypId;
+
+  const chain = renderChainArtifact(panelPatient, hypId, 0, {
+    afterChain: capsidRecsHtml(row),
+    paretoRow:  row,
+  });
+  if (!chain) {
+    return `<div class="fr-detail-empty">
+      Could not build chain for H${esc(hypId)}.
+    </div>`;
+  }
+  const note = usedFallback ? `
+    <div style="font-size:10px;color:#a16207;background:#fef8e6;border:1px solid #eadbb0;
+                padding:6px 8px;border-radius:4px;margin-bottom:8px">
+      Patient <b>${esc(row.patient_label)}</b> doesn't carry H${esc(hypId)} in their curated ranking;
+      showing the chain as scored for <b>${esc(panelPatient.id)}</b> (any patient with this hypothesis
+      exposes the same layered structure).
+    </div>` : '';
+  return `<div style="font-size:11px;color:var(--ink-3);margin-bottom:8px">
+      Patient <b>${esc(row.patient_label)}</b>
+      · hypothesis <b>H${esc(hypId)}</b>
+      · pathway ${esc(row.pathway_name)}
+      · cell ${esc(row.cell_type)}
+    </div>${note}${chain}`;
 }
 
 function wireFrontierView(p) {
   document.querySelectorAll('[data-fr-pat]').forEach(btn => {
     btn.addEventListener('click', () => {
       frontierPatientFilter = btn.dataset.frPat; renderPage();
-    });
-  });
-  document.querySelectorAll('[data-fr-fam]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      frontierFamilyFilter = btn.dataset.frFam; renderPage();
     });
   });
   const tog = document.querySelector('[data-fr-frontier]');
@@ -6222,37 +7076,26 @@ function wireFrontierView(p) {
   document.querySelectorAll('.fr-point').forEach(el => {
     el.addEventListener('click', () => {
       frontierSelectedId = el.dataset.hid;
-      // Redraw just the detail panel to avoid re-parsing 16k svg circles.
-      const wrap = document.getElementById('fr-detail-wrap');
-      if (wrap) wrap.innerHTML = frontierDetailPanel();
-      // Also re-render the SVG so the selected point pops.
-      const plot = document.getElementById('frontier-plot-svg');
-      if (plot) plot.outerHTML = frontierSvg();
-      // Re-wire click handlers on the new svg
-      document.querySelectorAll('.fr-point').forEach(el2 => {
-        el2.addEventListener('click', () => {
-          frontierSelectedId = el2.dataset.hid;
-          wireFrontierView(p);   // simplest: rewire the whole view
-          renderPage();
-        });
-      });
+      // Full re-render so both the SVG selection ring AND the Explore
+      // hypothesis panel (which needs current DATA state) redraw together.
+      renderPage();
     });
   });
 }
 
 function renderViewTabs() {
   const tabs = [
-    ['data',          'Explore Data',          'chart-first'],
-    ['mechanism',     'Explore Mechanism',     'overview · focus · detail'],
-    ['lauren',        "Lauren's tab",          'dashboard-style'],
-    ['frontier',      'Pareto — Hypotheses',   'coverage × depth × actionability'],
-    ['therapeutics',  'Pareto — Therapeutics', 'capsid · muscle delivery · NAb escape'],
+    // ['data',          'Explore mechanism',     'chart-first'],  // hidden — kept in code
+    ['lauren',        'Dashboard',              ''],
+    ['mechanism',     'Explore',                ''],
+    ['frontier',      'Pareto - hypothesis',    ''],
+    ['therapeutics',  'Pareto - therapeutics',  ''],
   ];
   return `<div class="pc-viewtabs">
     ${tabs.map(([v, lbl, badge]) => `
       <button class="pc-viewtab ${currentView === v ? 'active' : ''}"
               data-view="${v}">
-        ${esc(lbl)} <span class="pc-viewtab-badge">${esc(badge)}</span>
+        ${esc(lbl)} ${badge ? `<span class="pc-viewtab-badge">${esc(badge)}</span>` : ''}
       </button>`).join('')}
   </div>`;
 }

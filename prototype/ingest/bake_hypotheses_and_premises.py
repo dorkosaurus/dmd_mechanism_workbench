@@ -158,7 +158,56 @@ PREMISE_SOURCES = [
     ("uniprot_subcellular",     "data",  "UniProt REST",    "UniProt-curated subcellular localization (sarcolemma, cytoskeleton, postsynaptic membrane for DMD P11532)", "https://www.uniprot.org/uniprotkb/P11532"),
     ("absplice",                "model", "absplice_v1.0.4", "AbSplice-DNA per-tissue aberrant-splicing probability (Wagner et al. Nat Genet 2023). Distinguishes canonical splice-site variants from exonic ones — flags cryptic-splice risk that isoform_arch and clinvar_nmd cannot see.", "https://github.com/gagneurlab/absplice"),
     ("open_targets",            "data",  "opentargets_25.06", "Open Targets Platform target record for DMD (ENSG00000198947): approved-drug list, DGC molecular interactors, tractability profile, top disease associations, Reactome pathway memberships.", "https://platform.opentargets.org/target/ENSG00000198947"),
+    ("nmd_prediction",          "model", "50nt-rule v1",     "Per-patient NMD prediction: applies the 50-nt rule (Popp & Maquat 2013) to this patient's PTC using DMD exon coordinates from ENST00000357033 (79 exons; last EEJ at c.11039, aa 3680).", "https://pubmed.ncbi.nlm.nih.gov/23849625/"),
+    ("exon_skip_viability",     "model", "asos_2026-08",     "Per-patient exon-skip therapeutic viability: checks the patient's variant exon against FDA-approved skips (exon 45 casimersen, exon 51 eteplirsen, exon 53 golodirsen/viltolarsen) + Aartsma-Rus reading-frame rule.", "https://www.pmda.go.jp/"),
+    ("dgc_completeness",        "model", "hpa-derived v1",   "Per-patient DGC-completeness score per affected cell type: fraction of 14 DGC members (DMD DAG1 SNTA1 SNTB1 SNTB2 SGCA SGCB SGCD SGCG DTNA DTNB UTRN CAV3 SSPN) co-expressed in that cell type — quantifies how much of the assembly this variant abolishes.", None),
+    ("domain_annotation",       "data",  "UniProt+lit v1",   "DMD (P11532) 4-domain architecture with per-domain functional literature: N-term actin-binding (Way 1992, Rybakova 2000), spectrin rod (Winder 1997, Rybakova 1996), cysteine-rich β-DG-binding (Suzuki 1994, Rentschler 1999), C-terminal syntrophin/dystrobrevin-binding (Ahn & Kunkel 1995, Peters 1997).", "https://www.uniprot.org/uniprotkb/P11532"),
 ]
+
+# DGC assembly members — used by dgc_completeness scoring. 14 canonical
+# partners including dystrophin itself, utrophin (paralog), the four
+# sarcoglycans (A/B/D/G), sarcospan (SSPN), two syntrophins (A/B1),
+# additional syntrophin (B2), two dystrobrevins (A/B), dystroglycan
+# (DAG1), and caveolin-3 (CAV3) as a myofiber-membrane partner.
+DGC_MEMBERS = ("DMD", "DAG1", "SNTA1", "SNTB1", "SNTB2",
+               "SGCA", "SGCB", "SGCD", "SGCG",
+               "DTNA", "DTNB", "UTRN", "CAV3", "SSPN")
+
+# DMD (P11532) domain architecture — aa ranges per UniProt + Winder 1997.
+# Cysteine-rich (β-DG binding) + C-terminal (syntrophin/dystrobrevin
+# binding) are the DGC-anchoring domains — loss of either abolishes
+# sarcolemmal DGC assembly. Full-length canonical = 3,685 aa (Dp427m).
+DMD_DOMAINS = [
+    {"id": "ntd",  "name": "N-terminal actin-binding",
+     "aa_start": 1,    "aa_end": 240,
+     "function": "F-actin binding (CH1+CH2 tandem calponin homology domains); anchors dystrophin to the sub-sarcolemmal cytoskeleton.",
+     "citations": ["Way 1992", "Rybakova 2000"]},
+    {"id": "rod",  "name": "Spectrin-like rod",
+     "aa_start": 241, "aa_end": 3080,
+     "function": "24 spectrin-like triple-helical repeats separated by 4 hinge regions; elastic mechanical link between actin and the DGC. Deletions in-frame in this region often produce BMD.",
+     "citations": ["Winder 1997", "Rybakova 1996", "Koenig 1988"]},
+    {"id": "cys",  "name": "Cysteine-rich (β-DG binding)",
+     "aa_start": 3081, "aa_end": 3360,
+     "function": "WW + EF-hand + ZZ zinc-finger motifs bind the cytoplasmic tail of β-dystroglycan — the direct sarcolemmal anchor for the entire DGC. Loss abolishes DGC assembly.",
+     "citations": ["Suzuki 1994", "Rentschler 1999", "Huang 2000"]},
+    {"id": "ctd",  "name": "C-terminal (syntrophin/dystrobrevin)",
+     "aa_start": 3361, "aa_end": 3685,
+     "function": "Coiled-coil scaffolding domain that recruits syntrophins (α, β1, β2) and dystrobrevins (α, β) — links nNOS + signalling adapters to the sarcolemmal DGC.",
+     "citations": ["Ahn & Kunkel 1995", "Peters 1997", "Sadoulet-Puccio 1997"]},
+]
+
+# NMD 50-nt rule constants (Popp & Maquat 2013). Applied against ENST00000357033.
+DMD_LAST_EEJ_CDNA_POS = 11039        # exon 78/79 boundary (c.11039)
+NMD_ESCAPE_UPSTREAM_NT = 50          # PTC within 50 nt upstream of last EEJ → escape
+DMD_NMD_ESCAPE_CDNA_THRESHOLD = DMD_LAST_EEJ_CDNA_POS - NMD_ESCAPE_UPSTREAM_NT  # c.10989
+
+# FDA-approved DMD exon-skipping ASOs (as of 2026-08). Each key is the
+# targeted exon; value is the approved drug label.
+FDA_APPROVED_SKIPS = {
+    45: "casimersen (AMONDYS 45, approved 2021)",
+    51: "eteplirsen (EXONDYS 51, approved 2016)",
+    53: "golodirsen (VYONDYS 53, 2019) / viltolarsen (VILTEPSO, 2020)",
+}
 
 # Cell-type → required-isoform dependency map (mirrors hydrate_patient_view.CELL_TO_ISOFORMS).
 CELL_TO_ISOFORMS: dict[str, list[str]] = {
@@ -660,6 +709,269 @@ def emit_esm3_premise(conn, cohort: str, pid: str) -> str | None:
     return premise_id
 
 
+# Parse HGVSp → residue index (mirrors bake_esm3_impact.parse_residue).
+_HGVSP_RE = re.compile(r"p\.\(?[A-Za-z]{3}(\d+)")
+
+
+def _residue_from_hgvsp(hgvsp: str | None) -> int | None:
+    if not hgvsp: return None
+    m = _HGVSP_RE.search(hgvsp)
+    return int(m.group(1)) if m else None
+
+
+def _cdna_pos_from_hgvsc(hgvsc: str | None) -> int | None:
+    """First base position from a c.-notation string (e.g., c.6540del → 6540)."""
+    if not hgvsc: return None
+    m = re.search(r"c\.(\d+)", hgvsc)
+    return int(m.group(1)) if m else None
+
+
+def emit_nmd_prediction_premise(conn, cohort: str, pid: str,
+                                 nuc: str | None, aa: str | None,
+                                 cons: str | None, exon_n: int | None) -> str | None:
+    """Per-patient NMD prediction: apply 50-nt rule to this patient's PTC.
+
+    Cites Popp & Maquat 2013. Emits a premise that carries:
+      - patient's PTC residue (from HGVSp) and cDNA position (from HGVSc)
+      - the DMD last-EEJ threshold (c.11039 = exon 78/79 boundary)
+      - a verdict: 'nmd_triggered' | 'nmd_escape' | 'not_ptc_generating'
+      - a rationale explaining the numeric distance
+
+    Splice-site variants without a parseable HGVSp are conservatively
+    marked 'nmd_triggered' (they typically generate PTCs downstream).
+    Missense variants are marked 'not_ptc_generating'.
+    """
+    cons_l = (cons or "").lower()
+    ptc_generating = any(k in cons_l for k in
+                          ("nonsense", "frameshift", "splice", "stop"))
+    residue = _residue_from_hgvsp(aa)
+    cdna_pos = _cdna_pos_from_hgvsc(nuc)
+
+    if not ptc_generating:
+        verdict = "not_ptc_generating"
+        rationale = f"variant consequence '{cons_l}' does not create a PTC — NMD rule N/A"
+    elif residue is None and "splice" in cons_l:
+        # Splice-site variants without HGVSp: presume PTC in a downstream
+        # exon → NMD-triggered (conservative default). Real answer needs
+        # RNA-seq or minigene.
+        verdict = "nmd_triggered"
+        rationale = ("splice-site variant; presumed to create a PTC via "
+                     "exon skipping or intron retention — NMD-triggered "
+                     "(unknown cryptic-splice outcome pending RNA-seq)")
+    elif residue is None:
+        return None   # Can't classify — skip the premise entirely.
+    else:
+        # 50-nt rule: PTC ≥50nt upstream of last EEJ (c.11039) → NMD-triggered.
+        # Convert aa residue to approximate cDNA position (aa*3 − 2, +5'UTR).
+        # DMD CDS starts at c.245 (5'UTR = 244 nt).
+        est_cdna = 245 + (residue - 1) * 3 if cdna_pos is None else cdna_pos
+        distance_nt = DMD_LAST_EEJ_CDNA_POS - est_cdna
+        if est_cdna < DMD_NMD_ESCAPE_CDNA_THRESHOLD:
+            verdict = "nmd_triggered"
+            rationale = (f"PTC at aa {residue} (~c.{est_cdna}) is "
+                         f"{distance_nt} nt upstream of last EEJ "
+                         f"(c.{DMD_LAST_EEJ_CDNA_POS}, exon 78/79 boundary) — "
+                         f"≥50-nt rule fires → NMD-triggered → mRNA degraded, "
+                         f"protein effectively absent")
+        else:
+            verdict = "nmd_escape"
+            rationale = (f"PTC at aa {residue} (~c.{est_cdna}) is only "
+                         f"{distance_nt} nt from last EEJ (c.{DMD_LAST_EEJ_CDNA_POS}) — "
+                         f"within the 50-nt escape window → NMD-escape → truncated "
+                         f"protein produced, C-terminal fragment lost")
+
+    ev = {
+        "residue": residue, "cdna_position": cdna_pos,
+        "last_eej_cdna": DMD_LAST_EEJ_CDNA_POS,
+        "escape_threshold_cdna": DMD_NMD_ESCAPE_CDNA_THRESHOLD,
+        "verdict": verdict, "rationale": rationale,
+        "citation": "Popp & Maquat 2013 (Nat Rev Genet 14:801-813) — 50-nt rule for NMD",
+    }
+    premise_id = _pid("nmd_prediction", cohort, pid)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "nmd_prediction", "patient", pid,
+         json.dumps(ev), 0.88, _prov()),
+    )
+    return premise_id
+
+
+def emit_exon_skip_viability_premise(conn, cohort: str, pid: str,
+                                       exon_n: int | None,
+                                       cons: str | None) -> str | None:
+    """Per-patient exon-skip therapeutic viability.
+
+    Checks:
+      1. Does an FDA-approved skip DIRECTLY target the patient's exon?
+         (casimersen skip 45 / eteplirsen skip 51 / golodirsen+viltolarsen skip 53)
+      2. Or: does the patient's exon SIT ADJACENT to an approved skip
+         that could rescue the reading frame if the pathogenic lesion
+         is an out-of-frame deletion? (Aartsma-Rus reading-frame rule
+         2006; requires deletion breakpoint info that we don't have
+         cohort-wide — flagged as 'requires_deletion_breakpoint').
+
+    Emits {variant_exon, direct_skip_hit, adjacent_skip_candidates,
+    verdict, rationale, citations}. Verdict enum:
+      'direct_skip_eligible'  — approved drug targets this exon
+      'adjacent_skip_candidate' — patient's exon adjacent to approved skip
+      'no_approved_skip'      — no coverage
+      'not_applicable'        — variant is splice-site or requires structural detail
+    """
+    if exon_n is None:
+        return None
+
+    direct_drug = FDA_APPROVED_SKIPS.get(exon_n)
+    adjacent_exons = [e for e in FDA_APPROVED_SKIPS
+                       if abs(e - exon_n) == 1]
+
+    if direct_drug:
+        verdict = "direct_skip_eligible"
+        rationale = (f"Variant lies in exon {exon_n} — directly targeted by "
+                     f"{direct_drug}. Skipping this exon rejoins the flanking "
+                     f"exons in-frame under the Aartsma-Rus reading-frame rule, "
+                     f"restoring a BMD-like truncated dystrophin.")
+    elif adjacent_exons:
+        adj_str = " / ".join(f"exon {e} ({FDA_APPROVED_SKIPS[e]})" for e in adjacent_exons)
+        verdict = "adjacent_skip_candidate"
+        rationale = (f"Variant in exon {exon_n} is adjacent to approved skip(s): "
+                     f"{adj_str}. If the pathogenic lesion is an out-of-frame "
+                     f"deletion spanning into these exons, skipping the neighbour "
+                     f"could restore reading frame. Requires deletion-breakpoint "
+                     f"validation.")
+    else:
+        verdict = "no_approved_skip"
+        rationale = (f"Variant in exon {exon_n} has no FDA-approved exon-skipping "
+                     f"ASO coverage. Approved skips target exons 45, 51, 53 only.")
+
+    ev = {
+        "variant_exon": exon_n,
+        "direct_drug": direct_drug,
+        "adjacent_skip_exons": adjacent_exons,
+        "verdict": verdict,
+        "rationale": rationale,
+        "approved_skips": FDA_APPROVED_SKIPS,
+        "citations": ["Aartsma-Rus 2006 (Mol Ther 14:401-407)",
+                      "Mendell 2013 (Ann Neurol 74:637-647)",
+                      "Frank 2020 (Neurology 94:e2270)"],
+    }
+    premise_id = _pid("exon_skip", cohort, pid)
+    # Confidence: high for direct_skip_eligible (approved indication), medium
+    # for adjacent (needs breakpoint), low for no_approved (asserted absence).
+    conf = {"direct_skip_eligible": 0.9,
+            "adjacent_skip_candidate": 0.5,
+            "no_approved_skip": 0.7}.get(verdict, 0.5)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "exon_skip_viability", "patient", pid,
+         json.dumps(ev), conf, _prov()),
+    )
+    return premise_id
+
+
+def emit_dgc_completeness_premise(conn, cohort: str, pid: str,
+                                    exon_n: int | None) -> str | None:
+    """Per-patient DGC-completeness score per affected cell type.
+
+    For each cell type where this patient's variant knocks out DMD
+    (via isoform-hit projection), score the fraction of the 14 DGC
+    members that are co-expressed in that cell type. A high score means
+    losing dystrophin abolishes a nearly-complete assembly (worst case);
+    a low score means the DGC was already incomplete without dystrophin,
+    so the mechanistic consequence is muted.
+
+    Emits {variant_exon, affected_cells: [{name, tissue, dgc_score,
+    dgc_partners_present, dgc_partners_missing}], mean_dgc_completeness,
+    interpretation}. Cites HPA-derived scores.
+    """
+    if exon_n is None:
+        return None
+
+    # Reuse the isoform-hit projection to pick the AFFECTED cell types.
+    iso_hit = {r[0]: r[1] <= exon_n
+               for r in conn.execute(
+                   "SELECT isoform_id, first_shared_exon FROM isoforms")}
+    affected_cells: list[dict] = []
+    # For each cell type in celltype_expression that requires an affected
+    # isoform, compute how many DGC partners are also expressed there.
+    for (cell_type, tissue) in conn.execute(
+        "SELECT DISTINCT cell_type, tissue FROM celltype_expression "
+        "WHERE gene_symbol='DMD' ORDER BY cell_type"):
+        req = CELL_TO_ISOFORMS.get(cell_type, [])
+        if not req: continue
+        hit_isos = [i for i in req if iso_hit.get(i, True)]
+        if not hit_isos: continue        # cell spared — skip
+        # Count DGC partners expressed in this cell type (any score > 0).
+        partners_present = [g for g in DGC_MEMBERS if conn.execute(
+            "SELECT 1 FROM celltype_expression "
+            "WHERE gene_symbol=? AND cell_type=? AND score > 0 LIMIT 1",
+            (g, cell_type)).fetchone()]
+        partners_missing = [g for g in DGC_MEMBERS if g not in partners_present]
+        dgc_score = round(len(partners_present) / len(DGC_MEMBERS), 3)
+        affected_cells.append({
+            "name": cell_type, "tissue": tissue,
+            "dgc_completeness": dgc_score,
+            "dgc_partners_present": partners_present,
+            "dgc_partners_missing": partners_missing,
+            "affected_isoforms": hit_isos,
+        })
+
+    if not affected_cells:
+        return None
+
+    mean_dgc = round(sum(c["dgc_completeness"] for c in affected_cells)
+                     / len(affected_cells), 3)
+    top = max(affected_cells, key=lambda c: c["dgc_completeness"])
+    interpretation = (f"Across {len(affected_cells)} affected cell type(s), "
+                       f"mean DGC-completeness is {mean_dgc:.2f}. Highest impact: "
+                       f"{top['name']} ({top['tissue']}) at {top['dgc_completeness']:.2f} "
+                       f"— {len(top['dgc_partners_present'])} of {len(DGC_MEMBERS)} DGC "
+                       f"partners co-expressed → dystrophin loss abolishes a nearly-"
+                       f"complete sarcolemmal assembly.")
+
+    ev = {
+        "variant_exon": exon_n,
+        "affected_cells": affected_cells,
+        "mean_dgc_completeness": mean_dgc,
+        "dgc_members": list(DGC_MEMBERS),
+        "interpretation": interpretation,
+        "data_source": "HPA single-cell RNA (score > 0 threshold)",
+    }
+    premise_id = _pid("dgc_completeness", cohort, pid)
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "dgc_completeness", "patient", pid,
+         json.dumps(ev), 0.75, _prov()),
+    )
+    return premise_id
+
+
+def emit_domain_annotation_premise(conn) -> str:
+    """Cohort-scope DMD 4-domain architecture with per-domain literature.
+
+    Feeds the protein-viz hover popovers. Static reference data (not
+    patient-specific) — same premise attaches to every hypothesis whose
+    chain traverses the protein node.
+    """
+    ev = {
+        "uniprot": "P11532",
+        "canonical_length_aa": 3685,
+        "isoform": "Dp427m",
+        "domains": DMD_DOMAINS,
+        "dgc_anchoring_domains": ["cys", "ctd"],
+        "note": ("Loss of the cysteine-rich (β-DG binding) OR C-terminal "
+                 "domain abolishes DGC assembly. Deletions strictly within "
+                 "the spectrin rod that maintain reading frame often produce "
+                 "BMD (partial function) rather than DMD."),
+    }
+    premise_id = _pid("domain_annotation", "DMD")
+    conn.execute(
+        "INSERT OR REPLACE INTO premise VALUES (?,?,?,?,?,?,?)",
+        (premise_id, "domain_annotation", "cohort", "DMD",
+         json.dumps(ev), 0.95, _prov()),
+    )
+    return premise_id
+
+
 # ----------------------------------------------------------------------
 # Literature migration: hypothesis_chain_edge_evidence → literature premises
 # ----------------------------------------------------------------------
@@ -916,6 +1228,31 @@ def premise_chain_positions(source_id: str, evidence: dict) -> list[tuple[str, s
         return [("node", "pathway", "pathway"),
                 ("edge", "protein", "subcellular"),
                 ("node", "phenotype", "phenotype")]
+    if source_id == "nmd_prediction":
+        # Per-patient 50-nt-rule verdict determines the variant→protein
+        # transition (transcript degraded vs truncated protein produced).
+        return [("edge", "variant", "protein"),
+                ("node", "protein", "protein")]
+    if source_id == "exon_skip_viability":
+        # Therapeutic branch: whether this variant is FDA-approved-ASO
+        # eligible. Anchors the variant node itself (variant-level
+        # therapeutic classification) + the phenotype node (approved
+        # intervention exists → treatable).
+        return [("node", "variant", "variant"),
+                ("node", "phenotype", "phenotype")]
+    if source_id == "dgc_completeness":
+        # Quantifies how much of the DGC assembly this variant
+        # abolishes per affected cell type. Anchors the cellType node
+        # + the cellType→tissue transition (which tissues suffer
+        # nearly-complete DGC loss).
+        return [("node", "cellType", "cellType"),
+                ("edge", "cellType", "tissue")]
+    if source_id == "domain_annotation":
+        # Static protein-domain architecture: anchors the protein node
+        # + the protein→subcellular edge (which domains bind the
+        # sarcolemmal DGC).
+        return [("node", "protein", "protein"),
+                ("edge", "protein", "subcellular")]
     # `literature` premises carry their per-hypothesis chain positions
     # via literature_links_for_template — no source-level default.
     return []
@@ -1099,6 +1436,87 @@ def premise_weights_for_template(hyp_id: str, patient_premises: dict, cohort_pre
             else:
                 out.append((tis_pid, -0.4,
                     "no distal tissue systems affected — argues against H04"))
+
+    # NMD prediction: per-patient 50-nt-rule verdict. Strongest signal for
+    # H01 (LoF via NMD, canonical DMD trajectory) and H03 (NMD-driven
+    # tissue-graded loss). Weakly supportive for H04 if PTC also hits
+    # distal-isoform transcripts. Not applicable for missense (verdict
+    # 'not_ptc_generating').
+    nmd_p_pid = patient_premises.get("nmd_prediction")
+    nmd_p_ev  = patient_premises.get("nmd_prediction_ev", {})
+    if nmd_p_pid and nmd_p_ev:
+        verdict = nmd_p_ev.get("verdict")
+        rat = nmd_p_ev.get("rationale") or ""
+        if verdict == "nmd_triggered":
+            if hyp_id in ("01", "03"):
+                out.append((nmd_p_pid, 0.75, rat))
+            elif hyp_id == "04":
+                out.append((nmd_p_pid, 0.2,
+                    "PTC also degrades transcripts encoding distal isoforms — supports isoform-loss H04"))
+        elif verdict == "nmd_escape":
+            # NMD-escape shifts the mechanism from "no protein" toward
+            # "truncated protein produced" — actively argues for a
+            # dominant-negative-flavoured H02 and against pure-LoF H01/H03.
+            if hyp_id == "02":
+                out.append((nmd_p_pid, 0.6,
+                    "PTC in last-exon escape window — truncated protein IS produced (dominant-negative candidate)"))
+            elif hyp_id in ("01", "03"):
+                out.append((nmd_p_pid, -0.3,
+                    "PTC escapes NMD — pure-LoF mechanism weakened; truncated fragment is present"))
+
+    # Exon-skip viability: therapeutic branch. Positive for hypotheses
+    # whose canonical rescue IS exon-skipping (H01 out-of-frame → in-frame
+    # via skip; H02 already partial-function; H03 sees skip as second-line
+    # after readthrough).
+    skip_pid = patient_premises.get("exon_skip")
+    skip_ev  = patient_premises.get("exon_skip_ev", {})
+    if skip_pid and skip_ev:
+        verdict = skip_ev.get("verdict")
+        rat = skip_ev.get("rationale") or ""
+        if verdict == "direct_skip_eligible":
+            if hyp_id in ("01", "02"):
+                out.append((skip_pid, 0.7, rat))
+            elif hyp_id == "03":
+                out.append((skip_pid, 0.4,
+                    f"{skip_ev.get('direct_drug')} — exon-skip is second-line after readthrough for H03 NMD mechanism"))
+        elif verdict == "adjacent_skip_candidate":
+            if hyp_id in ("01", "02"):
+                out.append((skip_pid, 0.35, rat))
+        else:  # no_approved_skip
+            if hyp_id in ("01", "02"):
+                out.append((skip_pid, -0.2,
+                    "no FDA-approved exon-skip covers this variant — H01/H02 rescue must use AAV or readthrough"))
+
+    # DGC-completeness per affected cell type. Direct evidence for the
+    # cellType→tissue transition in H01/H03 (where DGC loss IS the
+    # mechanism). Weaker for H02 (partial-function still needs DGC) and
+    # H04 (distal isoforms have simpler assemblies).
+    dgc_pid = patient_premises.get("dgc_completeness")
+    dgc_ev  = patient_premises.get("dgc_completeness_ev", {})
+    if dgc_pid and dgc_ev:
+        mean_dgc = dgc_ev.get("mean_dgc_completeness", 0.0)
+        n_cells = len(dgc_ev.get("affected_cells", []))
+        if hyp_id in ("01", "03"):
+            out.append((dgc_pid, 0.55,
+                f"mean DGC-completeness {mean_dgc:.2f} across {n_cells} affected cell types — quantifies the DGC-assembly loss"))
+        elif hyp_id == "02":
+            out.append((dgc_pid, 0.3,
+                f"DGC-completeness {mean_dgc:.2f} — partial-function truncation still needs the DGC scaffold"))
+        elif hyp_id == "04":
+            out.append((dgc_pid, 0.1,
+                f"DGC-completeness {mean_dgc:.2f} — distal isoforms have simpler assemblies; not the H04 mechanism"))
+
+    # Domain annotation (cohort-scope): protein architecture + per-domain
+    # literature. Same weight for all patients. Supports every hypothesis
+    # whose chain touches the protein node.
+    dom_pid = cohort_premises.get("domain_annotation")
+    if dom_pid:
+        if hyp_id in ("01", "02", "03"):
+            out.append((dom_pid, 0.4,
+                "4-domain DMD architecture (N-term actin-binding, spectrin rod, cysteine-rich β-DG, C-terminal syntrophin/dystrobrevin) — cys-rich + C-term are the DGC-anchoring domains"))
+        elif hyp_id == "04":
+            out.append((dom_pid, 0.15,
+                "domain architecture reference; distal isoforms use different N-terminal exons but share the DGC-anchoring C-terminus"))
 
     # Abnormal labs contribute per-lab weight for the mechanism they support.
     if hyp_id == "01":
@@ -1492,6 +1910,9 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
     ct_pid    = emit_celltype_impact_premise(conn, cohort, pid, exon_n)
     tis_pid   = emit_tissue_impact_premise(conn, cohort, pid, exon_n)
     absp_pid  = emit_absplice_premise(conn, cohort, pid, variant_key)
+    nmd_p_pid = emit_nmd_prediction_premise(conn, cohort, pid, nuc, aa, cons, exon_n)
+    skip_pid  = emit_exon_skip_viability_premise(conn, cohort, pid, exon_n, cons)
+    dgc_pid   = emit_dgc_completeness_premise(conn, cohort, pid, exon_n)
 
     # Load evidence blobs for the composition premises so premise-weighting
     # can inspect their content (which cells hit/spared, which tissues, etc.).
@@ -1507,6 +1928,9 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         "celltype_impact": ct_pid, "celltype_impact_ev": _load_ev(ct_pid),
         "tissue_impact":   tis_pid, "tissue_impact_ev":   _load_ev(tis_pid),
         "absplice":        absp_pid, "absplice_ev":       _load_ev(absp_pid),
+        "nmd_prediction":  nmd_p_pid, "nmd_prediction_ev": _load_ev(nmd_p_pid),
+        "exon_skip":       skip_pid,  "exon_skip_ev":     _load_ev(skip_pid),
+        "dgc_completeness": dgc_pid,  "dgc_completeness_ev": _load_ev(dgc_pid),
     }
     cohort_premises = {
         "nmd_cohort":          _pid("nmd_cohort", "DMD"),
@@ -1515,6 +1939,7 @@ def bake_hypotheses_for_patient(conn, cohort: str, pid: str, phen: str, age: flo
         "uniprot_subcellular": _pid("uniprot_subcellular", "DMD"),
         "opentargets":         _pid("opentargets", "DMD"),
         "opentargets_ev":      _load_ev(_pid("opentargets", "DMD")),
+        "domain_annotation":   _pid("domain_annotation", "DMD"),
     }
     lit_data = lit_data or {}
 
@@ -1892,8 +2317,9 @@ def main() -> None:
     emit_nmd_cohort_premise(conn)
     emit_uniprot_subcellular_premise(conn, "P11532")
     ot_pid = emit_opentargets_premise(conn)
+    emit_domain_annotation_premise(conn)
     ot_tag = "OpenTargets " if ot_pid else ""
-    print(f"[cohort]   HPA + Reactome + NMD + UniProt-subcellular + {ot_tag}cohort premises emitted")
+    print(f"[cohort]   HPA + Reactome + NMD + UniProt-subcellular + {ot_tag}+ DMD-domains cohort premises emitted")
 
     # 2b. Migrate curated citations from hypothesis_chain_edge_evidence
     #     into the literature premise source. One premise per unique
