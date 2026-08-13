@@ -110,6 +110,35 @@ Phase B in progress: LOVD atom download + parser + Bladen merge + isoform
 computation + Monaco rule → `dmd_variants.sqlite`. See RECON_v0.md §9 for
 the serialized step list.
 
+## Active refactors (2026-08-13)
+
+Two in-flight scoring changes that touch the Pareto — Hypotheses view.
+Both have plan docs in the repo root:
+
+- **`PARETO_REFACTOR_PLAN.md`** — **shipped**. Two-objective refactor:
+  X = hypothesis_strength (`weighted_fit × xlab_bonus + confidence`),
+  Y = aav_viability (`tissue_delivery × payload_fit × dgc_rescue ×
+  precedent × tissue_target_boost × rescue_window`). Both axes maximised;
+  ideal hypothesis sits top-right. Per-patient Pareto sweep in JS
+  (`frontierComputePareto` in `workbench/patient_chat.html`) sorts by X
+  DESC, sweeps tracking best-Y-seen, keeps strictly improving points.
+
+- **`LITERATURE_EVIDENCE_PLAN.md`** — **partial, blocked**. Replaces
+  hand-set mechanism_prior/severity_prior with real publication-count
+  evidence per chain edge, via paperclip → PMC. 128/562 queries baked;
+  paperclip service reports `Health: error` as of this write. Resume
+  with `~/venv/bin/python -u -m prototype.ingest.bake_dmd_edge_literature`
+  when paperclip recovers — bake is idempotent, cached under
+  `cache/paperclip/`. Scoring integration (join into
+  `hypothesis_frontier`) not yet wired.
+
+## Literature-search tool
+
+`paperclip` CLI (at `/home/ubuntu/.local/bin/paperclip`) is the sanctioned
+biomedical-lit tool. Same cache layout as `~/alms_inference_env/`
+(`cache/paperclip/<sha1(query|source|n)>.json`). Check `paperclip status`
+before large query bursts — the service has periodic outages.
+
 ## Where things live
 
 ```

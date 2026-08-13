@@ -718,6 +718,62 @@
   .esm3-unavailable { color: var(--ink-3); font-size: 12px; padding: 16px;
     background: var(--bg); border-radius: 6px; text-align: center; }
 
+  /* Protein renders panel (WT vs truncated PyMOL PNGs + domain overlay) ------ */
+  .protein-viz-panel { margin: 12px 0; padding: 10px 12px;
+    background: var(--panel); border: 1px solid var(--line-2);
+    border-radius: 8px; }
+  .protein-viz-h { font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--ink-2); font-weight: 700;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .protein-viz-badge { background: #6b4b8f; color: white; padding: 2px 6px;
+    border-radius: 3px; font-size: 9px; letter-spacing: 0.08em; }
+  .protein-viz-sub { margin-left: auto; text-transform: none;
+    letter-spacing: 0; font-weight: 500; color: var(--ink-3); font-size: 10px; }
+  .protein-viz-grid { display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; }
+  .pv-col { display: flex; flex-direction: column; gap: 6px;
+    background: var(--bg); border-radius: 6px; padding: 8px;
+    border: 1px solid var(--line); }
+  .pv-col-h { font-size: 11px; font-weight: 700; color: var(--ink-2);
+    text-transform: uppercase; letter-spacing: 0.04em; }
+  .pv-col-h-sub { font-weight: 500; letter-spacing: 0; text-transform: none;
+    color: var(--ink-3); margin-left: 6px; font-size: 10px; }
+  .pv-render { width: 100%; height: auto; display: block;
+    background: white; border-radius: 4px; border: 1px solid var(--line); }
+  .pv-domain-track { position: relative; display: flex; height: 22px;
+    width: 100%; margin-top: 4px; border-radius: 3px; overflow: hidden;
+    border: 1px solid var(--line-2); }
+  .pv-domain { position: relative; display: flex; align-items: center;
+    justify-content: center; overflow: hidden; cursor: help;
+    transition: filter 0.12s; border-right: 1px solid rgba(255,255,255,0.35); }
+  .pv-domain:last-child { border-right: none; }
+  .pv-domain:hover { filter: brightness(0.92); }
+  .pv-domain.truncated { background-image:
+    repeating-linear-gradient(45deg, transparent 0 4px,
+      rgba(0,0,0,0.18) 4px 8px) !important;
+    opacity: 0.35; }
+  .pv-domain.partial .pv-domain-partial {
+    position: absolute; top: 0; bottom: 0; right: 0;
+    background: repeating-linear-gradient(45deg, transparent 0 4px,
+      rgba(0,0,0,0.28) 4px 8px);
+    opacity: 0.55; }
+  .pv-domain-label { font-size: 9px; font-weight: 700;
+    color: rgba(0,0,0,0.72); letter-spacing: 0.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0 4px; text-shadow: 0 1px 0 rgba(255,255,255,0.4); }
+  .pv-cut-marker { position: absolute; top: -14px; bottom: -2px;
+    z-index: 3; pointer-events: auto; cursor: help;
+    transform: translateX(-50%); }
+  .pv-cut-line { position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 2px; background: #c94a4a; transform: translateX(-50%); }
+  .pv-cut-label { position: absolute; top: -14px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px; font-weight: 700; color: #c94a4a;
+    white-space: nowrap; background: white; padding: 0 3px; }
+  .pv-lost-summary { font-size: 11px; color: var(--ink-2); margin-top: 8px;
+    padding: 6px 10px; background: var(--bg);
+    border-left: 3px solid #c94a4a; border-radius: 3px; }
+
   /* NMD × ACMG Marimekko artifact ---------------------------------- */
   .mek-wrap { padding: 6px 0; }
   .mek-lede { font-size: 12px; color: var(--ink-2); line-height: 1.5;
@@ -782,7 +838,11 @@
   /* layered biological chain (reuse-ish styles from patient.html) */
   .lc-container { position: relative; padding: 8px 0; }
   .lc-stack { display: flex; flex-direction: column; padding-right: 170px; }
-  .lc-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; }
+  .lc-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px;
+    cursor: help; }
+  .lc-row:hover .lc-box { box-shadow: 0 0 0 2px rgba(66,131,230,0.28); }
+  .lc-arrow { cursor: help; }
+  .lc-arrow:hover .lc-edge-label { background: rgba(66,131,230,0.14); }
   .lc-tag { display: flex; align-items: center; justify-content: flex-end;
     font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
     color: var(--ink-3); font-weight: 700; padding-right: 4px;
@@ -920,6 +980,180 @@
   .edge-modal-body .tick { color: var(--good); font-weight: 800; flex: 0 0 14px; }
   .edge-modal-body .cite { color: var(--ink-3); font-size: 11px; margin-left: 8px;
     font-style: italic; }
+
+  /* HoverFactsPopover — single global popover positioned by the hover
+     handler. One DOM element, moved to whichever hover target is active. */
+  .hf-popover { position: fixed; z-index: 999;
+    max-width: 460px; min-width: 280px;
+    background: white; border: 1px solid var(--line-2);
+    border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    padding: 10px 12px; font-size: 12px; color: var(--ink);
+    pointer-events: none; opacity: 0; transition: opacity 0.12s;
+    max-height: 80vh; overflow-y: auto; }
+  .hf-popover.visible { opacity: 1; pointer-events: auto;
+    user-select: text; -webkit-user-select: text; }
+  .hf-popover.wide { max-width: 720px; min-width: 620px; }
+  .hf-popover .protein-viz-panel { margin: 0 0 10px 0; padding: 8px; }
+  .hf-popover .pv-render { max-height: 220px; object-fit: contain; }
+  .hf-popover .hf-fact { user-select: text; -webkit-user-select: text; }
+  .hf-popover-h { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    margin-bottom: 6px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--line); }
+  .hf-popover-h b { color: var(--ink-2); font-weight: 700; }
+  .hf-empty { color: var(--ink-3); font-style: italic;
+    padding: 8px 4px; text-align: center; }
+  .hf-group { margin-bottom: 8px; }
+  .hf-group:last-child { margin-bottom: 0; }
+  .hf-group-h { font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-3); font-weight: 700;
+    margin: 4px 0 4px 0; }
+  .hf-fact { display: grid;
+    grid-template-columns: 62px 34px 1fr;
+    gap: 6px; align-items: start;
+    padding: 4px 6px; margin: 2px 0; border-radius: 4px;
+    background: var(--bg); border-left: 3px solid transparent; }
+  .hf-fact.pos { border-left-color: var(--good); }
+  .hf-fact.neg { border-left-color: var(--warn); }
+  .hf-fact.neutral { border-left-color: var(--line-2); }
+  .hf-fact-source { font-size: 10px; font-weight: 700; color: var(--ink-2);
+    text-transform: uppercase; letter-spacing: 0.03em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hf-fact-weight { font-size: 10px; font-weight: 700;
+    color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+  .hf-fact-weight.pos { color: var(--good); }
+  .hf-fact-weight.neg { color: var(--warn); }
+  .hf-fact-body { font-size: 11px; color: var(--ink); line-height: 1.4; }
+  .hf-fact-evidence { color: var(--ink-3); font-size: 10px;
+    margin-top: 2px; font-style: italic; }
+
+  /* Pareto — Hypotheses tab ---------------------------------------- */
+  .fr-body { padding: 14px 18px 24px; background: var(--bg); min-height: 100vh; }
+  .fr-loading { text-align: center; padding: 60px; color: var(--ink-3);
+    font-size: 13px; }
+  .fr-header { margin-bottom: 10px; }
+  .fr-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .fr-title-sub { font-weight: 500; color: var(--ink-3); font-size: 12px;
+    margin-left: 10px; }
+  .fr-chip-row { display: flex; align-items: center; flex-wrap: wrap;
+    gap: 6px; margin: 4px 0; }
+  .fr-chip-label { font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    margin-right: 4px; }
+  .fr-chip { background: white; border: 1px solid var(--line-2);
+    padding: 4px 10px; border-radius: 12px; font-size: 11px;
+    color: var(--ink-2); cursor: pointer; font-weight: 600; }
+  .fr-chip:hover { background: var(--bg); }
+  .fr-chip.active { background: var(--accent); color: white;
+    border-color: var(--accent); }
+  .fr-chip.toggle { margin-left: 12px; border-color: #d4b34a;
+    color: #7a5d0f; }
+  .fr-chip.toggle.active { background: #d4b34a; color: white;
+    border-color: #d4b34a; }
+
+  .fr-main { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr);
+    gap: 14px; margin-top: 12px; }
+  .fr-plot-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .fr-point { cursor: pointer; transition: opacity 0.1s; }
+  .fr-point:hover { opacity: 1 !important; stroke-width: 2 !important; }
+  .fr-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px;
+    color: var(--ink-2); padding: 4px 8px; }
+  .fr-lg-item { display: inline-flex; align-items: center; gap: 4px; }
+  .fr-lg-sw { display: inline-block; width: 11px; height: 11px;
+    border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }
+
+  .fr-detail-wrap { min-height: 460px; }
+  .fr-detail-empty { padding: 20px; background: white;
+    border: 1px dashed var(--line-2); border-radius: 6px;
+    text-align: center; color: var(--ink-2); font-size: 12px; line-height: 1.6; }
+
+  .fr-detail { background: white; border: 1px solid var(--line-2);
+    border-radius: 8px; padding: 12px 14px; font-size: 12px; }
+  .fr-detail-h { display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap; margin-bottom: 10px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--line); }
+  .fr-detail-badge { padding: 2px 7px; border-radius: 3px; font-size: 10px;
+    font-weight: 800; letter-spacing: 0.05em; color: white; }
+  .fr-detail-badge.H01 { background: #4283e6; }
+  .fr-detail-badge.H02 { background: #4a9d3f; }
+  .fr-detail-badge.H03 { background: #b3563a; }
+  .fr-detail-badge.H04 { background: #6b4b8f; }
+  .fr-detail-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .fr-detail-sub { color: var(--ink-3); font-weight: 500; font-size: 11px; }
+  .fr-star { font-size: 10px; font-weight: 700; color: #4a9d3f;
+    text-transform: uppercase; letter-spacing: 0.05em; }
+  .fr-star.gold { color: #b8890f; }
+
+  .fr-metric-strip { display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 10px; }
+  .fr-metric { background: var(--bg); border-radius: 4px; padding: 6px 8px;
+    text-align: center; }
+  .fr-metric-lbl { display: block; font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700; }
+  .fr-metric-val { display: block; font-size: 18px; font-weight: 700;
+    color: var(--ink); margin: 2px 0; }
+  .fr-metric-hint { display: block; font-size: 10px; color: var(--ink-3);
+    line-height: 1.3; }
+
+  .fr-chain { display: flex; flex-direction: column; gap: 4px;
+    margin-bottom: 10px; }
+  .fr-chain-row { display: grid; grid-template-columns: 100px 1fr;
+    gap: 8px; padding: 4px 6px; background: var(--bg);
+    border-radius: 4px; font-size: 11px; align-items: start; }
+  .fr-chain-lbl { font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); font-weight: 700;
+    padding-top: 2px; }
+  .fr-chain-meta { display: block; color: var(--ink-3);
+    font-size: 10px; margin-top: 2px; font-style: italic; }
+  .fr-pheno-set { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fr-pheno-chip { padding: 2px 6px; border-radius: 10px; font-size: 10px;
+    background: #eee; color: var(--ink-2); border: 1px solid transparent;
+    position: relative; }
+  .fr-pheno-chip.pred { background: #cee6fb; border-color: #7ab2e6; color: #113d63; }
+  .fr-pheno-chip.obs  { background: #ffe6c9; border-color: #d8a05e; color: #5c3808; }
+  .fr-pheno-chip.both { background: #cdeacc; border-color: #6ab764; color: #143711; }
+  .fr-pheno-chip.sev-5 { box-shadow: inset 0 -2px 0 #c94a4a; font-weight: 800; }
+  .fr-pheno-chip.sev-4 { box-shadow: inset 0 -2px 0 #e07822; font-weight: 700; }
+  .fr-severity-badge { padding: 2px 8px; border-radius: 3px; font-size: 10px;
+    font-weight: 800; color: white; letter-spacing: 0.04em;
+    text-transform: uppercase; }
+  .fr-severity-badge.sev-5 { background: #c94a4a; }
+  .fr-severity-badge.sev-4 { background: #e07822; }
+
+  /* Compact patient-color legend under the plot */
+  .fr-patient-legend { display: flex; flex-wrap: wrap; gap: 10px;
+    font-size: 11px; color: var(--ink-2); padding: 6px 8px 4px; }
+  .fr-pl-item { display: inline-flex; align-items: center; gap: 4px;
+    font-weight: 600; }
+  .fr-pl-sw { display: inline-block; width: 11px; height: 11px;
+    border-radius: 50%; border: 1px solid rgba(0,0,0,0.25); }
+  .fr-pl-agn { color: var(--ink-3); font-style: italic; }
+
+  .fr-detail-actions { margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid var(--line); text-align: right; }
+  .fr-compose-btn { background: var(--accent); color: white; border: none;
+    padding: 6px 12px; border-radius: 4px; font-weight: 600; font-size: 11px;
+    cursor: pointer; opacity: 0.5; }
+  .fr-todo { display: inline-block; margin-left: 8px; font-size: 9px;
+    color: white; opacity: 0.8; font-style: italic; }
+
+  /* Capsid recommendation block */
+  .fr-capsid-block { margin-top: 10px; padding: 8px 10px;
+    background: #f7f9fc; border: 1px solid var(--line);
+    border-radius: 6px; }
+  .fr-capsid-h { margin-bottom: 6px; }
+  .fr-capsid-title { font-weight: 700; font-size: 12px; color: var(--ink); }
+  .fr-capsid-sub { font-size: 10px; color: var(--ink-3); margin-left: 8px; font-style: italic; }
+  .fr-capsid-row { display: flex; align-items: center; gap: 8px;
+    padding: 3px 0; border-bottom: 1px solid #eef1f5; font-size: 11px; }
+  .fr-capsid-row:last-child { border-bottom: none; }
+  .fr-capsid-rank { width: 18px; font-weight: 700; color: var(--ink-3); flex-shrink: 0; }
+  .fr-capsid-id { font-family: monospace; font-size: 11px; font-weight: 700;
+    background: white; padding: 1px 6px; border-radius: 3px;
+    border: 1px solid var(--line); flex-shrink: 0; }
+  .fr-capsid-metrics { color: var(--ink-2); flex: 1; font-size: 10px; }
+  .fr-capsid-score { font-weight: 600; font-size: 11px; color: var(--accent);
+    flex-shrink: 0; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -931,6 +1165,234 @@
 <script>
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+// ---------------------------------------------------------------------
+// HoverFactsPopover — one global popover element shared across the page.
+// Any element with data-hover-key="<kind>:<id>" attaches to it via a
+// delegated mouseover handler. Popover resolves the key against the
+// currently-focused hypothesis (currentHypId) to pull matching premises.
+// ---------------------------------------------------------------------
+let hfPopoverEl = null;   // lazy: created on first hover
+let hfHideTimer = null;
+
+// Classify premise source_id → one of {patient, literature, database, heuristic}
+// for grouping in the popover header. Falls back to 'other'.
+function hfSourceKind(sourceId) {
+  if (!sourceId) return 'other';
+  if (sourceId === 'literature') return 'literature';
+  if (['zhang_2024', 'isoform_arch', 'synthetic_labs',
+       'patient_celltype_impact', 'patient_tissue_impact',
+       'nmd_prediction', 'exon_skip_viability',
+       'dgc_completeness', 'absplice', 'esm3'].includes(sourceId))
+    return 'patient';
+  if (['hpa_expression', 'reactome', 'open_targets',
+       'uniprot_subcellular', 'clinvar_nmd',
+       'domain_annotation'].includes(sourceId))
+    return 'database';
+  return 'heuristic';
+}
+
+// Look up chain-link entries for the (kind, id) target under the given
+// hypothesis. Returns array of {premiseId, sourceId, weight, rationale}.
+function hfLinkEntriesFor(kind, id, storedHyp) {
+  if (!storedHyp) return [];
+  const nodes = storedHyp.chainLinks?.nodes || {};
+  const edges = storedHyp.chainLinks?.edges || {};
+  if (kind === 'node') return nodes[id] || [];
+  if (kind === 'edge') return edges[id] || [];
+  return [];
+}
+
+// Enrich a chain-link entry with the full premise evidence blob (from
+// storedHyp.premises). Returns {premiseId, sourceId, weight, rationale,
+// evidenceExcerpt}.
+function hfEnrichEntry(entry, storedHyp) {
+  const full = (storedHyp?.premises || []).find(
+    p => p.premiseId === entry.premiseId);
+  let excerpt = '';
+  if (full?.evidence) {
+    const ev = full.evidence;
+    // Prefer a single high-signal field, in priority order.
+    excerpt = ev.rationale || ev.interpretation
+             || ev.claim || ev.verdict_text
+             || (ev.citation ? `Citation: ${ev.citation}` : '')
+             || (ev.direct_drug ? `Approved: ${ev.direct_drug}` : '')
+             || (ev.mean_dgc_completeness !== undefined
+                  ? `DGC-completeness ${ev.mean_dgc_completeness} across ${(ev.affected_cells || []).length} cells`
+                  : '')
+             || (ev.verdict ? `verdict: ${ev.verdict}` : '')
+             || '';
+    // Truncate very long excerpts
+    if (excerpt.length > 260) excerpt = excerpt.slice(0, 260) + '…';
+  }
+  return { ...entry, evidenceExcerpt: excerpt };
+}
+
+// Build popover HTML from a list of premises (already enriched).
+function hfBuildHtml(title, subtitle, enrichedEntries) {
+  if (!enrichedEntries.length) {
+    return `<div class="hf-popover-h"><b>${esc(title)}</b> · ${esc(subtitle)}</div>
+      <div class="hf-empty">No premises inform this element.</div>`;
+  }
+  // Group by source-kind
+  const groups = {
+    patient: [], literature: [], database: [], heuristic: [], other: []
+  };
+  enrichedEntries.forEach(e => {
+    const kind = hfSourceKind(e.sourceId);
+    groups[kind].push(e);
+  });
+  const groupLabels = {
+    patient: 'Patient-specific',
+    literature: 'Literature',
+    database: 'Database / curated',
+    heuristic: 'Heuristic / rule',
+    other: 'Other',
+  };
+  const groupHtml = Object.entries(groups)
+    .filter(([, arr]) => arr.length)
+    .map(([kind, arr]) => `
+      <div class="hf-group">
+        <div class="hf-group-h">${esc(groupLabels[kind])} · ${arr.length}</div>
+        ${arr.map(e => {
+          const w = e.weight || 0;
+          const cls = w > 0.001 ? 'pos' : (w < -0.001 ? 'neg' : 'neutral');
+          const sign = w > 0 ? '+' : '';
+          return `<div class="hf-fact ${cls}">
+            <span class="hf-fact-source">${esc(e.sourceId)}</span>
+            <span class="hf-fact-weight ${cls}">${sign}${w.toFixed(2)}</span>
+            <div class="hf-fact-body">
+              ${esc(e.rationale || '(no rationale)')}
+              ${e.evidenceExcerpt ? `<div class="hf-fact-evidence">${esc(e.evidenceExcerpt)}</div>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`).join('');
+  return `<div class="hf-popover-h"><b>${esc(title)}</b> · ${esc(subtitle)}</div>${groupHtml}`;
+}
+
+// Position the popover next to a target rect, keeping it within viewport.
+function hfPositionNear(targetRect) {
+  if (!hfPopoverEl) return;
+  const pop = hfPopoverEl;
+  const margin = 8;
+  const popRect = pop.getBoundingClientRect();
+  let left = targetRect.left + targetRect.width / 2 - popRect.width / 2;
+  let top  = targetRect.bottom + margin;
+  // If it overflows bottom, place above.
+  if (top + popRect.height > window.innerHeight - margin) {
+    top = targetRect.top - popRect.height - margin;
+  }
+  // Clamp horizontally.
+  left = Math.max(margin, Math.min(left, window.innerWidth - popRect.width - margin));
+  top  = Math.max(margin, top);
+  pop.style.left = `${left}px`;
+  pop.style.top  = `${top}px`;
+}
+
+function hfShow(target) {
+  if (!hfPopoverEl) {
+    hfPopoverEl = document.createElement('div');
+    hfPopoverEl.className = 'hf-popover';
+    document.body.appendChild(hfPopoverEl);
+    // Keep popover open while cursor is inside it, so users can select
+    // text or click links / hover nested elements.
+    hfPopoverEl.addEventListener('mouseenter', () => {
+      if (hfHideTimer) { clearTimeout(hfHideTimer); hfHideTimer = null; }
+    });
+    hfPopoverEl.addEventListener('mouseleave', () => {
+      hfHideTimer = setTimeout(hfHide, 200);
+    });
+  }
+  const key = target.getAttribute('data-hover-key');
+  if (!key) return;
+  const [kind, ...rest] = key.split(':');
+  const id = rest.join(':');
+
+  const p = DATA?.patients?.find(x => x.id === currentPatientId);
+  const storedHyp = (p?.hypothesisRanking || []).find(r => r.id === currentHypId);
+
+  let title = '', subtitle = '', enriched = [];
+
+  if (kind === 'node' || kind === 'edge') {
+    const entries = hfLinkEntriesFor(kind, id, storedHyp);
+    enriched = entries.map(e => hfEnrichEntry(e, storedHyp));
+    title = kind === 'node' ? `${id} node` : `${id} edge`;
+    subtitle = `${entries.length} premise${entries.length === 1 ? '' : 's'}`;
+    // Rich viz for specific layer nodes goes above the premise list.
+    if (kind === 'node' && id === 'protein') {
+      const vizHtml = renderProteinRendersPanel(p, storedHyp);
+      const premisesHtml = hfBuildHtml(title, subtitle, enriched);
+      hfPopoverEl.classList.add('wide');
+      hfPopoverEl.innerHTML = vizHtml + premisesHtml;
+      hfPopoverEl.classList.add('visible');
+      requestAnimationFrame(() => hfPositionNear(target.getBoundingClientRect()));
+      return;
+    } else {
+      hfPopoverEl.classList.remove('wide');
+    }
+  } else if (kind === 'domain') {
+    // Pull the domain_annotation premise (cohort-scope) and surface the
+    // one domain matching `id` — plus any patient premise that cites it.
+    const domainPremise = (storedHyp?.premises || []).find(
+      pr => pr.sourceId === 'domain_annotation');
+    const dom = DMD_DOMAINS_JS.find(d => d.id === id);
+    if (dom) {
+      title = dom.name;
+      subtitle = `aa ${dom.aa_start}–${dom.aa_end}`;
+      enriched = [{
+        premiseId: 'domain_local',
+        sourceId: 'domain_annotation',
+        weight: domainPremise?.weight ?? 0.4,
+        rationale: dom.function,
+        evidenceExcerpt: 'Citations: ' + dom.citations.join('; '),
+      }];
+    }
+  } else if (kind === 'cut') {
+    // Cut marker: NMD verdict + exon-skip viability + domain-loss summary
+    const nmdP  = (storedHyp?.premises || []).find(pr => pr.sourceId === 'nmd_prediction');
+    const skipP = (storedHyp?.premises || []).find(pr => pr.sourceId === 'exon_skip_viability');
+    const meta = PYMOL_RENDERS[`${p?.cohort}#${p?.cohortPatientId}`];
+    title = 'Truncation point';
+    subtitle = meta ? `aa ${meta.residue} · ${meta.hgvsp}` : '';
+    if (nmdP) enriched.push({
+      premiseId: nmdP.premiseId, sourceId: 'nmd_prediction',
+      weight: nmdP.weight,
+      rationale: nmdP.rationale,
+      evidenceExcerpt: nmdP.evidence?.rationale || '',
+    });
+    if (skipP) enriched.push({
+      premiseId: skipP.premiseId, sourceId: 'exon_skip_viability',
+      weight: skipP.weight,
+      rationale: skipP.rationale,
+      evidenceExcerpt: skipP.evidence?.rationale || '',
+    });
+  }
+
+  hfPopoverEl.innerHTML = hfBuildHtml(title, subtitle, enriched);
+  hfPopoverEl.classList.add('visible');
+  requestAnimationFrame(() => hfPositionNear(target.getBoundingClientRect()));
+}
+
+function hfHide() {
+  if (!hfPopoverEl) return;
+  hfPopoverEl.classList.remove('visible');
+}
+
+// Delegated hover handlers — attach once at document level.
+document.addEventListener('mouseover', (e) => {
+  const target = e.target.closest('[data-hover-key]');
+  if (!target) return;
+  if (hfHideTimer) { clearTimeout(hfHideTimer); hfHideTimer = null; }
+  hfShow(target);
+});
+document.addEventListener('mouseout', (e) => {
+  const target = e.target.closest('[data-hover-key]');
+  if (!target) return;
+  // Debounce hide long enough for the cursor to cross into the popover
+  // (the popover has its own mouseenter that will cancel the timer).
+  hfHideTimer = setTimeout(hfHide, 300);
+});
 
 let DATA = null;
 let MECH_DATA = null;
@@ -1369,8 +1831,8 @@ function renderLayeredChain(hypId, storedHyp) {
     const bg = bgFromWeight(w);
     const bgStyle = bg ? `style="background:${bg}"` : '';
     const evidenceBadge = nodeEntries.length
-      ? `<span class="lc-evidence-badge" title="Premises: ${nodeEntries.map(e => e.sourceId).join(', ')}">${nodeEntries.length}·${w.toFixed(1)}</span>`
-      : `<span class="lc-evidence-badge empty" title="No premises inform this layer">—</span>`;
+      ? `<span class="lc-evidence-badge">${nodeEntries.length}·${w.toFixed(1)}</span>`
+      : `<span class="lc-evidence-badge empty">—</span>`;
 
     // Edge to next layer
     let arrow = '';
@@ -1382,9 +1844,9 @@ function renderLayeredChain(hypId, storedHyp) {
       const eColor = ew > 0 ? 'var(--good)' : 'var(--ink-3)';
       const eStroke = ew > 0 ? 2 : 1;
       const eLabel = eEntries.length
-        ? `<span class="lc-edge-label" title="Premises: ${eEntries.map(e => e.sourceId).join(', ')}">${eEntries.length}·${ew.toFixed(1)}</span>`
-        : '';
-      arrow = `<div class="lc-arrow">
+        ? `<span class="lc-edge-label" data-hover-key="edge:${edgeKey}">${eEntries.length}·${ew.toFixed(1)}</span>`
+        : `<span class="lc-edge-label empty" data-hover-key="edge:${edgeKey}">—</span>`;
+      arrow = `<div class="lc-arrow" data-hover-key="edge:${edgeKey}">
         <svg width="14" height="12" viewBox="0 0 14 12">
           <path d="M 7 0 L 7 9 M 3 5 L 7 9 L 11 5" fill="none" stroke="${eColor}" stroke-width="${eStroke}"/>
         </svg>
@@ -1392,7 +1854,7 @@ function renderLayeredChain(hypId, storedHyp) {
       </div>`;
     }
 
-    return `<div class="lc-row ${k}">
+    return `<div class="lc-row ${k}" data-hover-key="node:${k}">
       <div class="lc-tag">${esc(lbl)}</div>
       <div class="lc-box" ${bgStyle}>
         <div class="lc-title">${esc(n.title)} ${evidenceBadge}</div>
@@ -1418,6 +1880,91 @@ function renderLayeredChain(hypId, storedHyp) {
       <div class="lc-therapy-lbl-sub">${esc(th.meta || '')}</div>
     </div>
   </div>`;
+}
+
+// Render the protein-viz panel: WT + mutant PyMOL PNGs side-by-side,
+// each with a 4-domain overlay bar and (mutant) a red cut marker.
+// Every domain block + cut marker carries a `data-hover-key` attribute
+// that Part 3c wires up to the HoverFactsPopover for premise display.
+function renderProteinRendersPanel(p, storedHyp) {
+  const key = `${p.cohort}#${p.cohortPatientId}`;
+  const meta = PYMOL_RENDERS[key];
+  if (!meta) return '';
+
+  const AA = DMD_TOTAL_AA;
+  const domainBar = (mode) => {
+    const cut = meta.residue;
+    return DMD_DOMAINS_JS.map(d => {
+      const w = ((d.aa_end - d.aa_start + 1) / AA) * 100;
+      const isTruncated = mode === 'mut' && d.aa_start > cut;
+      const isPartial   = mode === 'mut' && d.aa_start <= cut && d.aa_end > cut;
+      const clsExtra    = isTruncated ? ' truncated' : (isPartial ? ' partial' : '');
+      const partialPct  = isPartial
+        ? ((cut - d.aa_start + 1) / (d.aa_end - d.aa_start + 1)) * 100
+        : null;
+      const partialOverlay = isPartial
+        ? `<div class="pv-domain-partial" style="left:${partialPct.toFixed(1)}%"></div>`
+        : '';
+      return `<div class="pv-domain${clsExtra}"
+                   style="width:${w.toFixed(2)}%;background:${d.color}"
+                   data-hover-key="domain:${d.id}"
+                   title="${esc(d.name)} · aa ${d.aa_start}–${d.aa_end}">
+        <span class="pv-domain-label">${esc(d.name.split(' ')[0])}</span>
+        ${partialOverlay}
+      </div>`;
+    }).join('');
+  };
+
+  const cutPct = ((meta.residue / AA) * 100).toFixed(2);
+  const cutMarker = `
+    <div class="pv-cut-marker" style="left:${cutPct}%"
+         data-hover-key="cut:${meta.slug}"
+         title="Truncation at aa ${meta.residue} (${esc(meta.hgvsp)})">
+      <div class="pv-cut-line"></div>
+      <div class="pv-cut-label">▲ CUT · aa ${meta.residue}</div>
+    </div>`;
+
+  // Domain-lost banner on the mutant column — spells out which
+  // C-terminal domains are absent from the truncated protein.
+  const lostDomains = DMD_DOMAINS_JS
+    .filter(d => d.aa_start > meta.residue)
+    .map(d => d.name);
+  const partialDomain = DMD_DOMAINS_JS.find(
+    d => d.aa_start <= meta.residue && d.aa_end > meta.residue);
+  const lostSummary = (partialDomain
+    ? `Partially lost: ${partialDomain.name} (aa ${meta.residue + 1}–${partialDomain.aa_end}). `
+    : '') + (lostDomains.length
+      ? `Fully lost: ${lostDomains.join(', ')}.`
+      : 'No downstream domain fully lost.');
+
+  const wtImgPath  = `esm3_pdbs/variants/${meta.slug}/wt_context.png?v=1`;
+  const mutImgPath = `esm3_pdbs/variants/${meta.slug}/mutant_full.png?v=1`;
+
+  return `
+    <div class="protein-viz-panel">
+      <div class="protein-viz-h">
+        <span class="protein-viz-badge">PROTEIN · ESM3 fold + PyMOL</span>
+        Wild-type vs truncated dystrophin (${esc(meta.hgvsp)})
+        <span class="protein-viz-sub">4 domains overlaid · hover any block for supporting evidence</span>
+      </div>
+      <div class="protein-viz-grid">
+        <div class="pv-col">
+          <div class="pv-col-h">Wild-type
+            <span class="pv-col-h-sub">window aa ${meta.wtWindowStart}–${meta.wtWindowEnd}</span></div>
+          <img class="pv-render" src="${wtImgPath}"
+               alt="WT dystrophin window around aa ${meta.residue}"/>
+          <div class="pv-domain-track wt">${domainBar('wt')}</div>
+        </div>
+        <div class="pv-col">
+          <div class="pv-col-h">Truncated
+            <span class="pv-col-h-sub">${meta.truncatedLen} aa (cut at ${meta.residue})</span></div>
+          <img class="pv-render" src="${mutImgPath}"
+               alt="Truncated dystrophin, terminus at aa ${meta.residue}"/>
+          <div class="pv-domain-track mut">${domainBar('mut')}${cutMarker}</div>
+        </div>
+      </div>
+      <div class="pv-lost-summary">${esc(lostSummary)}</div>
+    </div>`;
 }
 
 function renderChainArtifact(p, hypId, artifactIdx) {
@@ -1637,6 +2184,62 @@ function renderChatArtifact(a, idx) {
     </div>
   </div>`;
 }
+
+// DMD (P11532) 4-domain architecture — mirrors DMD_DOMAINS in
+// bake_hypotheses_and_premises.py. Drives the domain overlays on the
+// protein-viz panel; each domain becomes a hover-facts target citing
+// the domain-annotation premise.
+const DMD_TOTAL_AA = 3685;
+const DMD_DOMAINS_JS = [
+  { id: 'ntd', name: 'N-term actin-binding',
+    aa_start: 1,    aa_end: 240,
+    function: 'F-actin binding (CH1+CH2 calponin homology tandem); anchors dystrophin to sub-sarcolemmal cytoskeleton.',
+    citations: ['Way 1992', 'Rybakova 2000'],
+    color: '#7dbfe0' },
+  { id: 'rod', name: 'Spectrin-like rod',
+    aa_start: 241, aa_end: 3080,
+    function: '24 spectrin-like triple-helical repeats + 4 hinges. Elastic mechanical link between actin and DGC. In-frame rod deletions → BMD.',
+    citations: ['Winder 1997', 'Rybakova 1996', 'Koenig 1988'],
+    color: '#9cc880' },
+  { id: 'cys', name: 'Cysteine-rich (β-DG binding)',
+    aa_start: 3081, aa_end: 3360,
+    function: 'WW + EF-hand + ZZ zinc-finger motifs; binds β-dystroglycan cytoplasmic tail — direct sarcolemmal DGC anchor. Loss abolishes DGC assembly.',
+    citations: ['Suzuki 1994', 'Rentschler 1999', 'Huang 2000'],
+    color: '#e0a566' },
+  { id: 'ctd', name: 'C-terminal',
+    aa_start: 3361, aa_end: 3685,
+    function: 'Coiled-coil scaffold; recruits syntrophins (α, β1, β2) + dystrobrevins (α, β) — links nNOS + signalling adapters to sarcolemmal DGC.',
+    citations: ['Ahn & Kunkel 1995', 'Peters 1997', 'Sadoulet-Puccio 1997'],
+    color: '#c47ab0' },
+];
+
+// PyMOL renders — patients whose WT + mutant folds have been baked.
+// Key: `${cohort}#${cohortPatientId}`. Slug matches
+// bake_protein_renders.slugify(hgvsc).
+// UI label mapping (ROSTER_KEYS in bake_hypotheses_and_premises.py):
+//   P1 = S1_novel#2   c.6540del
+//   P2 = S1_novel#30  c.982A>T
+//   P3 = S2_reported#258 c.9248G>A
+//   P4 = S1_novel#57  c.717dup
+//   P5 = S1_novel#5   c.10654dup
+//   P6 = S1_novel#11  c.2510del
+//   P7 = S2_reported#202 c.6577C>T
+//   P8 = S2_reported#225 c.7817G>A
+//   P9 = S1_novel#49  c.7745C>G
+//   P10 = S2_reported#266 c.9361+1G>C (splice-site — no residue → no fold)
+const PYMOL_RENDERS = {
+  'S1_novel#2':     { slug: 'c_6540del', hgvsc: 'c.6540del',  hgvsp: 'p.(Leu2181Tyrfs*8)', consequence: 'Frameshift', residue: 2181, wtWindowStart: 1925, wtWindowEnd: 2437, truncatedLen: 2180, mutWindowStart: 1925, mutWindowEnd: 2180 },
+  'S1_novel#30':    { slug: 'c_982A_T',  hgvsc: 'c.982A>T',   hgvsp: 'p.(Lys328*)',        consequence: 'Nonsense',   residue: 328,  wtWindowStart: 72,   wtWindowEnd: 584,  truncatedLen: 327,  mutWindowStart: 72,   mutWindowEnd: 327 },
+  'S2_reported#258':{ slug: 'c_9248G_A', hgvsc: 'c.9248G>A',  hgvsp: 'p.(Trp3083*)',        consequence: 'Nonsense',   residue: 3083, wtWindowStart: 2827, wtWindowEnd: 3339, truncatedLen: 3082, mutWindowStart: 2827, mutWindowEnd: 3082 },
+  'S1_novel#57':    { slug: 'c_717dup',  hgvsc: 'c.717dup',   hgvsp: 'p.(Pro240Alafs*7)',   consequence: 'Frameshift', residue: 240,  wtWindowStart: 1,    wtWindowEnd: 496,  truncatedLen: 239,  mutWindowStart: 1,    mutWindowEnd: 239 },
+  'S1_novel#5':     { slug: 'c_10654dup',hgvsc: 'c.10654dup', hgvsp: 'p.(Ser3552Lysfs*6)',  consequence: 'Frameshift', residue: 3552, wtWindowStart: 3296, wtWindowEnd: 3685, truncatedLen: 3551, mutWindowStart: 3296, mutWindowEnd: 3551 },
+  'S1_novel#11':    { slug: 'c_2510del', hgvsc: 'c.2510del',  hgvsp: 'p.(Asn837Ilefs*9)',   consequence: 'Frameshift', residue: 837,  wtWindowStart: 581,  wtWindowEnd: 1093, truncatedLen: 836,  mutWindowStart: 581,  mutWindowEnd: 836 },
+  'S2_reported#202':{ slug: 'c_6577C_T', hgvsc: 'c.6577C>T',  hgvsp: 'p.(Gln2193*)',        consequence: 'Nonsense',   residue: 2193, wtWindowStart: 1937, wtWindowEnd: 2449, truncatedLen: 2192, mutWindowStart: 1937, mutWindowEnd: 2192 },
+  'S2_reported#225':{ slug: 'c_7817G_A', hgvsc: 'c.7817G>A',  hgvsp: 'p.(Trp2606*)',        consequence: 'Nonsense',   residue: 2606, wtWindowStart: 2350, wtWindowEnd: 2862, truncatedLen: 2605, mutWindowStart: 2350, mutWindowEnd: 2605 },
+  'S1_novel#49':    { slug: 'c_7745C_G', hgvsc: 'c.7745C>G',  hgvsp: 'p.(Ser2582*)',        consequence: 'Nonsense',   residue: 2582, wtWindowStart: 2326, wtWindowEnd: 2838, truncatedLen: 2581, mutWindowStart: 2326, mutWindowEnd: 2581 },
+  // P10 (S2_reported#266 c.9361+1G>C) is splice-site — no HGVSp residue,
+  // no fold; the mechanism-viz falls back to the empty state.
+};
 
 // ESM3 fold metadata — which patients have a baked structure, and where
 // their variant residue lands in the chunk. Add entries as new folds
@@ -4657,11 +5260,681 @@ function seedStream() {
 // ================================================================
 // TOP-LEVEL VIEW TABS (Data | Mechanism)
 // ================================================================
+// =====================================================================
+// PARETO — HYPOTHESES tab
+// =====================================================================
+// Reads workbench/frontier_data.json (baked by hydrate_frontier_view.py).
+// Scatter of 16,000 hypotheses in coverage × depth space, colored by
+// actionability. Filter chips let the user restrict to a specific patient
+// or mechanism family. Non-dominated points get a star marker.
+let FRONTIER_DATA = null;                     // {meta, rows}
+let CAPSID_MAP    = null;                     // {mech_tissue_key: [{rank, capsid_id, ...}]}
+let frontierPatientFilter   = 'all';         // 'all' | patient_label
+let frontierFamilyFilter    = 'all';         // 'all' | '01'..'04'
+let frontierFrontierOnly    = false;         // default: show every hypothesis as a dot
+let frontierMode            = 'gap';         // 'scatter' | 'gap' — gap = Nature-style schematic
+let frontierSelectedId      = null;          // hypothesis_id of clicked point
+let frontierLoadInFlight    = false;
+
+const FRONTIER_ACT_COLORS = {
+  0: '#c0c4cb',   // no action
+  1: '#f5b25b',   // upregulator / distal AAV
+  2: '#4283e6',   // gene replacement / readthrough
+  3: '#4a9d3f',   // exon-skip ASO (highest)
+};
+
+// 10-color patient palette (Category10-ish). Row is patient-specific
+// when a lab-derived scoring factor differs per patient (fit, confidence,
+// rescue_window, tissue_target_boost). Row is patient-agnostic (gray) if
+// the scoring uses only cohort/database sources — none currently exist
+// in the substrate, but we keep the fallback for when they land.
+const FRONTIER_PATIENT_COLORS = {
+  'P1':  '#1f77b4',   'P2':  '#ff7f0e',   'P3':  '#2ca02c',
+  'P4':  '#d62728',   'P5':  '#9467bd',   'P6':  '#8c564b',
+  'P7':  '#e377c2',   'P8':  '#17becf',   'P9':  '#bcbd22',
+  'P10': '#7f7f7f',
+};
+const FRONTIER_AGNOSTIC_COLOR = '#c8ccd3';
+const FRONTIER_FAMILY_LABELS = {
+  '01': 'H01 · LoF/NMD',
+  '02': 'H02 · BMD-like',
+  '03': 'H03 · NMD tissue-graded',
+  '04': 'H04 · Distal-isoform',
+};
+
+// Expand slim (array) rows into full row objects using the lookup
+// tables in meta. Keeps downstream code (scatter, filters, detail
+// panel) reading `.coverage`, `.pathway_name`, etc. as before.
+function frontierExpand(raw) {
+  const M = raw.meta;
+  const patients = M.patients || [];
+  const patientCohortByLabel = Object.fromEntries(
+    patients.map(p => [p.label, {cohort: p.cohort, patient_id: p.patient_id}]));
+  const expanded = raw.rows.map(a => {
+    const patient = a[1];
+    const mech    = a[2];
+    const pw      = M.pathways[a[3]]  || {};
+    const cell    = M.cells[a[4]]     || {};
+    const variant = M.variants[patient] || {};
+    const pc      = patientCohortByLabel[patient] || {};
+    return {
+      hypothesis_id: a[0],
+      patient_label: patient,
+      cohort: pc.cohort, patient_id: pc.patient_id,
+      mechanism_family: mech,
+      mechanism_desc: M.mechanism_descs[mech] || '',
+      variant_hgvsc: variant.hgvsc, variant_hgvsp: variant.hgvsp,
+      variant_exon:  variant.exon,
+      pathway_id:  a[3],
+      pathway_name: pw.name,
+      pathway_dgc_coverage: pw.dgc,
+      cell_type: a[4], tissue: cell.tissue,
+      cell_dgc_completeness: cell.dgc,
+      cell_tissue_relevance: cell.rel,
+      coverage: a[5], depth: a[6], actionability: a[7],
+      n_predicted: a[8], n_observed: a[9], n_intersect: a[10],
+      predicted_phenotypes: M.phenotype_sets[a[11]] || [],
+      observed_phenotypes:  M.phenotype_sets[a[12]] || [],
+      is_pareto_within_patient: a[13],
+      is_pareto_global: a[14],
+      weighted_fit:           a[15] || 0,
+      max_predicted_severity: a[16] || 0,
+      predicts_severe:        a[17] || 0,
+      therapeutic_reach:      a[18] || 0,
+      confidence:             a[19] || 0,
+      hypothesis_score:       a[20] || 0,
+      hypothesis_strength:    a[21] || 0,
+      aav_viability:          a[22] || 0,
+    };
+  });
+  return {meta: M, rows: expanded};
+}
+
+function frontierEnsureLoaded(onLoaded) {
+  if (FRONTIER_DATA) { onLoaded(); return; }
+  if (frontierLoadInFlight) return;
+  frontierLoadInFlight = true;
+  const t0 = performance.now();
+  Promise.all([
+    fetch('frontier_data.json?v=3').then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
+    fetch('capsid_map.json?v=1').then(r => r.ok ? r.json() : null).catch(() => null),
+  ])
+    .then(([d, capsidMap]) => {
+      FRONTIER_DATA = frontierExpand(d);
+      CAPSID_MAP    = capsidMap || {};
+      console.log(`[frontier] loaded ${FRONTIER_DATA.rows.length} rows in ${(performance.now() - t0).toFixed(0)}ms`);
+      console.log(`[capsid] loaded ${Object.keys(CAPSID_MAP).length} archetypes`);
+      frontierLoadInFlight = false;
+      onLoaded();
+    })
+    .catch(err => {
+      frontierLoadInFlight = false;
+      console.error('[frontier] load failed:', err);
+      const el = document.querySelector('.fr-loading');
+      if (el) el.innerHTML = `<span style="color:#c94a4a">
+        Failed to load frontier_data.json: ${esc(String(err))}<br>
+        <span style="font-size:11px">Check the browser console for details.</span></span>`;
+    });
+}
+
+// Two-objective axes — both continuous, computed in the bake:
+//   X = hypothesis_strength (weighted_fit × xlab_bonus + confidence)
+//   Y = aav_viability       (tissue_delivery × payload_fit × dgc_rescue
+//                            × precedent × tissue_target_boost × rescue_window)
+// These are genuinely orthogonal — "how much I believe it" vs "how deliverable
+// it is". Pareto membership means no other hypothesis beats you on BOTH.
+// Curated overlay picks the highest-strength Set-B row per (patient, mech).
+function frontierComputeScores() {
+  if (!FRONTIER_DATA || FRONTIER_DATA._scored) return;
+  FRONTIER_DATA.rows.forEach(r => {
+    r.is_curated = false;
+    r.curated_rank = null;
+  });
+  if (DATA?.patients) {
+    DATA.patients.forEach(p => {
+      const patLabel = p.label || p.name || p.id;
+      (p.hypothesisRanking || []).forEach(h => {
+        const family = h.mechanismFamily || h.id;
+        const candidates = FRONTIER_DATA.rows.filter(r =>
+          r.patient_label === patLabel && r.mechanism_family === family);
+        if (!candidates.length) return;
+        candidates.sort((a, b) => b.hypothesis_strength - a.hypothesis_strength);
+        candidates[0].is_curated = true;
+        candidates[0].curated_rank = h.rank;
+        candidates[0].curated_claim = h.claim || h.fit;
+      });
+    });
+  }
+  FRONTIER_DATA._scored = true;
+}
+
+// Non-dominated set on (hypothesis_strength, aav_viability). Both maximised.
+// Sort by strength DESC; sweep tracking best-aav-seen. A row is on the
+// frontier iff its aav is strictly greater than every earlier-seen row
+// (which had ≥ strength). That's the textbook 2D skyline / non-dominated
+// sort — see /home/ubuntu/dmd_inference_env/PARETO_REFACTOR_PLAN.md.
+function frontierComputePareto(rows) {
+  const idx = rows.map((_, i) => i);
+  idx.sort((a, b) => rows[b].hypothesis_strength - rows[a].hypothesis_strength
+                  || rows[b].aav_viability       - rows[a].aav_viability);
+  let bestAav = -Infinity;
+  const isFrontier = new Array(rows.length).fill(false);
+  for (const i of idx) {
+    if (rows[i].aav_viability > bestAav + 1e-9) {
+      isFrontier[i] = true;
+      bestAav = rows[i].aav_viability;
+    }
+  }
+  return isFrontier;
+}
+
+// Apply the current filter set → filtered array + a "shown" flag per row.
+// Pareto is computed PER-PATIENT so each patient contributes their own
+// frontier stars — otherwise the single globally-dominant hypothesis
+// (P1's casimersen chain) swallows every other patient's frontier.
+function frontierFiltered() {
+  if (!FRONTIER_DATA) return [];
+  frontierComputeScores();
+  let rows = FRONTIER_DATA.rows.filter(r => {
+    if (frontierPatientFilter !== 'all' && r.patient_label !== frontierPatientFilter) return false;
+    if (frontierFamilyFilter !== 'all' && r.mechanism_family !== frontierFamilyFilter) return false;
+    return true;
+  });
+  // Group by patient, compute pareto on each group.
+  const byPatient = new Map();
+  rows.forEach(r => {
+    if (!byPatient.has(r.patient_label)) byPatient.set(r.patient_label, []);
+    byPatient.get(r.patient_label).push(r);
+  });
+  rows.forEach(r => { r.is_frontier_viz = false; });
+  byPatient.forEach(group => {
+    const flags = frontierComputePareto(group);
+    group.forEach((r, i) => { if (flags[i]) r.is_frontier_viz = true; });
+  });
+  if (frontierFrontierOnly) rows = rows.filter(r => r.is_frontier_viz);
+  return rows;
+}
+
+// SVG scatter — coverage × depth grid.
+//   X = coverage (0..1, discrete)
+//   Y = depth (1..5, integer)
+//   Shape: star = actionable (act > 0), dot = non-actionable
+//   Size = hypothesis_score (0..1) → radius 4..22
+//   Color = actionability (or gray for act=0)
+//   Frontier envelope: dashed line connecting the pareto-optimal points
+//   on (coverage, depth), sorted by coverage.
+function frontierSvg() {
+  const W = 780, H = 500;
+  const PAD_L = 68, PAD_R = 20, PAD_T = 20, PAD_B = 52;
+  const plotW = W - PAD_L - PAD_R;
+  const plotH = H - PAD_T - PAD_B;
+
+  const rows = FRONTIER_DATA ? frontierFiltered() : [];
+  const front = rows.filter(r => r.is_frontier_viz);
+  const dom   = rows.filter(r => !r.is_frontier_viz);
+
+  const xVal = r => r.hypothesis_strength;
+  const yVal = r => r.aav_viability;
+
+  // Auto-scale to observed range with 5% padding either side, so the
+  // empty lower-left (where nothing actually lands) doesn't waste plot
+  // real estate.
+  let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+  rows.forEach(r => {
+    const xv = xVal(r), yv = yVal(r);
+    if (xv < xMin) xMin = xv;
+    if (xv > xMax) xMax = xv;
+    if (yv < yMin) yMin = yv;
+    if (yv > yMax) yMax = yv;
+  });
+  if (!isFinite(xMin)) { xMin = 0; xMax = 1; yMin = 0; yMax = 1; }
+  const xRange = Math.max(xMax - xMin, 0.05);
+  const yRange = Math.max(yMax - yMin, 0.05);
+  const xLo = xMin - xRange * 0.05;
+  const xHi = xMax + xRange * 0.05;
+  const yLo = yMin - yRange * 0.05;
+  const yHi = yMax + yRange * 0.05;
+  const x2px = v => PAD_L + ((v - xLo) / (xHi - xLo)) * plotW;
+  const y2px = v => PAD_T + plotH - ((v - yLo) / (yHi - yLo)) * plotH;
+
+  // Deterministic jitter (repeatable across renders). Use two different
+  // hashes for X and Y so points don't move on a diagonal.
+  const jitter = (id, span, salt) => {
+    const s = id + (salt || '');
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    // Map to [-0.5, 0.5]
+    return (((h >>> 0) % 10000) / 10000 - 0.5) * span;
+  };
+
+  // Compute 5 nicely-rounded ticks across the auto-scaled range.
+  const niceTicks = (lo, hi) => {
+    const range = hi - lo;
+    const rough = range / 4;
+    // Round to a "nice" step: 0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5...
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / mag;
+    let step;
+    if (norm < 1.5) step = 1 * mag;
+    else if (norm < 3) step = 2 * mag;
+    else if (norm < 7) step = 5 * mag;
+    else step = 10 * mag;
+    const t0 = Math.ceil(lo / step) * step;
+    const ticks = [];
+    for (let t = t0; t <= hi + step * 0.001; t += step) ticks.push(t);
+    return ticks;
+  };
+  const xTicks = niceTicks(xLo, xHi);
+  const yTicks = niceTicks(yLo, yHi);
+  const gridX = xTicks.map(t => `
+    <line x1="${x2px(t)}" y1="${PAD_T}" x2="${x2px(t)}" y2="${H - PAD_B}"
+          stroke="#eef1f5" stroke-width="1"/>
+    <text x="${x2px(t)}" y="${H - PAD_B + 14}" text-anchor="middle"
+          font-size="10" fill="#6b7580">${t.toFixed(2)}</text>`).join('');
+  const gridY = yTicks.map(t => `
+    <line x1="${PAD_L}" y1="${y2px(t)}" x2="${W - PAD_R}" y2="${y2px(t)}"
+          stroke="#eef1f5" stroke-width="1"/>
+    <text x="${PAD_L - 6}" y="${y2px(t) + 3}" text-anchor="end"
+          font-size="10" fill="#6b7580">${t.toFixed(2)}</text>`).join('');
+
+  // Star path centered at origin
+  const starPath = (cx, cy, r) => {
+    let path = '';
+    for (let i = 0; i < 10; i++) {
+      const angle = -Math.PI / 2 + i * Math.PI / 5;
+      const rad = i % 2 === 0 ? r : r * 0.42;
+      const x = cx + rad * Math.cos(angle);
+      const y = cy + rad * Math.sin(angle);
+      path += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+    }
+    return path + 'Z';
+  };
+
+  // All dots same size, single neutral color. Stripped for clarity.
+  const sizeOf = r => 6;
+
+  const dot = (r, x, y, sz, fill, stroke, strokeW, extraClass) => {
+    const label = `${esc(r.patient_label)} · H${r.mechanism_family} · ${esc(r.cell_type)}
+${esc(r.pathway_name)}
+strength=${(r.hypothesis_strength||0).toFixed(3)}  ·  aav=${(r.aav_viability||0).toFixed(4)}
+  = fit×xlab_bonus + conf = ${(r.weighted_fit||0).toFixed(2)}×? + ${(r.confidence||0).toFixed(2)}
+tissue=${r.tissue}  ·  act=${r.actionability}  ·  sev=${r.max_predicted_severity||0}`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${sz.toFixed(1)}"
+             fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"
+             class="fr-point ${extraClass}" data-hid="${r.hypothesis_id}">
+        <title>${label}</title>
+      </circle>`;
+  };
+
+  // Dominated background — cap at 4000 for performance.
+  // Big jitter (±40px each axis) so points spread from their band into
+  // a visible cloud. Frontier points get less jitter so they stay on
+  // the envelope curve.
+  // Position every row with a modest deterministic jitter so overlapping
+  // ties spread visibly.
+  const JITTER = 22;
+  const pos = new Map();     // hypothesis_id -> {x, y}
+  rows.forEach(r => {
+    pos.set(r.hypothesis_id, {
+      x: x2px(xVal(r)) + jitter(r.hypothesis_id, JITTER, 'x'),
+      y: y2px(yVal(r)) + jitter(r.hypothesis_id, JITTER, 'y'),
+    });
+  });
+
+  // Color by patient. Patient-agnostic rows would get gray fallback
+  // (none in the current substrate).
+  const fillOf = r => FRONTIER_PATIENT_COLORS[r.patient_label] || FRONTIER_AGNOSTIC_COLOR;
+  const domRender = dom.slice(0, 5000);
+  const domPts = domRender.map(r => {
+    const {x, y} = pos.get(r.hypothesis_id);
+    return dot(r, x, y, sizeOf(r), fillOf(r), '#222', 0.5, 'dominated');
+  }).join('');
+  const frontPts = front.map(r => {
+    const {x, y} = pos.get(r.hypothesis_id);
+    const isSel = r.hypothesis_id === frontierSelectedId;
+    const strokeW = isSel ? 2.4 : 0.6;
+    return dot(r, x, y, sizeOf(r), fillOf(r), '#222', strokeW,
+                'is-frontier');
+  }).join('');
+
+  // Convex-hull-style outline around frontier dots. Steps: sort by x,
+  // then draw a smooth polyline connecting the upper-right envelope,
+  // extending down-left to close the region.
+  let frontOutline = '';
+  if (front.length >= 2) {
+    const sorted = [...front].sort((a, b) => xVal(a) - xVal(b));
+    // Radius of each point, so the outline sits OUTSIDE the dot
+    const pad = 8;
+    const upper = sorted.map(r => {
+      const {x, y} = pos.get(r.hypothesis_id);
+      const sz = sizeOf(r);
+      return {x, y: y - sz - pad};
+    });
+    // Close down-right + down-left to make a proper enclosed shell.
+    const first = pos.get(sorted[0].hypothesis_id);
+    const last  = pos.get(sorted[sorted.length - 1].hypothesis_id);
+    const firstSz = sizeOf(sorted[0]);
+    const lastSz  = sizeOf(sorted[sorted.length - 1]);
+    const hullPts = [
+      `${(first.x - firstSz - pad).toFixed(1)},${(first.y + firstSz + pad).toFixed(1)}`,
+      `${(first.x - firstSz - pad).toFixed(1)},${upper[0].y.toFixed(1)}`,
+      ...upper.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`),
+      `${(last.x + lastSz + pad).toFixed(1)},${upper[upper.length - 1].y.toFixed(1)}`,
+      `${(last.x + lastSz + pad).toFixed(1)},${(last.y + lastSz + pad).toFixed(1)}`,
+    ].join(' ');
+    frontOutline = `<polyline points="${hullPts}" fill="rgba(74, 157, 63, 0.08)"
+                     stroke="#4a9d3f" stroke-width="2.2"
+                     stroke-linejoin="round" stroke-linecap="round"/>`;
+  }
+
+  // Curated overlay — gold ring + rank badge on top of the dot.
+  const curated = rows.filter(r => r.is_curated);
+  const curatedPts = curated.map(r => {
+    const {x, y} = pos.get(r.hypothesis_id);
+    const sz = sizeOf(r);
+    const ring = `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}"
+                    r="${(sz + 5).toFixed(1)}" fill="none"
+                    stroke="#b8890f" stroke-width="2.2" opacity="0.9"/>`;
+    const badge = `<circle cx="${(x + sz + 2).toFixed(1)}" cy="${(y - sz - 2).toFixed(1)}"
+                     r="8" fill="#b8890f" stroke="white" stroke-width="1.4"/>
+                   <text x="${(x + sz + 2).toFixed(1)}" y="${(y - sz + 1).toFixed(1)}"
+                     text-anchor="middle" font-size="10" font-weight="800"
+                     fill="white">${r.curated_rank || '★'}</text>`;
+    return ring + badge;
+  }).join('');
+
+  const axisTitles = `
+    <text x="${PAD_L + plotW / 2}" y="${H - 6}" text-anchor="middle"
+          font-size="12" font-weight="700" fill="#3d4652">
+      Hypothesis strength →  (fit × lab-consistency + confidence)
+    </text>
+    <text x="16" y="${PAD_T + plotH / 2}" text-anchor="middle"
+          font-size="12" font-weight="700" fill="#3d4652"
+          transform="rotate(-90 16 ${PAD_T + plotH / 2})">
+      Hypothesis strong fit for AAV ↑  (delivery × payload × DGC × precedent × lab-targets × rescue-window)
+    </text>
+    <!-- Corner interpretation labels (X = strength, Y = AAV) -->
+    <text x="${W - PAD_R - 8}" y="${PAD_T + 14}" text-anchor="end"
+          font-size="11" font-weight="700" fill="#4a9d3f" opacity="0.85">
+      strong hypothesis + AAV-tractable → act
+    </text>
+    <text x="${W - PAD_R - 8}" y="${H - PAD_B - 6}" text-anchor="end"
+          font-size="10" fill="#c94a4a" opacity="0.75" font-style="italic">
+      strong hypothesis but poor AAV fit · pick non-AAV modality
+    </text>
+    <text x="${PAD_L + 8}" y="${PAD_T + 14}" text-anchor="start"
+          font-size="10" fill="#7b8390" opacity="0.7" font-style="italic">
+      AAV-deliverable but weak evidence · validate first
+    </text>
+    <text x="${PAD_L + 8}" y="${H - PAD_B - 6}" text-anchor="start"
+          font-size="10" fill="#a08a5f" opacity="0.7" font-style="italic">
+      weak evidence + poor delivery · deprioritise
+    </text>`;
+
+  const domCountNote = dom.length > 4000
+    ? `<text x="${W - PAD_R - 4}" y="${PAD_T + 12}" text-anchor="end"
+             font-size="10" fill="#8a939c">
+        ${(dom.length - 4000).toLocaleString()} dominated points hidden</text>`
+    : '';
+
+  return `<svg id="frontier-plot-svg" viewBox="0 0 ${W} ${H}"
+               preserveAspectRatio="xMidYMid meet"
+               style="width:100%;height:auto;max-height:560px;background:white;
+                      border:1px solid var(--line);border-radius:6px">
+    <g class="fr-grid">${gridX}${gridY}</g>
+    ${axisTitles}
+    ${frontOutline}
+    <g class="fr-dominated">${domPts}</g>
+    <g class="fr-frontier">${frontPts}</g>
+    <g class="fr-curated">${curatedPts}</g>
+    ${domCountNote}
+  </svg>`;
+}
+
+function frontierChipRow() {
+  const meta = FRONTIER_DATA?.meta || {};
+  const patients = meta.patients || [];
+  const patientChips = ['all', ...patients.map(p => p.label)].map(lbl => `
+    <button class="fr-chip ${frontierPatientFilter === lbl ? 'active' : ''}"
+            data-fr-pat="${esc(lbl)}">${esc(lbl)}</button>`).join('');
+  const familyChips = ['all', '01', '02', '03', '04'].map(f => `
+    <button class="fr-chip ${frontierFamilyFilter === f ? 'active' : ''}"
+            data-fr-fam="${esc(f)}">
+      ${f === 'all' ? 'all mech' : FRONTIER_FAMILY_LABELS[f]}
+    </button>`).join('');
+  return `
+    <div class="fr-chip-row">
+      <span class="fr-chip-label">patient:</span> ${patientChips}
+    </div>
+    <div class="fr-chip-row">
+      <span class="fr-chip-label">mechanism:</span> ${familyChips}
+      <button class="fr-chip toggle ${frontierFrontierOnly ? 'active' : ''}"
+              data-fr-frontier>★ frontier only</button>
+    </div>`;
+}
+
+function frontierDetailPanel() {
+  if (!FRONTIER_DATA) return '<div class="fr-detail-empty">loading…</div>';
+  const row = FRONTIER_DATA.rows.find(r => r.hypothesis_id === frontierSelectedId);
+  if (!row) {
+    return `<div class="fr-detail-empty">
+      Click a point to inspect the hypothesis chain.<br>
+      <span style="color:var(--ink-3);font-size:11px">
+        Filter shows ${frontierFiltered().length.toLocaleString()} rows;
+        ${FRONTIER_DATA.rows.length.toLocaleString()} total,
+        ${FRONTIER_DATA.meta.n_frontier_within.toLocaleString()} on within-patient frontier.
+      </span>
+    </div>`;
+  }
+  const actLabel = ['none', 'utrophin / distal AAV', 'gene replacement / readthrough',
+                    'FDA-approved exon-skip ASO'][row.actionability] || '?';
+  const predSet = new Set(row.predicted_phenotypes || []);
+  const obsSet  = new Set(row.observed_phenotypes  || []);
+  const PHENO_SEV = {
+    'respiratory_failure': 5, 'cardiac_dysfunction': 5,
+    'skeletal_muscle_fibro_fatty_replacement': 4,
+    'functional_impairment_ambulatory': 4, 'cardiac_fibrosis': 4,
+    'cardiac_muscle_injury': 3, 'skeletal_muscle_myonecrosis': 3,
+    'cns_cognitive': 2, 'renal_dysfunction': 2,
+    'retinal_dysfunction': 1,
+  };
+  const phenoRow = (name) => {
+    const p = predSet.has(name), o = obsSet.has(name);
+    const cls = p && o ? 'both' : p ? 'pred' : o ? 'obs' : 'none';
+    const sev = PHENO_SEV[name] || 0;
+    const sevCls = sev >= 4 ? ` sev-${sev}` : '';
+    const sevMark = sev >= 4 ? ` <span style="color:${sev===5?'#c94a4a':'#e07822'};font-weight:800">${sev===5 ? '⚠⚠' : '⚠'}</span>` : '';
+    return `<span class="fr-pheno-chip ${cls}${sevCls}"
+                  title="severity ${sev}/5">${esc(name)}${sevMark}</span>`;
+  };
+  const allPhenos = [...new Set([...predSet, ...obsSet])].sort();
+  return `
+    <div class="fr-detail">
+      <div class="fr-detail-h">
+        <span class="fr-detail-badge H${row.mechanism_family}">H${row.mechanism_family}</span>
+        <span class="fr-detail-title">${esc(row.patient_label)} · ${esc(row.cell_type)}
+          <span class="fr-detail-sub">(${esc(row.tissue)})</span></span>
+        ${row.is_pareto_within_patient ? '<span class="fr-star">★ within-patient frontier</span>' : ''}
+        ${row.is_pareto_global ? '<span class="fr-star gold">★ global frontier</span>' : ''}
+        ${row.predicts_severe ? `<span class="fr-severity-badge sev-${row.max_predicted_severity}">
+          ⚠ severity ${row.max_predicted_severity}/5
+        </span>` : ''}
+      </div>
+
+      <div class="fr-metric-strip">
+        <div class="fr-metric"><span class="fr-metric-lbl">Fit-to-patient</span>
+          <span class="fr-metric-val">${(row.weighted_fit || 0).toFixed(2)}</span>
+          <span class="fr-metric-hint">severity-weighted; ${row.n_intersect}/${row.n_predicted} predicted phenotypes observed</span></div>
+        <div class="fr-metric"><span class="fr-metric-lbl">Therapeutic reach</span>
+          <span class="fr-metric-val" style="color:${FRONTIER_ACT_COLORS[row.actionability]}">${(row.therapeutic_reach || 0).toFixed(2)}</span>
+          <span class="fr-metric-hint">${esc(actLabel)}</span></div>
+        <div class="fr-metric"><span class="fr-metric-lbl">Confidence</span>
+          <span class="fr-metric-val">${row.depth}/5</span>
+          <span class="fr-metric-hint">layers with cited evidence</span></div>
+      </div>
+
+      <div class="fr-chain">
+        <div class="fr-chain-row"><span class="fr-chain-lbl">variant</span>
+          <span>${esc(row.variant_hgvsc || '?')} · ${esc(row.variant_hgvsp || '')}
+            <span class="fr-chain-meta">exon ${row.variant_exon}</span></span></div>
+        <div class="fr-chain-row"><span class="fr-chain-lbl">mechanism</span>
+          <span>${esc(row.mechanism_desc)}</span></div>
+        <div class="fr-chain-row"><span class="fr-chain-lbl">pathway</span>
+          <span>${esc(row.pathway_name)}
+            <span class="fr-chain-meta">DGC coverage ${(row.pathway_dgc_coverage * 100).toFixed(0)}%</span></span></div>
+        <div class="fr-chain-row"><span class="fr-chain-lbl">cell / tissue</span>
+          <span>${esc(row.cell_type)} · <b>${esc(row.tissue)}</b>
+            <span class="fr-chain-meta">DGC-completeness ${(row.cell_dgc_completeness * 100).toFixed(0)}% ·
+              relevance ${row.cell_tissue_relevance.toFixed(2)}</span></span></div>
+        <div class="fr-chain-row"><span class="fr-chain-lbl">phenotype</span>
+          <span class="fr-pheno-set">${allPhenos.map(phenoRow).join('') || '<em>—</em>'}</span></div>
+      </div>
+
+      ${capsidRecsHtml(row)}
+
+      <div class="fr-detail-actions">
+        <button class="fr-compose-btn" disabled>Compose narrative (Sonnet)
+          <span class="fr-todo">not wired yet</span></button>
+      </div>
+    </div>`;
+}
+
+function capsidRecsHtml(row) {
+  if (!CAPSID_MAP) return '';
+  const key = `${row.mechanism_family}_${row.tissue}`;
+  const recs = CAPSID_MAP[key];
+  if (!recs || recs.length === 0) return '';
+  const TROP_COLOR = {muscle: '#2ca02c', retinal: '#1f77b4'};
+  const items = recs.map(c => {
+    const col = TROP_COLOR[c.tropism] || '#888';
+    const scoreBar = Math.round((c.mapping_score / 0.55) * 100);  // normalize ~0-100
+    return `<div class="fr-capsid-row">
+      <span class="fr-capsid-rank">#${c.rank}</span>
+      <code class="fr-capsid-id" title="${c.tropism} tropism"
+            style="border-left:3px solid ${col}">${esc(c.capsid_id)}</code>
+      <span class="fr-capsid-metrics">
+        muscle=${c.muscle_transduction.toFixed(2)} ·
+        escape=${c.nab_escape.toFixed(2)} ·
+        hepatotox=${c.hepatotoxicity.toFixed(2)}
+      </span>
+      <span class="fr-capsid-score" title="mapping score">${c.mapping_score.toFixed(3)}</span>
+    </div>`;
+  }).join('');
+  return `<div class="fr-capsid-block">
+    <div class="fr-capsid-h">
+      <span class="fr-capsid-title">AAV capsid candidates</span>
+      <span class="fr-capsid-sub">ranked by tissue tropism match × NAb escape × payload fit
+        · Pareto 2 (simulated IV muscle delivery · ASSLNIA reference · v1 pipeline)</span>
+    </div>
+    ${items}
+  </div>`;
+}
+
+function renderFrontierView(p) {
+  // On first mount only, kick off the fetch + re-render when ready.
+  // Guard the call: if we call ensureLoaded when data IS loaded,
+  // its synchronous `onLoaded()` re-enters renderPage → renderFrontierView
+  // → ensureLoaded → ... → stack overflow.
+  if (!FRONTIER_DATA) {
+    frontierEnsureLoaded(() => renderPage());
+    return `<div class="fr-body"><div class="fr-loading">loading 16k hypotheses…</div></div>`;
+  }
+
+  const meta = FRONTIER_DATA.meta;
+  // Recompute counts for the currently-filtered slice (needed to show
+  // patient-scoped totals in the header). Pareto is per-patient so we
+  // count union of each patient's frontier.
+  frontierComputeScores();
+  const preToggle = FRONTIER_DATA.rows.filter(r => {
+    if (frontierPatientFilter !== 'all' && r.patient_label !== frontierPatientFilter) return false;
+    if (frontierFamilyFilter !== 'all' && r.mechanism_family !== frontierFamilyFilter) return false;
+    return true;
+  });
+  const byPat = new Map();
+  preToggle.forEach(r => {
+    if (!byPat.has(r.patient_label)) byPat.set(r.patient_label, []);
+    byPat.get(r.patient_label).push(r);
+  });
+  let nFrontier = 0;
+  byPat.forEach(group => {
+    nFrontier += frontierComputePareto(group).filter(Boolean).length;
+  });
+  const nSevere = preToggle.filter(r => r.max_predicted_severity >= 5).length;
+  return `<div class="fr-body">
+    <div class="fr-header">
+      <div class="fr-title">
+        Pareto — Hypotheses
+        <span class="fr-title-sub">
+          ${preToggle.length.toLocaleString()} candidates ·
+          <b>${nFrontier}</b> on per-patient pareto frontier ·
+          <span style="color:#c94a4a">${nSevere.toLocaleString()} predict a life-threatening phenotype</span>
+        </span>
+      </div>
+    </div>
+    ${frontierChipRow()}
+    <div class="fr-main">
+      <div class="fr-plot-wrap">
+        ${frontierSvg()}
+        <div class="fr-patient-legend">
+          ${Object.entries(FRONTIER_PATIENT_COLORS).map(([lbl, c]) => `
+            <span class="fr-pl-item">
+              <span class="fr-pl-sw" style="background:${c}"></span>${lbl}
+            </span>`).join('')}
+          <span class="fr-pl-item fr-pl-agn">
+            <span class="fr-pl-sw" style="background:${FRONTIER_AGNOSTIC_COLOR};border:1px dashed #666"></span>
+            patient-agnostic
+          </span>
+        </div>
+      </div>
+      <div class="fr-detail-wrap" id="fr-detail-wrap">
+        ${frontierDetailPanel()}
+      </div>
+    </div>
+  </div>`;
+}
+
+function wireFrontierView(p) {
+  document.querySelectorAll('[data-fr-pat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      frontierPatientFilter = btn.dataset.frPat; renderPage();
+    });
+  });
+  document.querySelectorAll('[data-fr-fam]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      frontierFamilyFilter = btn.dataset.frFam; renderPage();
+    });
+  });
+  const tog = document.querySelector('[data-fr-frontier]');
+  if (tog) tog.addEventListener('click', () => {
+    frontierFrontierOnly = !frontierFrontierOnly; renderPage();
+  });
+  document.querySelectorAll('.fr-point').forEach(el => {
+    el.addEventListener('click', () => {
+      frontierSelectedId = el.dataset.hid;
+      // Redraw just the detail panel to avoid re-parsing 16k svg circles.
+      const wrap = document.getElementById('fr-detail-wrap');
+      if (wrap) wrap.innerHTML = frontierDetailPanel();
+      // Also re-render the SVG so the selected point pops.
+      const plot = document.getElementById('frontier-plot-svg');
+      if (plot) plot.outerHTML = frontierSvg();
+      // Re-wire click handlers on the new svg
+      document.querySelectorAll('.fr-point').forEach(el2 => {
+        el2.addEventListener('click', () => {
+          frontierSelectedId = el2.dataset.hid;
+          wireFrontierView(p);   // simplest: rewire the whole view
+          renderPage();
+        });
+      });
+    });
+  });
+}
+
 function renderViewTabs() {
   const tabs = [
     ['data',      'Explore Data',      'chart-first'],
     ['mechanism', 'Explore Mechanism', 'overview · focus · detail'],
     ['lauren',    "Lauren's tab",      'dashboard-style'],
+    ['frontier',  'Pareto — Hypotheses', 'coverage × depth × actionability'],
   ];
   return `<div class="pc-viewtabs">
     ${tabs.map(([v, lbl, badge]) => `
@@ -4686,6 +5959,8 @@ function renderPage() {
     ? renderDataView(p)
     : currentView === 'lauren'
     ? renderLaurenView(p)
+    : currentView === 'frontier'
+    ? renderFrontierView(p)
     : `<div class="pc-body ${bodyCls}">
          ${renderLeftPanel(p)}
          ${renderRightPanel(p)}
@@ -4710,6 +5985,7 @@ function renderPage() {
 
   // Explore Data click handlers only exist when its view is mounted
   if (currentView === 'data') wireDataView(p);
+  if (currentView === 'frontier') wireFrontierView(p);
 
   // Newest artifacts are at the top of the stream, so scroll the
   // right-panel body to the top when new artifacts arrive. Skip on
