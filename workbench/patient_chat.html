@@ -1154,6 +1154,50 @@
   .fr-capsid-metrics { color: var(--ink-2); flex: 1; font-size: 10px; }
   .fr-capsid-score { font-weight: 600; font-size: 11px; color: var(--accent);
     flex-shrink: 0; white-space: nowrap; }
+
+  /* ---- Pareto — Therapeutics tab ---- */
+  .th-body { display: grid; grid-template-columns: 1fr 340px;
+    gap: 16px; padding: 14px 18px 24px; background: var(--bg); min-height: 100vh; }
+  .th-plot-wrap { background: white; border: 1px solid var(--line);
+    border-radius: 6px; overflow: hidden; }
+  .th-detail { background: white; border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 14px; font-size: 12px; }
+  .th-detail-empty { color: var(--ink-3); padding: 20px; text-align: center; }
+  .th-detail-id { font-family: monospace; font-size: 15px; font-weight: 700;
+    color: var(--ink); margin-bottom: 4px; }
+  .th-detail-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .th-badge { padding: 2px 8px; border-radius: 10px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; }
+  .th-badge.front { background: #cdeacc; color: #143711; }
+  .th-badge.rl    { background: #fde68a; color: #78350f; }
+  .th-badge.rand  { background: #e5e7eb; color: #374151; }
+  .th-badge.seed  { background: #dbeafe; color: #1e3a5f; }
+  .th-badge.viol  { background: #fee2e2; color: #7f1d1d; }
+  .th-metric-grid { display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 6px; margin-bottom: 10px; }
+  .th-metric { background: var(--bg); border-radius: 4px; padding: 6px 8px; }
+  .th-metric-lbl { font-size: 9px; text-transform: uppercase;
+    color: var(--ink-3); letter-spacing: .05em; font-weight: 600; }
+  .th-metric-val { font-size: 20px; font-weight: 700; color: var(--ink); }
+  .th-hyp-list h4 { font-size: 10px; text-transform: uppercase;
+    color: var(--ink-3); letter-spacing: .05em; font-weight: 700;
+    margin: 10px 0 4px; }
+  .th-hyp-row { display: flex; align-items: center; gap: 6px;
+    padding: 3px 0; border-bottom: 1px solid #eef1f5; font-size: 11px; }
+  .th-hyp-row:last-child { border-bottom: none; }
+  .th-hyp-mech { padding: 2px 5px; border-radius: 3px; font-size: 9px;
+    font-weight: 800; color: white; flex-shrink: 0; }
+  .th-hyp-mech.m01 { background: #4283e6; }
+  .th-hyp-mech.m02 { background: #4a9d3f; }
+  .th-hyp-mech.m03 { background: #b3563a; }
+  .th-hyp-mech.m04 { background: #6b4b8f; }
+  .th-hyp-tissue { flex: 1; color: var(--ink-2); }
+  .th-hyp-score { font-weight: 600; color: var(--accent); flex-shrink: 0; }
+  .th-filter-row { display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap; margin-bottom: 10px; }
+  .th-note { font-size: 10px; color: var(--ink-3); font-style: italic;
+    margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; }
+  .th-pt:hover { opacity: 1 !important; }
 </style>
 </head>
 <body>
@@ -5261,6 +5305,273 @@ function seedStream() {
 // TOP-LEVEL VIEW TABS (Data | Mechanism)
 // ================================================================
 // =====================================================================
+// PARETO — THERAPEUTICS tab
+// =====================================================================
+// Reads workbench/capsid_pareto_data.json (baked by aav_optimization/dmd_main.py
+// + hypothesis_mapping.py). Shows the DMD AAV capsid Pareto frontier:
+// X = muscle_transduction, Y = nab_escape, constraint = hepatotoxicity < 0.40.
+// Click a capsid dot to see which (mechanism, tissue) hypotheses it best serves.
+// =====================================================================
+
+let CAPSID_PARETO_DATA   = null;   // {rows, constraint, sim_note}
+let thLoadInFlight       = false;
+let thSelectedId         = null;   // capsid_id of clicked point
+let thStratFilter        = 'all';  // 'all' | 'rl_policy' | 'random_baseline' | 'seed'
+let thFrontierOnly       = false;
+
+function thEnsureLoaded(cb) {
+  if (CAPSID_PARETO_DATA) { cb(); return; }
+  if (thLoadInFlight) return;
+  thLoadInFlight = true;
+  fetch('capsid_pareto_data.json?v=1')
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    .then(d => {
+      CAPSID_PARETO_DATA = d;
+      thLoadInFlight = false;
+      console.log(`[therapeutics] loaded ${d.rows.length} capsid variants`);
+      cb();
+    })
+    .catch(err => {
+      thLoadInFlight = false;
+      const el = document.querySelector('.th-loading');
+      if (el) el.textContent = `Failed to load capsid_pareto_data.json: ${err}`;
+    });
+}
+
+function thFiltered() {
+  if (!CAPSID_PARETO_DATA) return [];
+  return CAPSID_PARETO_DATA.rows.filter(r => {
+    if (thStratFilter !== 'all' && r.strat !== thStratFilter) return false;
+    if (thFrontierOnly && !r.front) return false;
+    return true;
+  });
+}
+
+function thSvg() {
+  const W = 740, H = 500;
+  const PAD_L = 68, PAD_R = 20, PAD_T = 28, PAD_B = 54;
+  const plotW = W - PAD_L - PAD_R;
+  const plotH = H - PAD_T - PAD_B;
+
+  const rows = thFiltered();
+
+  // Fixed axes 0..1
+  const x2px = v => PAD_L + v * plotW;
+  const y2px = v => PAD_T + plotH - v * plotH;
+
+  // Grid ticks
+  const ticks = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
+  const gridX = ticks.map(t => `
+    <line x1="${x2px(t)}" y1="${PAD_T}" x2="${x2px(t)}" y2="${H - PAD_B}"
+          stroke="#eef1f5" stroke-width="1"/>
+    <text x="${x2px(t)}" y="${H - PAD_B + 14}" text-anchor="middle"
+          font-size="10" fill="#6b7580">${t.toFixed(1)}</text>`).join('');
+  const gridY = ticks.map(t => `
+    <line x1="${PAD_L}" y1="${y2px(t)}" x2="${W - PAD_R}" y2="${y2px(t)}"
+          stroke="#eef1f5" stroke-width="1"/>
+    <text x="${PAD_L - 6}" y="${y2px(t) + 3}" text-anchor="end"
+          font-size="10" fill="#6b7580">${t.toFixed(1)}</text>`).join('');
+
+  // Theoretical Pareto curve (same shape as Python viz)
+  const cpts = [[0,.90],[.10,.82],[.22,.74],[.35,.66],[.48,.60],[.60,.50],[.72,.36],[.85,.20],[.90,.08]];
+  const curvePts = cpts.map(([x,y]) => `${x2px(x).toFixed(1)},${y2px(y).toFixed(1)}`).join(' ');
+
+  // Target zone box
+  const tzx0=0.38,tzx1=0.60,tzy0=0.52,tzy1=0.72;
+  const targetZone = `
+    <rect x="${x2px(tzx0)}" y="${y2px(tzy1)}" width="${x2px(tzx1)-x2px(tzx0)}"
+          height="${y2px(tzy0)-y2px(tzy1)}"
+          fill="#fef3c7" stroke="#a16207" stroke-width="1.5" opacity="0.6"/>
+    <text x="${((x2px(tzx0)+x2px(tzx1))/2).toFixed(1)}" y="${(y2px(tzy1)-6).toFixed(1)}"
+          text-anchor="middle" font-size="9" fill="#92400e" font-weight="700">target zone</text>`;
+
+  // Therapeutic window shading
+  const winShade = `
+    <rect x="${x2px(0.20)}" y="${y2px(1.0)}" width="${x2px(1.0)-x2px(0.20)}"
+          height="${y2px(0.40)-y2px(1.0)}"
+          fill="#bbf7d0" opacity="0.18"/>`;
+
+  // Min-threshold lines
+  const threshLines = `
+    <line x1="${x2px(0.20)}" y1="${PAD_T}" x2="${x2px(0.20)}" y2="${H-PAD_B}"
+          stroke="#aab" stroke-dasharray="4,3" stroke-width="1"/>
+    <text x="${x2px(0.20)+3}" y="${PAD_T+12}" font-size="9" fill="#888">min transduction</text>
+    <line x1="${PAD_L}" y1="${y2px(0.40)}" x2="${W-PAD_R}" y2="${y2px(0.40)}"
+          stroke="#aab" stroke-dasharray="4,3" stroke-width="1"/>
+    <text x="${PAD_L+4}" y="${y2px(0.40)-4}" font-size="9" fill="#888">min NAb escape</text>`;
+
+  // Dots
+  const STRAT_COLOR = {
+    rl_policy:       '#f59e0b',
+    random_baseline: '#9ca3af',
+    seed:            '#3b82f6',
+  };
+
+  const jitter = (id, salt, span) => {
+    let h = 5381;
+    for (let i = 0; i < (id+salt).length; i++) h = ((h<<5)+h+(id+salt).charCodeAt(i))|0;
+    return (((h>>>0)%10000)/10000 - 0.5) * span;
+  };
+
+  const pts = rows.map(r => {
+    const cx = (x2px(r.mt) + jitter(r.id,'x',6)).toFixed(1);
+    const cy = (y2px(r.ne) + jitter(r.id,'y',6)).toFixed(1);
+    const isSel  = r.id === thSelectedId;
+    const isFront = r.front;
+    const isViol  = !r.ok;
+    const fill   = isViol ? '#fee2e2' : (STRAT_COLOR[r.strat] || '#bbb');
+    const stroke = isSel ? '#0f172a' : (isFront ? '#166534' : '#555');
+    const sw     = isSel ? 2.5 : (isFront ? 1.8 : 0.6);
+    const rad    = isSel ? 9 : (isFront ? 7 : 5);
+    const title  = `${r.id}\nstrat=${r.strat}  cycle=${r.cycle}\nmuscle_transduction=${r.mt}  nab_escape=${r.ne}  hepatotox=${r.hep}\n${isFront?'★ Pareto-optimal':''}${isViol?'⚠ hepatotox violation':''}`;
+    return `<circle class="th-pt" cx="${cx}" cy="${cy}" r="${rad}"
+              fill="${fill}" stroke="${stroke}" stroke-width="${sw}"
+              opacity="${isViol ? 0.3 : 0.88}" data-thid="${esc(r.id)}">
+              <title>${esc(title)}</title>
+            </circle>`;
+  }).join('');
+
+  // Frontier hull
+  const frontRows = rows.filter(r => r.front && r.ok);
+  let hullSvg = '';
+  if (frontRows.length >= 2) {
+    const sorted = [...frontRows].sort((a,b) => a.mt - b.mt);
+    const hpts = sorted.map(r => `${x2px(r.mt).toFixed(1)},${(y2px(r.ne)-8).toFixed(1)}`).join(' ');
+    hullSvg = `<polyline points="${hpts}" fill="none" stroke="#166534" stroke-width="2"
+                 stroke-linejoin="round" stroke-dasharray="6,3"/>`;
+  }
+
+  return `<svg id="th-plot-svg" viewBox="0 0 ${W} ${H}"
+               preserveAspectRatio="xMidYMid meet"
+               style="width:100%;height:auto;max-height:520px;background:white">
+    <g>${gridX}${gridY}</g>
+    ${winShade}
+    <polyline points="${curvePts}" fill="none" stroke="#1f5fbf"
+              stroke-width="2" stroke-dasharray="8,4"/>
+    ${targetZone}
+    ${threshLines}
+    ${hullSvg}
+    <g>${pts}</g>
+    <text x="${PAD_L + plotW/2}" y="${H - 10}" text-anchor="middle"
+          font-size="12" font-weight="700" fill="#3d4652">
+      Muscle transduction (IV systemic)  →
+    </text>
+    <text x="14" y="${PAD_T + plotH/2}" text-anchor="middle"
+          font-size="12" font-weight="700" fill="#3d4652"
+          transform="rotate(-90 14 ${PAD_T + plotH/2})">
+      NAb escape  ↑
+    </text>
+    <text x="${W - PAD_R}" y="${PAD_T + 12}" text-anchor="end"
+          font-size="10" font-weight="700" fill="#166534" opacity="0.85">
+      target zone: high delivery + high escape
+    </text>
+    <text x="${W - PAD_R}" y="${H - PAD_B - 6}" text-anchor="end"
+          font-size="9" fill="#c94a4a" opacity="0.7" font-style="italic">
+      hepatotox ≥ 0.40 filtered (red outline)
+    </text>
+  </svg>`;
+}
+
+function thDetailPanel() {
+  if (!CAPSID_PARETO_DATA || !thSelectedId) {
+    return `<div class="th-detail-empty">
+      Click a capsid dot to see which DMD hypotheses it best serves.</div>`;
+  }
+  const r = CAPSID_PARETO_DATA.rows.find(x => x.id === thSelectedId);
+  if (!r) return `<div class="th-detail-empty">Not found.</div>`;
+
+  const stratLabel = {rl_policy:'RL policy', random_baseline:'Random baseline', seed:'Seed'}[r.strat] || r.strat;
+  const badges = [
+    r.front ? '<span class="th-badge front">★ Pareto-optimal</span>' : '',
+    `<span class="th-badge ${r.strat==='rl_policy'?'rl':r.strat==='seed'?'seed':'rand'}">${esc(stratLabel)}</span>`,
+    !r.ok   ? '<span class="th-badge viol">⚠ hepatotox exceeded</span>' : '',
+  ].filter(Boolean).join('');
+
+  const hypRows = (r.hyps || []).map(h => `
+    <div class="th-hyp-row">
+      <span class="th-hyp-mech m0${h.mech}">H${h.mech}</span>
+      <span class="th-hyp-tissue">${esc(h.tissue.replace(/_/g,' '))}</span>
+      <span class="th-hyp-score">${h.score.toFixed(3)}</span>
+    </div>`).join('') || '<em style="color:var(--ink-3)">Not in top-3 for any archetype</em>';
+
+  return `
+    <div class="th-detail-id">${esc(r.id)}</div>
+    <div class="th-detail-badges">${badges}</div>
+    <div class="th-metric-grid">
+      <div class="th-metric">
+        <div class="th-metric-lbl">Muscle transduction</div>
+        <div class="th-metric-val">${r.mt.toFixed(3)}</div>
+      </div>
+      <div class="th-metric">
+        <div class="th-metric-lbl">NAb escape</div>
+        <div class="th-metric-val">${r.ne.toFixed(3)}</div>
+      </div>
+      <div class="th-metric">
+        <div class="th-metric-lbl">Hepatotoxicity</div>
+        <div class="th-metric-val" style="color:${r.hep>0.40?'#c94a4a':'inherit'}">${r.hep.toFixed(3)}</div>
+      </div>
+    </div>
+    <div class="th-hyp-list">
+      <h4>Best-fit DMD hypotheses <span style="font-weight:400;font-style:italic">(tissue match × escape × payload fit)</span></h4>
+      ${hypRows}
+    </div>
+    ${r.cycle >= 0 ? `<div style="margin-top:8px;font-size:10px;color:var(--ink-3)">Selected in cycle ${r.cycle}</div>` : ''}
+    <div class="th-note">${esc(CAPSID_PARETO_DATA.sim_note || '')}</div>`;
+}
+
+function renderTherapeuticsView() {
+  if (!CAPSID_PARETO_DATA) {
+    thEnsureLoaded(() => renderPage());
+    return `<div class="th-body" style="display:block"><div class="th-loading" style="text-align:center;padding:60px;color:var(--ink-3)">loading capsid data…</div></div>`;
+  }
+  const rows = thFiltered();
+  const nPareto = rows.filter(r => r.front).length;
+
+  const stratChips = ['all', 'rl_policy', 'random_baseline', 'seed'].map(s => {
+    const lbl = {all:'all strategies', rl_policy:'RL policy', random_baseline:'random baseline', seed:'seed'}[s];
+    return `<button class="fr-chip ${thStratFilter===s?'active':''}" data-th-strat="${s}">${esc(lbl)}</button>`;
+  }).join('');
+
+  return `<div class="th-body">
+    <div>
+      <div class="fr-header" style="margin-bottom:10px">
+        <div class="fr-title">Pareto — Therapeutics
+          <span class="fr-title-sub">
+            ${rows.length} capsid variants ·
+            <b>${nPareto}</b> on Pareto frontier ·
+            constraint: hepatotoxicity &lt; 0.40
+          </span>
+        </div>
+        <div class="th-filter-row" style="margin-top:6px">
+          <span class="fr-chip-label">strategy:</span> ${stratChips}
+          <button class="fr-chip toggle ${thFrontierOnly?'active':''}" data-th-front>★ frontier only</button>
+        </div>
+      </div>
+      <div class="th-plot-wrap">${thSvg()}</div>
+    </div>
+    <div class="th-detail">${thDetailPanel()}</div>
+  </div>`;
+}
+
+function wireTherapeuticsView() {
+  document.querySelectorAll('[data-th-strat]').forEach(btn => {
+    btn.addEventListener('click', () => { thStratFilter = btn.dataset.thStrat; renderPage(); });
+  });
+  const frontBtn = document.querySelector('[data-th-front]');
+  if (frontBtn) frontBtn.addEventListener('click', () => { thFrontierOnly = !thFrontierOnly; renderPage(); });
+
+  const svg = document.getElementById('th-plot-svg');
+  if (!svg) return;
+  svg.addEventListener('click', e => {
+    const pt = e.target.closest('[data-thid]');
+    if (!pt) { thSelectedId = null; renderPage(); return; }
+    const id = pt.dataset.thid;
+    thSelectedId = thSelectedId === id ? null : id;
+    renderPage();
+  });
+}
+
+// =====================================================================
 // PARETO — HYPOTHESES tab
 // =====================================================================
 // Reads workbench/frontier_data.json (baked by hydrate_frontier_view.py).
@@ -5931,10 +6242,11 @@ function wireFrontierView(p) {
 
 function renderViewTabs() {
   const tabs = [
-    ['data',      'Explore Data',      'chart-first'],
-    ['mechanism', 'Explore Mechanism', 'overview · focus · detail'],
-    ['lauren',    "Lauren's tab",      'dashboard-style'],
-    ['frontier',  'Pareto — Hypotheses', 'coverage × depth × actionability'],
+    ['data',          'Explore Data',          'chart-first'],
+    ['mechanism',     'Explore Mechanism',     'overview · focus · detail'],
+    ['lauren',        "Lauren's tab",          'dashboard-style'],
+    ['frontier',      'Pareto — Hypotheses',   'coverage × depth × actionability'],
+    ['therapeutics',  'Pareto — Therapeutics', 'capsid · muscle delivery · NAb escape'],
   ];
   return `<div class="pc-viewtabs">
     ${tabs.map(([v, lbl, badge]) => `
@@ -5961,6 +6273,8 @@ function renderPage() {
     ? renderLaurenView(p)
     : currentView === 'frontier'
     ? renderFrontierView(p)
+    : currentView === 'therapeutics'
+    ? renderTherapeuticsView()
     : `<div class="pc-body ${bodyCls}">
          ${renderLeftPanel(p)}
          ${renderRightPanel(p)}
@@ -5986,6 +6300,7 @@ function renderPage() {
   // Explore Data click handlers only exist when its view is mounted
   if (currentView === 'data') wireDataView(p);
   if (currentView === 'frontier') wireFrontierView(p);
+  if (currentView === 'therapeutics') wireTherapeuticsView();
 
   // Newest artifacts are at the top of the stream, so scroll the
   // right-panel body to the top when new artifacts arrive. Skip on
